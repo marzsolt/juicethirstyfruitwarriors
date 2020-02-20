@@ -47,6 +47,7 @@ Main tasks:
 Main tasks:
 - Store player-related data (health, cooldowns...)
 - Define player-logic like how to attack, move...
+- its AI-derivations: AI...
 ### World
 Main tasks:
 - Generate itself on call
