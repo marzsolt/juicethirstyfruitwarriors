@@ -16,7 +16,7 @@ class Server(threading.Thread):
         self.serverSocket.listen(5)
         self.id_counter = 0
 
-        self.servercommunicatorsList = []
+        self.serverCommunicatorsList = []
         self.IDs = []
 
         #start_new_thread(self.run(), (self,))
@@ -25,16 +25,15 @@ class Server(threading.Thread):
         self.s.close()
 
     def receiveMessage(self, message, ID):
-        print("Client sent", message)
+        print(f"Client {ID} sent:", message)
         message_split = message.split(";")
         if message_split[0] == "csoki":
-            self.servercommunicatorsList[ID].sendMessage("koszonom")
+            self.serverCommunicatorsList[ID].sendMessage("koszonom")
 
     def newClient(self, _newClient):
-
-        newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_newClient, ID = self.id_counter)
+        newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_newClient, ID=self.id_counter)
         newCom.start()
-        self.servercommunicatorsList.append(newCom)
+        self.serverCommunicatorsList.append(newCom)
         self.IDs.append(self.id_counter)
 
         newCom.sendMessage("kakao")

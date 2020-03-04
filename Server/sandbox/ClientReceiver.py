@@ -10,7 +10,7 @@ class ClientReceiver(threading.Thread):
         #start_new_thread(self.run())
 
     def run(self):
-        while (True):
+        while True:
             newClient, addr = self.server.serverSocket.accept()
             print("got connection")
             self.server.newClient(newClient)

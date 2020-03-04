@@ -2,6 +2,7 @@ import socket
 from _thread import *
 import ClientCommunicator
 
+
 class Client:
     def __init__(self):
         host = socket.gethostname()  # or 'IP address'
@@ -24,6 +25,7 @@ class Client:
 
     def run(self):
         while True:
-            a=3
+            pass
+
 
 client = Client()
