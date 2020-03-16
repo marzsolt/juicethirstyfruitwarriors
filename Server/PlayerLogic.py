@@ -30,4 +30,5 @@ class PlayerLogic:
 # FOR testing
 test_player = PlayerLogic(0)
 test_player2 = PlayerLogic(1)
-players = [test_player, test_player2]
+test_player3 = PlayerLogic(2)
+players = [test_player, test_player2, test_player3]
