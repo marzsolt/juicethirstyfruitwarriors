@@ -5,12 +5,10 @@ import PlayerLogic
 class Player(pg.sprite.Sprite):
     def __init__(self, player_id):
         super(Player, self).__init__()
-        self.surf = pg.image.load("img/apple_test_image.png").convert()
+        self.surf = pg.image.load("../img/apple_test_image.png").convert()
         self.surf.set_colorkey((255, 253, 201), pg.RLEACCEL)
         self.rect = self.surf.get_rect()
         self._id = player_id
-
-        screen.blit(self.surf, self.rect)
 
     def update(self, pressed_keys, events):
         network_messages = []
@@ -26,25 +24,8 @@ class Player(pg.sprite.Sprite):
             network_messages.append("LEFT")
         if pressed_keys[pg.K_RIGHT]:
             network_messages.append("RIGHT")
-        PlayerLogic.test_player.process_requests(network_messages, self)
+        PlayerLogic.players[self._id].process_requests(network_messages, self)
 
     def pos_update(self, x, y):
         # TODO shall be called from update, messages loaded from networking by id
         self.rect.center = (x, y)
-
-
-# FOR TESTING...
-pg.init()
-clock = pg.time.Clock()
-screen = pg.display.set_mode((800, 600))
-p = Player(0)
-while True:
-    p.update(pg.key.get_pressed(), pg.event.get())
-
-    # Clear screen
-    screen.fill((0, 0, 0))
-    # Draw player
-    screen.blit(p.surf, p.rect)
-    # Update screen
-    pg.display.flip()
-    clock.tick(30)  # Ensure program maintains a rate of 30 frames per second

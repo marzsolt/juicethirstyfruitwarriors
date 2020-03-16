@@ -2,8 +2,8 @@ class PlayerLogic:
     def __init__(self, player_id):
         self._id = player_id
         self._speed = 5
-        self._x = 100
-        self._y = 100
+        self._x = 100+player_id*100
+        self._y = 100+player_id*100
 
     def process_requests(self, network_messages, player):
         # TODO load messages from Network by id
@@ -21,3 +21,5 @@ class PlayerLogic:
 
 # FOR testing
 test_player = PlayerLogic(0)
+test_player2 = PlayerLogic(1)
+players = [test_player, test_player2]
