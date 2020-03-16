@@ -1,4 +1,9 @@
 class PlayerLogic:
+    X_MIN = 0
+    X_MAX = 800  # todo AUTOMATICALLY GET SCREEN SIZES
+    Y_MIN = 0
+    Y_MAX = 600
+
     def __init__(self, player_id):
         self._id = player_id
         self._speed = 5
@@ -12,6 +17,9 @@ class PlayerLogic:
                 self._x = self._x - self._speed
             elif mess == "RIGHT":
                 self._x = self._x + self._speed
+
+        self._x = min(max(self._x, self.X_MIN), self.X_MAX)
+        self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
 
         player.pos_update(self._x, self._y)
 
