@@ -1,6 +1,5 @@
 import socket
 import threading
-import ClientReceiver
 import ServerCommunicator
 
 
@@ -8,15 +7,15 @@ class Server(threading.Thread):
     __instance = None
 
     @staticmethod
-    def getInstance():
+    def get_instance():
         """ Static access method. """
-        if Server.__instance == None:
+        if Server.__instance is None:
             Server.__instance = Server()
         return Server.__instance
 
     def __init__(self):
         """ Virtually private constructor. """
-        if Server.__instance != None:
+        if Server.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
             threading.Thread.__init__(self)
@@ -39,14 +38,15 @@ class Server(threading.Thread):
         if message_split[0] == "csoki":
             self.serverCommunicatorsList[ID].send_message("koszonom")
 
-    def get_communicator_id(self, ID):
+    def get_communicator_from_id(self, ID):
         for communicator in self.serverCommunicatorsList:
             if communicator.ID == ID:
                 return communicator
         raise ValueError("Unexpected value of ID")
 
     def send_message(self, message, ID):
-        self.serverCommunicatorsList[ID].send(message)
+        communicator = self.get_communicator_from_id(ID)
+        communicator.send(message)
 
     def send_all(self, message):
         for communicators in self.serverCommunicatorsList:
@@ -62,11 +62,15 @@ class Server(threading.Thread):
 
         self.id_counter = self.id_counter + 1
 
+    def accept_clients(self):
+        new_client, addr = self.serverSocket.accept()
+        print("got connection")
+        self.new_client(new_client)
 
     def run(self):
-        client_receiver = ClientReceiver.ClientReceiver(_server=self)
-        client_receiver.start()
+        while True:
+            self.accept_clients()
 
 
-server = Server()
-server.start()
+Server()
+Server.get_instance().start()
