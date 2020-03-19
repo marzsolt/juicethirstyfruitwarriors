@@ -1,4 +1,3 @@
-from _thread import *
 import threading
 
 
@@ -9,11 +8,8 @@ class ServerCommunicator(threading.Thread):
         self.socket = _client
         self.ID = ID
 
-        #start_new_thread(self.run())
-
-    def sendMessage(self, message):
+    def send_message(self, message):
         message = str.encode(message)
-
         self.socket.send(message)
 
     def run(self):

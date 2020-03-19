@@ -1,5 +1,4 @@
 import socket
-from _thread import *
 import threading
 import ClientReceiver
 import ServerCommunicator
@@ -19,33 +18,36 @@ class Server(threading.Thread):
         self.serverCommunicatorsList = []
         self.IDs = []
 
-        #start_new_thread(self.run(), (self,))
-
     def close(self):
         self.s.close()
 
-    def receiveMessage(self, message, ID):
+    def receive_message(self, message, ID):
         print(f"Client {ID} sent:", message)
         message_split = message.split(";")
         if message_split[0] == "csoki":
-            self.serverCommunicatorsList[ID].sendMessage("koszonom")
+            self.serverCommunicatorsList[ID].send_message("koszonom")
 
-    def newClient(self, _newClient):
-        newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_newClient, ID=self.id_counter)
+    def send_message(self, message, ID):
+        self.serverCommunicatorsList[ID].send(message)
+
+    def send_all(self, message):
+        for communicators in self.serverCommunicatorsList:
+            communicators.send(message)
+
+    def new_client(self, _new_client):
+        newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_new_client, ID=self.id_counter)
         newCom.start()
         self.serverCommunicatorsList.append(newCom)
         self.IDs.append(self.id_counter)
 
-        newCom.sendMessage("kakao")
+        newCom.send_message("kakao")
 
         self.id_counter = self.id_counter + 1
 
-    def settings(self):
-        clientReceiver = ClientReceiver.ClientReceiver(_server=self)
-        clientReceiver.start()
 
     def run(self):
-        self.settings()
+        client_receiver = ClientReceiver.ClientReceiver(_server=self)
+        client_receiver.start()
 
 
 
