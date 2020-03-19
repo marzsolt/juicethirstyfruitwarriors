@@ -16,4 +16,4 @@ class ServerCommunicator(threading.Thread):
         while True:
             message = self.socket.recv(1024)
             message = message.decode()
-            self.server.receiveMessage(message, self.ID)
+            self.server.receive_message(message, self.ID)
