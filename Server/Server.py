@@ -1,6 +1,7 @@
 import socket
 import threading
 import ServerCommunicator
+from utils.domi_utils import id_generator
 
 
 class Server(threading.Thread):
@@ -24,8 +25,7 @@ class Server(threading.Thread):
             self.__serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.__serverSocket.bind((self.__host, self.__port_number))
             self.__serverSocket.listen(5)
-            self.id_counter = 0
-
+            self.__id_gen = id_generator()
             self.__serverCommunicatorsList = []
 
     def receive_message(self, message, ID):
@@ -38,7 +38,7 @@ class Server(threading.Thread):
         for communicator in self.__serverCommunicatorsList:
             if communicator.ID == ID:
                 return communicator
-        raise ValueError("Invalid value of ID")
+        raise ValueError("Invalid value of ID", ID)
 
     def send_message(self, message, ID):
         communicator = self.__get_communicator_from_id(ID)
@@ -49,12 +49,10 @@ class Server(threading.Thread):
             communicators.send(message)
 
     def __new_client(self, _new_client):
-        newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_new_client, ID=self.id_counter)
+        newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_new_client, ID=next(self.__id_gen))
         newCom.start()
         self.__serverCommunicatorsList.append(newCom)
         self.send_message("kakao", newCom.ID)
-
-        self.id_counter = self.id_counter + 1
 
     def __accept_clients(self):
         new_client, addr = self.__serverSocket.accept()
