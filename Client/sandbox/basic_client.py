@@ -8,4 +8,4 @@ port = 12145                 # Random port number
 s.connect((host, port))
 print(s.recv(1024))
 print(s.recv(1024))
-s.close()                     # Close the socket when done
+s.close()                    # Close the socket when done
