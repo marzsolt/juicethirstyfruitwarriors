@@ -1,4 +1,3 @@
-import socket
 import ClientCommunicator
 
 
@@ -6,18 +5,18 @@ class Client:
     __instance = None
 
     @staticmethod
-    def get_instance():
+    def get_instance(ip):
         """ Static access method. """
         if Client.__instance is None:
-            Client.__instance = Client()
+            Client.__instance = Client(ip)
         return Client.__instance
 
-    def __init__(self):
+    def __init__(self, ip):
         """ Virtually private constructor. """
         if Client.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
-            host = socket.gethostname()  # or 'IP address'
+            host = ip
             port = 12145  # Random port number
             self.__communicator = ClientCommunicator.ClientCommunicator(self, host, port)
 
@@ -32,8 +31,3 @@ class Client:
 
     def send_message(self, message):
         self.__communicator.send_message(message)
-
-
-
-
-client = Client()

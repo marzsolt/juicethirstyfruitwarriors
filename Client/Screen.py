@@ -1,12 +1,7 @@
 import pygame as pg
 import pygameMenu as pgM
 
-playMenu = None
-connectingMenu = None
-
-
-def random_bgfun():
-    pass
+import Client
 
 
 class Screen:
@@ -23,6 +18,8 @@ class Screen:
     # connecting menu:
     connectingMenu = None
 
+    serverIP = None
+
     def __init__(self, screen_height=0, screen_width=0):
         self.screen = pg.display.set_mode([screen_width, screen_height], pg.FULLSCREEN)
         [self.h, self.w] = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
@@ -38,7 +35,7 @@ class Screen:
             self.h,
             pgM.font.FONT_OPEN_SANS,
             'Main Menu',
-            bgfun=random_bgfun,
+            bgfun=self.main_bgfun,
             menu_color=(0, 0, 0),
             menu_color_title=(0, 0, 0),
             menu_alpha=100,
@@ -52,7 +49,7 @@ class Screen:
             self.h,
             pgM.font.FONT_OPEN_SANS,
             'Play Menu',
-            bgfun=random_bgfun,
+            bgfun=self.main_bgfun,
             menu_color=(0, 0, 0),
             menu_color_title=(0, 0, 0),
             menu_alpha=100
@@ -82,7 +79,7 @@ class Screen:
             self.h,
             pgM.font.FONT_OPEN_SANS,
             'About Menu',
-            bgfun=random_bgfun,
+            bgfun=self.main_bgfun,
             menu_color=(0, 0, 0),
             menu_color_title=(0, 0, 0),
             menu_alpha=100
@@ -116,7 +113,7 @@ class Screen:
             self.h,
             pgM.font.FONT_OPEN_SANS,
             'Connecting Menu',
-            bgfun=random_bgfun,
+            bgfun=self.connecting_menu_bgfun,
             menu_color=(0, 0, 0),
             menu_color_title=(0, 0, 0),
             menu_alpha=100,
@@ -127,9 +124,9 @@ class Screen:
 
         # draw the adequate screen (according to the state)
         if self.screenState == 0:
-            self.draw_main_menu_structure(events)
+            self.mainMenu.mainloop(events)
         elif self.screenState == 1:
-            self.draw_connecting_menu(events)
+            self.connectingMenu.mainloop(events)
 
         running = True
         for event in events:  # event handling - look at every event in the queue
@@ -147,10 +144,8 @@ class Screen:
 
         return running
 
-    def draw_main_menu_structure(self, events):
+    def main_bgfun(self):
         self.screen.fill((255, 128, 0))  # some sort of orange for background
-
-        self.mainMenu.mainloop(events)
 
     def onchange_play_menu_input_ip(self, val):  # check onchange of playMenu IP input field
         inp_widget = self.playMenu.get_widget('playMenu_input_IP')
@@ -169,8 +164,6 @@ class Screen:
         '''
 
     def onreturn_play_menu_input_ip(self, val):  # check onreturn of playMenu IP input field
-        print('Return value: ', val)
-
         is_okay = True
 
         if val.count('.') != 3:
@@ -184,9 +177,10 @@ class Screen:
             self.playMenu.get_widget('playMenu_input_IP').set_value('')
         else:
             self.connectingMenu.add_line('Connecting to ' + val + ', please wait.')
+            self.serverIP = val
+            self.mainMenu.disable()
             self.screenState = 1
 
-    def draw_connecting_menu(self, events):
-        self.screen.fill((255, 128, 0))  # some sort of orange for background
+    def connecting_menu_bgfun(self):
+        Client.Client.get_instance(self.serverIP)
 
-        self.connectingMenu.mainloop(events)

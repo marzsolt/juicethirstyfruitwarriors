@@ -21,7 +21,8 @@ class Server(threading.Thread):
         else:
             threading.Thread.__init__(self)
             self.__port_number = 12145
-            self.__host = socket.gethostname()
+            self.__host = socket.gethostbyname(socket.gethostname())
+            print(self.__host)
             self.__serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.__serverSocket.bind((self.__host, self.__port_number))
             self.__serverSocket.listen(5)
