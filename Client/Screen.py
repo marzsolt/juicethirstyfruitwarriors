@@ -1,75 +1,192 @@
 import pygame as pg
+import pygameMenu as pgM
+
+playMenu = None
+connectingMenu = None
+
+
+def random_bgfun():
+    pass
 
 
 class Screen:
     screen = None
     h = None
     w = None
-    screenState = 0 # 0: main menu; 1: connecting
+    screenState = 0  # 0: main menu structure; 1: connecting menu
+
+    # main menu structure menus:
+    mainMenu = None
+    playMenu = None
+    aboutMenu = None
+
+    # connecting menu:
+    connectingMenu = None
 
     def __init__(self, screen_height=0, screen_width=0):
         self.screen = pg.display.set_mode([screen_width, screen_height], pg.FULLSCREEN)
-        [self.h, self.w] = [pg.display.Info().current_h, pg.display.Info().current_w] # get screen h and w
+        [self.h, self.w] = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
+
+        # -----------------------------
+        # defining main menu structure
+        # -----------------------------
+
+        # defining main menu
+        self.mainMenu = pgM.Menu(
+            self.screen,
+            self.w,
+            self.h,
+            pgM.font.FONT_OPEN_SANS,
+            'Main Menu',
+            bgfun=random_bgfun,
+            menu_color=(0, 0, 0),
+            menu_color_title=(0, 0, 0),
+            menu_alpha=100,
+            back_box=False
+        )
+
+        # defining main menu - play menu
+        self.playMenu = pgM.TextMenu(
+            self.screen,
+            self.w,
+            self.h,
+            pgM.font.FONT_OPEN_SANS,
+            'Play Menu',
+            bgfun=random_bgfun,
+            menu_color=(0, 0, 0),
+            menu_color_title=(0, 0, 0),
+            menu_alpha=100
+        )
+
+        play_menu_lines = [  # lines to display in main menu -- play menu
+            'In order to connect to a server, please enter',
+            'its IP address below, followed by enter:',
+            ''
+        ]
+        for txt in play_menu_lines:
+            self.playMenu.add_line(txt)
+
+        self.playMenu.add_text_input(  # text input for IP
+            title='IP: ',
+            textinput_id='playMenu_input_IP',
+            maxchar=4 * 3 + 3,
+            onchange=self.onchange_play_menu_input_ip,
+            onreturn=self.onreturn_play_menu_input_ip
+        )
+        self.playMenu.add_option('Back', pgM.events.BACK)
+
+        # defining main menu -- about menu
+        self.aboutMenu = pgM.TextMenu(
+            self.screen,
+            self.w,
+            self.h,
+            pgM.font.FONT_OPEN_SANS,
+            'About Menu',
+            bgfun=random_bgfun,
+            menu_color=(0, 0, 0),
+            menu_color_title=(0, 0, 0),
+            menu_alpha=100
+        )
+
+        about_menu_lines = [
+            'This is a game developed in pygame,',
+            'proudly delivered to you by:',
+            '',
+            'Farkas Domonkos László',
+            'Molnár Petra',
+            'Márkos Zsolt'
+        ]
+        for txt in about_menu_lines:
+            self.aboutMenu.add_line(txt)
+
+        self.aboutMenu.add_option('Back', pgM.events.BACK)
+
+        # extending mai menu with the newly defined play & about menus
+        self.mainMenu.add_option('Play', self.playMenu)
+        self.mainMenu.add_option('About', self.aboutMenu)
+        self.mainMenu.add_option('Exit', pgM.events.EXIT)
+
+        # -----------------------------
+        # defining connecting menu
+        # -----------------------------
+
+        self.connectingMenu = pgM.TextMenu(
+            self.screen,
+            self.w,
+            self.h,
+            pgM.font.FONT_OPEN_SANS,
+            'Connecting Menu',
+            bgfun=random_bgfun,
+            menu_color=(0, 0, 0),
+            menu_color_title=(0, 0, 0),
+            menu_alpha=100,
+            back_box=False
+        )
 
     def update(self, events):
 
         # draw the adequate screen (according to the state)
         if self.screenState == 0:
-            self.drawMainMenu(events)
+            self.draw_main_menu_structure(events)
         elif self.screenState == 1:
-            self.drawConnecting()
+            self.draw_connecting_menu(events)
 
         running = True
-        for event in events: # event handling - look at every event in the queue
+        for event in events:  # event handling - look at every event in the queue
 
-            if event.type == pg.KEYDOWN: # did the user hit a key?
+            if event.type == pg.KEYDOWN:  # did the user hit a key?
 
-                if event.key == pg.K_ESCAPE: # Was it the Escape key? If so, stop the loop.
+                if event.key == pg.K_ESCAPE:  # Was it the Escape key? If so, stop the loop.
                     running = False
 
-            if event.type == pg.QUIT: # Did the user click the window close button? If so, stop the loop. w/o. doesn't work
+            # Did the user click the window close button? If so, stop the loop. w/o. doesn't work
+            if event.type == pg.QUIT:
                 running = False
 
-        pg.display.flip() # flip the display
+        pg.display.flip()  # flip the display
 
         return running
 
-    def drawMainMenu(self, events):
-        self.screen.fill((255, 128, 0))  # some sort of orange
+    def draw_main_menu_structure(self, events):
+        self.screen.fill((255, 128, 0))  # some sort of orange for background
 
-        playBtnSurf = pg.Surface([int(self.w*0.1), int(self.h*0.05)])
-        playBtnSurf.fill((0, 0, 0)) # colour of border
-        playBtnSurfRect = playBtnSurf.get_rect()
-        playBtnSurfRect.center = (self.w//2, self.h//2)
+        self.mainMenu.mainloop(events)
 
-        # Let the above surface have 1 px width border, whereas the actual object background be white
-        tmpSurf = pg.Surface((playBtnSurf.get_width()-2, playBtnSurf.get_height()-2))
-        tmpSurf.fill((255, 255, 255))
-        playBtnSurf.blit(tmpSurf, (1, 1))
+    def onchange_play_menu_input_ip(self, val):  # check onchange of playMenu IP input field
+        inp_widget = self.playMenu.get_widget('playMenu_input_IP')
 
+        # do not let to write anything but numbers and dots
+        if len(val) > 0 and not (val[-1].isnumeric() or val[-1] == '.'):
+            inp_widget.set_value(val[:-1])
 
-        font = pg.font.Font('freesansbold.ttf', 16)
-        text = font.render('Play', True, (0, 0, 0))
-        textRect = text.get_rect()
-        textRect.center = (playBtnSurf.get_width()//2, playBtnSurf.get_height()//2)
+        '''
+        # if last 3 chars are numeric, then write automatically a dot - unless there are already 3 dots
+        # BUG: cannot delete dots
+        # hence of bug, maybe developed in future
+        if len(val) >=3 and val[-3:].isnumeric() and val.count('.') < 3:
+            print(val[-3:])
+            inp_widget.set_value(val + '.')
+        '''
 
-        playBtnSurf.blit(text, textRect)
+    def onreturn_play_menu_input_ip(self, val):  # check onreturn of playMenu IP input field
+        print('Return value: ', val)
 
-        self.screen.blit(playBtnSurf, playBtnSurfRect)
+        is_okay = True
 
-        for event in events: # event handling - look at every event in the queue [main menu specific]
-            if event.type == pg.MOUSEBUTTONDOWN:
-                if event.button == 1:  # Left mouse button.
-                    # Check if the rect collides with the mouse pos.
-                    if playBtnSurfRect.collidepoint(event.pos):
-                        self.screenState = 1
+        if val.count('.') != 3:
+            is_okay = False
+        else:
+            for field in val.split('.'):
+                if len(field) == 0 or int(field) > 255:
+                    is_okay = False
 
-    def drawConnecting(self):
-        self.screen.fill((255, 128, 0))  # some sort of orange
+        if not is_okay:
+            self.playMenu.get_widget('playMenu_input_IP').set_value('')
+        else:
+            self.connectingMenu.add_line('Connecting to ' + val + ', please wait.')
+            self.screenState = 1
 
-        font = pg.font.Font('freesansbold.ttf', 16)
-        text = font.render('Connecting...', True, (0, 0, 0))
-        textRect = text.get_rect()
-        textRect.center = (self.w // 2, self.h // 2)
+    def draw_connecting_menu(self, events):
+        self.screen.fill((255, 128, 0))  # some sort of orange for background
 
-        self.screen.blit(text, textRect)
+        self.connectingMenu.mainloop(events)
