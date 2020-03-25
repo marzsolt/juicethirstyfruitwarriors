@@ -10,16 +10,20 @@ class ServerCommunicator(threading.Thread):
         self.ID = ID
 
     def send_message(self, message):
-        #message = str.encode(message)
-        #self.socket.send(message)
         serialized = json.dumps(message.__dict__)
         serialized = str.encode(serialized)
-        #self.socket.send(bytes(len(serialized)))
         self.socket.send(serialized)
+
+    def __dict_to_object(self, dictionary):
+        obj = type('new', (object,), dictionary)
+        for key in dictionary:
+            setattr(obj, key, dictionary[key])
+        return obj
 
     def run(self):
         while True:
             message = self.socket.recv(1024)
             message = message.decode()
             deserialized = json.loads(message)
+            deserialized = self.__dict_to_object(deserialized)
             self.server.receive_message(deserialized, self.ID)

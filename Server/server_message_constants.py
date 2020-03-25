@@ -3,7 +3,7 @@ from enum import Enum
 
 class MessageType(str, Enum):
     ACK = "acknowledged"
-    CON = "connection"
+    CONN = "connection"
     ID = "ID"
 
 

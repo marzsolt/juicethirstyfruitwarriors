@@ -15,9 +15,16 @@ class ClientCommunicator(threading.Thread):
         serialized = str.encode(serialized)
         self.client_socket.send(serialized)
 
+    def __dict_to_object(self, dictionary):
+        obj = type('new', (object,), dictionary)
+        for key in dictionary:
+            setattr(obj, key, dictionary[key])
+        return obj
+
     def run(self):
         while True:
             message = self.client_socket.recv(1024)
             message = message.decode()
             deserialized = json.loads(message)
+            deserialized = self.__dict_to_object(deserialized)
             self.client.receive_message(deserialized)
