@@ -1,5 +1,7 @@
 import socket
 import ClientCommunicator
+import client_message_constants
+import BaseMessage
 
 
 class Client:
@@ -25,15 +27,15 @@ class Client:
 
     def receive_message(self, message):
         print("Server sent: ", message)
-        message_split = message.split(";")
-        if message_split[0] == "kakao":
-            print("I sent: csoki")
-            self.send_message("csoki")
+        if message["type"] == client_message_constants.MessageType.CONN:
+            print("Server sent:", message["text"])
+            mess = BaseMessage.BaseMessage(mess_type=client_message_constants.MessageType.CONN, target=client_message_constants.Target.SERVER)
+            mess.text = "Connection is ok"
+            self.send_message(mess)
 
     def send_message(self, message):
         self.__communicator.send_message(message)
 
 
-
-
 client = Client()
+

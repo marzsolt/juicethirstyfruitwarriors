@@ -1,4 +1,5 @@
 import threading
+import json
 
 
 class ServerCommunicator(threading.Thread):
@@ -9,11 +10,16 @@ class ServerCommunicator(threading.Thread):
         self.ID = ID
 
     def send_message(self, message):
-        message = str.encode(message)
-        self.socket.send(message)
+        #message = str.encode(message)
+        #self.socket.send(message)
+        serialized = json.dumps(message.__dict__)
+        serialized = str.encode(serialized)
+        #self.socket.send(bytes(len(serialized)))
+        self.socket.send(serialized)
 
     def run(self):
         while True:
             message = self.socket.recv(1024)
             message = message.decode()
-            self.server.receive_message(message, self.ID)
+            deserialized = json.loads(message)
+            self.server.receive_message(deserialized, self.ID)

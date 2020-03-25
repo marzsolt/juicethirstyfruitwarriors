@@ -2,6 +2,8 @@ import socket
 import threading
 import ServerCommunicator
 from utils.domi_utils import id_generator
+import server_message_constants
+import BaseMessage
 
 
 class Server(threading.Thread):
@@ -29,10 +31,9 @@ class Server(threading.Thread):
             self.__serverCommunicatorsList = []
 
     def receive_message(self, message, ID):
-        print(f"Client {ID} sent:", message)
-        message_split = message.split(";")
-        if message_split[0] == "csoki":
-            self.send_message("koszonom", ID)
+        if message["type"] == server_message_constants.MessageType.CON:
+            print(message["text"])
+
 
     def __get_communicator_from_id(self, ID):
         for communicator in self.__serverCommunicatorsList:
@@ -52,7 +53,9 @@ class Server(threading.Thread):
         newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_new_client, ID=next(self.__id_gen))
         newCom.start()
         self.__serverCommunicatorsList.append(newCom)
-        self.send_message("kakao", newCom.ID)
+        message = BaseMessage.BaseMessage(mess_type=server_message_constants.MessageType.CON, target=server_message_constants.Target.CLIENT)
+        message.text = "Connected to server"
+        self.send_message(message, newCom.ID)
 
     def __accept_clients(self):
         new_client, addr = self.__serverSocket.accept()

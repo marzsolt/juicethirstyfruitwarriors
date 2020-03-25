@@ -1,11 +1,13 @@
 from enum import Enum
 
 
-class MessageType(Enum):
+class MessageType(str, Enum):
     ACK = "acknowledged"
+    CON = "connection"
+    ID = "ID"
 
 
-class Target(Enum):
+class Target(str, Enum):
     """Who is the target of the message."""
     SCREEN = "screen"
     PLAYER = "player"  # should use ID someway 

@@ -1,5 +1,6 @@
 import socket
 import threading
+import json
 
 
 class ClientCommunicator(threading.Thread):
@@ -10,11 +11,13 @@ class ClientCommunicator(threading.Thread):
         self.client_socket.connect((host, port))
 
     def send_message(self, message):
-        message = str.encode(message)
-        self.client_socket.send(message)
+        serialized = json.dumps(message.__dict__)
+        serialized = str.encode(serialized)
+        self.client_socket.send(serialized)
 
     def run(self):
         while True:
             message = self.client_socket.recv(1024)
             message = message.decode()
-            self.client.receive_message(message)
+            deserialized = json.loads(message)
+            self.client.receive_message(deserialized)
