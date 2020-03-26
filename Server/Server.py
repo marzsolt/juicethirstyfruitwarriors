@@ -38,12 +38,10 @@ class Server(threading.Thread):
         if message.type == client_constants.MessageType.CONN:
             print(message.text)
 
-    def collect_messages(self, target):
-        messages = []
-        for key in self.server_message_dictionary:
-            if key == target:
-                messages = self.server_message_dictionary[key]
-                del self.server_message_dictionary[key]
+    def get_targets_messages(self, target):
+        messages = self.client_message_dictionary.get(target) or []
+        if messages is not []:
+            self.server[target] = []
         return messages
 
     def __get_communicator_from_id(self, ID):

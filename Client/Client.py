@@ -30,19 +30,16 @@ class Client:
 
     def receive_message(self, message):
         self.client_message_dictionary[message.target].append(message)
-
         if message.type == server_constants.MessageType.CONN:
             print("Server sent:", message.text)
             mess = BaseMessage.BaseMessage(mess_type=client_message_constants.MessageType.CONN, target=client_message_constants.Target.SERVER)
             mess.text = "Connection is ok"
             self.send_message(mess)
 
-    def collect_messages(self, target):
-        messages = []
-        for key in self.client_message_dictionary:
-            if key == target:
-                messages = self.client_message_dictionary[key]
-                del self.client_message_dictionary[key]
+    def get_targets_messages(self, target):
+        messages = self.client_message_dictionary.get(target) or []
+        if messages is not []:
+            self.client_message_dictionary[target] = []
         return messages
 
     def send_message(self, message):

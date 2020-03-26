@@ -1,5 +1,6 @@
 import threading
 import json
+from utils.domi_utils import dict_to_object
 
 
 class ServerCommunicator(threading.Thread):
@@ -14,16 +15,10 @@ class ServerCommunicator(threading.Thread):
         serialized = str.encode(serialized)
         self.socket.send(serialized)
 
-    def __dict_to_object(self, dictionary):
-        obj = type('new', (object,), dictionary)
-        for key in dictionary:
-            setattr(obj, key, dictionary[key])
-        return obj
-
     def run(self):
         while True:
             message = self.socket.recv(1024)
             message = message.decode()
             deserialized = json.loads(message)
-            deserialized = self.__dict_to_object(deserialized)
+            deserialized = dict_to_object(deserialized)
             self.server.receive_message(deserialized, self.ID)
