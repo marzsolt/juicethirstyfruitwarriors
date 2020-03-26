@@ -1,4 +1,8 @@
+from collections import defaultdict
 import ClientCommunicator
+import client_message_constants
+import Server.server_message_constants as server_constants
+import BaseMessage
 
 
 class Client:
@@ -19,15 +23,26 @@ class Client:
             host = ip
             port = 12145  # Random port number
             self.__communicator = ClientCommunicator.ClientCommunicator(self, host, port)
+            self.client_message_dictionary = defaultdict(list)
 
             self.__communicator.start()
 
     def receive_message(self, message):
-        print("Server sent: ", message)
-        message_split = message.split(";")
-        if message_split[0] == "kakao":
-            print("I sent: csoki")
-            self.send_message("csoki")
+        self.client_message_dictionary[message.target].append(message)
+        if message.type == server_constants.MessageType.CONN:
+            print("Server sent:", message.text)
+            mess = BaseMessage.BaseMessage(mess_type=client_message_constants.MessageType.CONN, target=client_message_constants.Target.SERVER)
+            mess.text = "Connection is ok"
+            self.send_message(mess)
+
+    def get_targets_messages(self, target):
+        messages = self.client_message_dictionary.get(target) or []
+        if messages is not []:
+            self.client_message_dictionary[target] = []
+        return messages
 
     def send_message(self, message):
         self.__communicator.send_message(message)
+
+client = Client()
+
