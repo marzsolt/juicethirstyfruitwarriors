@@ -1,7 +1,11 @@
 import socket
 import threading
+from collections import defaultdict
 import ServerCommunicator
 from utils.domi_utils import id_generator
+import server_message_constants
+import Client.client_message_constants as client_constants
+import BaseMessage
 
 
 class Server(threading.Thread):
@@ -27,12 +31,18 @@ class Server(threading.Thread):
             self.__serverSocket.listen(5)
             self.__id_gen = id_generator()
             self.__serverCommunicatorsList = []
+            self.server_message_dictionary = defaultdict(list)
 
     def receive_message(self, message, ID):
-        print(f"Client {ID} sent:", message)
-        message_split = message.split(";")
-        if message_split[0] == "csoki":
-            self.send_message("koszonom", ID)
+        self.server_message_dictionary[message.target].append(message)
+        if message.type == client_constants.MessageType.CONN:
+            print(message.text)
+
+    def get_targets_messages(self, target):
+        messages = self.client_message_dictionary.get(target) or []
+        if messages is not []:
+            self.server[target] = []
+        return messages
 
     def __get_communicator_from_id(self, ID):
         for communicator in self.__serverCommunicatorsList:
@@ -52,7 +62,9 @@ class Server(threading.Thread):
         newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_new_client, ID=next(self.__id_gen))
         newCom.start()
         self.__serverCommunicatorsList.append(newCom)
-        self.send_message("kakao", newCom.ID)
+        message = BaseMessage.BaseMessage(mess_type=server_message_constants.MessageType.CONN, target=server_message_constants.Target.CLIENT)
+        message.text = "Connected to server"
+        self.send_message(message, newCom.ID)
 
     def __accept_clients(self):
         new_client, addr = self.__serverSocket.accept()
