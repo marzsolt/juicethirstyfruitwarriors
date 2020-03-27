@@ -9,20 +9,20 @@ class Client:
     __instance = None
 
     @staticmethod
-    def get_instance(ip):
+    def get_instance(ip, bucket):
         """ Static access method. """
         if Client.__instance is None:
-            Client.__instance = Client(ip)
+            Client.__instance = Client(ip, bucket)
         return Client.__instance
 
-    def __init__(self, ip):
+    def __init__(self, ip, bucket):
         """ Virtually private constructor. """
         if Client.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
             host = ip
             port = 12145  # Random port number
-            self.__communicator = ClientCommunicator.ClientCommunicator(self, host, port)
+            self.__communicator = ClientCommunicator.ClientCommunicator(self, host, port, bucket)
             self.client_message_dictionary = defaultdict(list)
 
             self.__communicator.start()
@@ -43,6 +43,3 @@ class Client:
 
     def send_message(self, message):
         self.__communicator.send_message(message)
-
-client = Client()
-

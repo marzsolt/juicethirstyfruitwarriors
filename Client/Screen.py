@@ -1,6 +1,8 @@
 import pygame as pg
 import pygameMenu as pgM
 
+import queue
+
 import Client
 
 
@@ -18,7 +20,8 @@ class Screen:
     # connecting menu:
     connectingMenu = None
 
-    serverIP = None
+    Client = None
+    client_bucket = queue.Queue()
 
     def __init__(self, screen_height=0, screen_width=0):
         self.screen = pg.display.set_mode([screen_width, screen_height], pg.FULLSCREEN)
@@ -177,10 +180,26 @@ class Screen:
             self.playMenu.get_widget('playMenu_input_IP').set_value('')
         else:
             self.connectingMenu.add_line('Connecting to ' + val + ', please wait.')
-            self.serverIP = val
+            self.Client = Client.Client.get_instance(val, self.client_bucket)
             self.mainMenu.disable()
             self.screenState = 1
 
     def connecting_menu_bgfun(self):
-        Client.Client.get_instance(self.serverIP)
+
+
+        try:
+            exc = self.client_bucket.get_nowait()
+        except queue.Empty:
+            pass
+        else:
+            exc_type, exc_obj, exc_trace = exc
+
+            # deal with the exception
+            print("Main Thread: ", exc_type, exc_obj, exc_trace)
+
+            self.connectingMenu.add_line('')
+            self.connectingMenu.add_line('Connection error, please try again!')
+
+
+
 
