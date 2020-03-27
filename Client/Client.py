@@ -9,7 +9,7 @@ class Client:
     __instance = None
 
     @staticmethod
-    def get_instance(ip, bucket):
+    def get_instance(ip, bucket):  # TODO ip and bucket shouldn't be required! It would make the usage awful!
         """ Static access method. """
         if Client.__instance is None:
             Client.__instance = Client(ip, bucket)
@@ -20,12 +20,21 @@ class Client:
         if Client.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
-            host = ip
-            port = 12145  # Random port number
-            self.__communicator = ClientCommunicator.ClientCommunicator(self, host, port, bucket)
             self.client_message_dictionary = defaultdict(list)
+            self.__create_communicator(ip, bucket)
 
-            self.__communicator.start()
+    def change_ip(self, ip, bucket):
+        if Client.__instance is None:
+            Client.__instance = Client(ip, bucket)
+        else:
+            self.__create_communicator(ip, bucket)
+
+    def __create_communicator(self, ip, bucket):
+        host = ip
+        port = 12145  # Random port number
+        self.__communicator = ClientCommunicator.ClientCommunicator(self, host, port, bucket)
+
+        self.__communicator.start()
 
     def receive_message(self, message):
         self.client_message_dictionary[message.target].append(message)
