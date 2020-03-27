@@ -20,6 +20,8 @@ class Screen:
     # connecting menu:
     connectingMenu = None
 
+    con_error = False
+
     Client = None
     client_bucket = queue.Queue()
 
@@ -127,8 +129,12 @@ class Screen:
 
         # draw the adequate screen (according to the state)
         if self.screenState == 0:
+            if not self.mainMenu.is_enabled():
+                self.mainMenu.enable()
             self.mainMenu.mainloop(events)
         elif self.screenState == 1:
+            if not self.connectingMenu.is_enabled():
+                self.connectingMenu.enable()
             self.connectingMenu.mainloop(events)
 
         running = True
@@ -186,19 +192,29 @@ class Screen:
 
     def connecting_menu_bgfun(self):
 
-
-        try:
-            exc = self.client_bucket.get_nowait()
-        except queue.Empty:
-            pass
+        if self.con_error:
+            pg.time.wait(2500)
+            self.screenState = 0
+            self.connectingMenu.clear()
+            self.connectingMenu.disable()
+            self.playMenu.get_widget('playMenu_input_IP').set_value('')
+            self.mainMenu.enable()
+            self.con_error = False
         else:
-            exc_type, exc_obj, exc_trace = exc
+            try:
+                exc = self.client_bucket.get_nowait()
+            except queue.Empty:
+                pass
+            else:
+                exc_type, exc_obj, exc_trace = exc
 
-            # deal with the exception
-            print("Main Thread: ", exc_type, exc_obj, exc_trace)
+                # deal with the exception
+                print("Main Thread: ", exc_type, exc_obj, exc_trace)
 
-            self.connectingMenu.add_line('')
-            self.connectingMenu.add_line('Connection error, please try again!')
+                self.connectingMenu.add_line('')
+                self.connectingMenu.add_line('Connection error, please try again!')
+                self.con_error = True
+
 
 
 
