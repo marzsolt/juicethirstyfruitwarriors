@@ -25,11 +25,12 @@ class Screen:
         self.screen = pg.display.set_mode([screen_width, screen_height], pg.FULLSCREEN)
         [self.h, self.w] = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
 
-        # -----------------------------
-        # defining main menu structure
-        # -----------------------------
+        self.init_main_menu_play_menu()
+        self.init_main_menu_about_menu()
+        self.init_main_menu()
+        self.init_connecting_menu()
 
-        # defining main menu
+    def init_main_menu(self): # first needs sub menus to be initialized!
         self.mainMenu = pgM.Menu(
             self.screen,
             self.w,
@@ -43,7 +44,11 @@ class Screen:
             back_box=False
         )
 
-        # defining main menu - play menu
+        self.mainMenu.add_option('Play', self.playMenu)
+        self.mainMenu.add_option('About', self.aboutMenu)
+        self.mainMenu.add_option('Exit', pgM.events.EXIT)
+
+    def init_main_menu_play_menu(self):
         self.playMenu = pgM.TextMenu(
             self.screen,
             self.w,
@@ -73,7 +78,7 @@ class Screen:
         )
         self.playMenu.add_option('Back', pgM.events.BACK)
 
-        # defining main menu -- about menu
+    def init_main_menu_about_menu(self):
         self.aboutMenu = pgM.TextMenu(
             self.screen,
             self.w,
@@ -99,15 +104,7 @@ class Screen:
 
         self.aboutMenu.add_option('Back', pgM.events.BACK)
 
-        # extending mai menu with the newly defined play & about menus
-        self.mainMenu.add_option('Play', self.playMenu)
-        self.mainMenu.add_option('About', self.aboutMenu)
-        self.mainMenu.add_option('Exit', pgM.events.EXIT)
-
-        # -----------------------------
-        # defining connecting menu
-        # -----------------------------
-
+    def init_connecting_menu(self):
         self.connectingMenu = pgM.TextMenu(
             self.screen,
             self.w,
@@ -121,6 +118,7 @@ class Screen:
             back_box=False
         )
 
+    #  More useful functions below!!!
     def update(self, events):
 
         # draw the adequate screen (according to the state)
@@ -200,7 +198,9 @@ class Screen:
                 self.screenState = 0
                 self.playMenu.get_widget('playMenu_input_IP').set_value('')  # TODO: this may be done onreturn
 
-                # acknowledged the connection status, and now set back the flag to None
+                self.init_connecting_menu()  # reinitialize connectingMenu so that it flushes its msgs
+
+                # acknowledged the connection error status, and now set back the flag to None
                 self.Client.connection_alive = None
                 self.is_conn_msg_shown = False
 
