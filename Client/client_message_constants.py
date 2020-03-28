@@ -5,6 +5,7 @@ class MessageType(str, Enum):
     ACK = "acknowledged"  # received the message
     CONN = "connection"  # connection related
     CHANGE_PLAYER_NUMBER = "change player number"
+    START_GAME_MANUALLY = "start game manually"
 
 
 class Target(str, Enum):

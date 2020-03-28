@@ -8,7 +8,7 @@ class Game:
     def __init__(self):
         self.__game_started = False
         self.__AI_number = 3
-        self.__human_player_number = 2
+        self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
 
     def update(self):
@@ -42,3 +42,7 @@ class Game:
             if mess.type == climess.MessageType.CHANGE_PLAYER_NUMBER and mess.from_id == self.__first_player_id:
                 # TODO do not allow less than currently connected if we have time...
                 self.__human_player_number = mess.new_number
+                print("Changed player number, new is: ", mess.new_number)
+            elif mess.type == climess.MessageType.START_GAME_MANUALLY and mess.from_id == self.__first_player_id:
+                print("Received manual game start signal.")
+                self.__start_game()

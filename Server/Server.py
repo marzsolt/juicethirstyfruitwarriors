@@ -62,12 +62,14 @@ class Server(threading.Thread):
 
     def send_all(self, message):
         for communicators in self.__serverCommunicatorsList:
-            communicators.send(message)
+            communicators.send_message(message)
 
     def __new_client(self, _new_client):
         newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_new_client, ID=next(self.__id_gen))
         newCom.start()
         self.__serverCommunicatorsList.append(newCom)
+
+        # sending client id
         message = BaseMessage.BaseMessage(mess_type=server_message_constants.MessageType.YOUR_ID,
                                           target=server_message_constants.Target.CLIENT)
         message.id = newCom.ID

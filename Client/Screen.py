@@ -1,6 +1,10 @@
 import pygame as pg
 import pygameMenu as pgM
+import socket
 import Client
+import client_message_constants as climess
+import server_message_constants as sermess
+import BaseMessage
 
 
 class Screen:
@@ -16,6 +20,7 @@ class Screen:
         self.init_connecting_menu()
 
         self.is_conn_msg_shown = False
+        self.is_first_player = None
 
     def init_main_menu(self): # first needs sub menus to be initialized!
         self.mainMenu = pgM.Menu(
@@ -60,6 +65,7 @@ class Screen:
             title='IP: ',
             textinput_id='playMenu_input_IP',
             maxchar=4 * 3 + 3,
+            default=socket.gethostbyname(socket.gethostname()),
             onchange=self.onchange_play_menu_input_ip,
             onreturn=self.onreturn_play_menu_input_ip
         )
@@ -114,10 +120,11 @@ class Screen:
                 self.mainMenu.enable()
             self.mainMenu.mainloop(events)
         elif self.screenState == 1:
-            print("here!")
             if not self.connectingMenu.is_enabled():
                 self.connectingMenu.enable()
             self.connectingMenu.mainloop(events)
+        elif self.screenState == 3:
+            self.game_screen()
 
         running = True
         for event in events:  # event handling - look at every event in the queue
@@ -175,10 +182,27 @@ class Screen:
     def connecting_menu_bgfun(self):
 
         if self.is_conn_msg_shown:
-            pg.time.wait(2500)
+            if Client.Client.get_instance().connection_alive: # read messages
+                msgs = Client.Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
+                # WARNING: this perhaps flushes the message queue - make sure no one needs for a gentle amount of time
 
-            if Client.Client.get_instance().connection_alive:
-                pass  # TODO: communication with server on awaited player count
+                for msg in msgs:
+                    if self.is_first_player is None and msg.type == sermess.MessageType.FIRST_PLAYER:
+                        print("I am the host.")
+                        self.is_first_player = True
+
+                        self.connectingMenu.add_selector(
+                            title='Player count: ',
+                            values=[('2', 2), ('3', 3), ('4', 4), ('5', 5)],
+                            default=0,
+                            onchange=self.connecting_menu_player_count_selector_onchange
+                        )
+
+                        self.connectingMenu.add_option('Play', self.connecting_menu_start_pressed)
+                    elif msg.type == sermess.MessageType.GAME_STARTED:
+                        print("Game started")
+                        self.connectingMenu.disable()
+                        self.screenState = 3
             else:
                 self.screenState = 0
                 self.playMenu.get_widget('playMenu_input_IP').set_value('')  # TODO: this may be done onreturn
@@ -190,27 +214,30 @@ class Screen:
                 Client.Client.get_instance().connection_alive = None
                 self.is_conn_msg_shown = False
 
+                pg.time.wait(2500)
+
         elif Client.Client.get_instance().connection_alive is not None:
             self.connectingMenu.add_line('')
 
             if Client.Client.get_instance().connection_alive:
-                self.connectingMenu.add_line('Connection set up successfully!')
-
-                # TODO ONLY if ID is 0, then show selector on player count, defaulted at 2
-
-                self.connectingMenu.add_selector(
-                    title='Player count: ',
-                    values=[('2', 2), ('3', 3), ('4', 4), ('5', 5)],
-                    default=1,
-                    onreturn=self.connecting_menu_player_count_selector_onreturn
-                )
-
-                self.connectingMenu.add_option('Exit', pgM.events.EXIT)
+                self.connectingMenu.disable()
+                self.init_connecting_menu()
+                self.connectingMenu.add_line('Successfully connected.')
             else:
                 self.connectingMenu.add_line('Connection error, please try again!')
 
             self.is_conn_msg_shown = True
 
-    def connecting_menu_player_count_selector_onreturn(self, value):
-        print(value)
+    def connecting_menu_player_count_selector_onchange(self, txt_value, value):
+        msg = BaseMessage.BaseMessage(mess_type=climess.MessageType.CHANGE_PLAYER_NUMBER,
+                                          target=climess.Target.GAME)
+        msg.new_number = value
+        Client.Client.get_instance().send_message(msg)
 
+    def connecting_menu_start_pressed(self):
+        msg = BaseMessage.BaseMessage(mess_type=climess.MessageType.START_GAME_MANUALLY,
+                                      target=climess.Target.GAME)
+        Client.Client.get_instance().send_message(msg)
+
+    def game_screen(self):
+        self.screen.fill((0, 0, 0))  # black bg
