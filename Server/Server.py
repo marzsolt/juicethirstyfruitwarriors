@@ -4,7 +4,7 @@ from collections import defaultdict
 import ServerCommunicator
 from utils.domi_utils import id_generator
 import server_message_constants
-import Client.client_message_constants as client_constants
+import client_message_constants as client_constants
 import BaseMessage
 
 
@@ -35,14 +35,15 @@ class Server(threading.Thread):
             self.server_message_dictionary = defaultdict(list)
 
     def receive_message(self, message, ID):
-        self.server_message_dictionary[message.target].append(message)
-        if message.type == client_constants.MessageType.CONN:
-            print(message.text)
+        if message.target == client_constants.Target.SERVER:
+            pass
+        else:
+            self.server_message_dictionary[message.target].append(message)
 
     def get_targets_messages(self, target):
-        messages = self.client_message_dictionary.get(target) or []
+        messages = self.server_message_dictionary.get(target) or []
         if messages is not []:
-            self.server[target] = []
+            self.server_message_dictionary[target] = []
         return messages
 
     def get_client_ids(self):
@@ -66,13 +67,13 @@ class Server(threading.Thread):
         newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_new_client, ID=next(self.__id_gen))
         newCom.start()
         self.__serverCommunicatorsList.append(newCom)
-        message = BaseMessage.BaseMessage(mess_type=server_message_constants.MessageType.CONN, target=server_message_constants.Target.CLIENT)
-        message.text = "Connected to server"
+        message = BaseMessage.BaseMessage(mess_type=server_message_constants.MessageType.YOUR_ID,
+                                          target=server_message_constants.Target.CLIENT)
+        message.id = newCom.ID
         self.send_message(message, newCom.ID)
 
     def __accept_clients(self):
         new_client, addr = self.__serverSocket.accept()
-        print("got connection")
         self.__new_client(new_client)
 
     def run(self):

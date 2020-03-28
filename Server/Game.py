@@ -1,6 +1,6 @@
 from Server import Server
-import client_messages_constants as climess
-import server_messages_constants as sermess
+import client_message_constants as climess
+import server_message_constants as sermess
 from BaseMessage import BaseMessage
 
 

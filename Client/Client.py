@@ -1,7 +1,7 @@
 from collections import defaultdict
 import ClientCommunicator
-import client_message_constants
-import Server.server_message_constants as server_constants
+import client_message_constants as climess
+import server_message_constants as sermess
 import BaseMessage
 
 
@@ -22,6 +22,7 @@ class Client:
         else:
             self.client_message_dictionary = defaultdict(list)
             self.__communicator = None
+            self.id = None
 
             # connection related information
             self.connection_alive = None
@@ -33,12 +34,12 @@ class Client:
         self.__communicator.start()
 
     def receive_message(self, message):
-        self.client_message_dictionary[message.target].append(message)
-        if message.type == server_constants.MessageType.CONN:
-            print("Server sent:", message.text)
-            mess = BaseMessage.BaseMessage(mess_type=client_message_constants.MessageType.CONN, target=client_message_constants.Target.SERVER)
-            mess.text = "Connection is ok"
-            self.send_message(mess)
+        if message.target == sermess.Target.CLIENT:
+            if message.type == sermess.MessageType.YOUR_ID:
+                print("My id is:", message.id)
+                self.id = message.id
+        else:
+            self.client_message_dictionary[message.target].append(message)
 
     def get_targets_messages(self, target):
         messages = self.client_message_dictionary.get(target) or []
