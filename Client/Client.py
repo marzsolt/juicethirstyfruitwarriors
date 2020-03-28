@@ -12,7 +12,7 @@ class Client:
     def get_instance():
         """ Static access method. """
         if Client.__instance is None:
-            Client.__instance = Client()  # since it uses the constructor here, the cons. cannot have any args!
+            Client.__instance = Client()
         return Client.__instance
 
     def __init__(self):
@@ -21,19 +21,15 @@ class Client:
             raise Exception("This class is a singleton!")
         else:
             self.client_message_dictionary = defaultdict(list)
-            # self.__create_communicator(ip, bucket) - no args
+            self.__communicator = None
 
-    def setup_connection(self, ip, bucket):
-        #if Client.__instance is None: # it cannot do this as cons. accepts no args
-            #Client.__instance = Client(ip, bucket)
-        #else:
-        self.__create_communicator(ip, bucket) # thus, useless function as its called exactly once - here
+            # connection related information
+            self.connection_alive = None
 
-    def __create_communicator(self, ip, bucket):
+    def setup_connection(self, ip):
         host = ip
         port = 12145  # Random port number
-        self.__communicator = ClientCommunicator.ClientCommunicator(self, host, port, bucket)
-
+        self.__communicator = ClientCommunicator.ClientCommunicator(self, host, port)
         self.__communicator.start()
 
     def receive_message(self, message):
