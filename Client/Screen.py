@@ -185,8 +185,10 @@ class Screen:
         if not is_okay:
             self.playMenu.get_widget('playMenu_input_IP').set_value('')
         else:
+            self.connectingMenu.full_reset()
             self.connectingMenu.add_line('Connecting to ' + val + ', please wait.')
-            self.Client = Client.Client.get_instance(val, self.client_bucket)
+            self.Client = Client.Client.get_instance()
+            self.Client.setup_connection(val, self.client_bucket)
             self.mainMenu.disable()
             self.screenState = 1
 

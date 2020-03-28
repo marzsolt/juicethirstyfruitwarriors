@@ -9,25 +9,25 @@ class Client:
     __instance = None
 
     @staticmethod
-    def get_instance(ip, bucket):  # TODO ip and bucket shouldn't be required! It would make the usage awful!
+    def get_instance():
         """ Static access method. """
         if Client.__instance is None:
-            Client.__instance = Client(ip, bucket)
+            Client.__instance = Client()  # since it uses the constructor here, the cons. cannot have any args!
         return Client.__instance
 
-    def __init__(self, ip, bucket):
+    def __init__(self):
         """ Virtually private constructor. """
         if Client.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
             self.client_message_dictionary = defaultdict(list)
-            self.__create_communicator(ip, bucket)
+            # self.__create_communicator(ip, bucket) - no args
 
-    def change_ip(self, ip, bucket):
-        if Client.__instance is None:
-            Client.__instance = Client(ip, bucket)
-        else:
-            self.__create_communicator(ip, bucket)
+    def setup_connection(self, ip, bucket):
+        #if Client.__instance is None: # it cannot do this as cons. accepts no args
+            #Client.__instance = Client(ip, bucket)
+        #else:
+        self.__create_communicator(ip, bucket) # thus, useless function as its called exactly once - here
 
     def __create_communicator(self, ip, bucket):
         host = ip
