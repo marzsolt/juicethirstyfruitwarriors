@@ -30,6 +30,11 @@ class Game:
     def __start_game(self):
         print("Game started")
         self.__game_started = True
+        mess = BaseMessage(sermess.MessageType.GAME_STARTED, sermess.Target.SCREEN)
+        Server.get_instance().send_all(mess)
+        # TODO:
+        # Create PlayerLogics -> Players, PlayerManager on client side
+        # Player positions to everyone - players position message generator
 
     def __read_messages(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.GAME)
