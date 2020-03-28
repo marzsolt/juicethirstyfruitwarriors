@@ -1,34 +1,21 @@
 import pygame as pg
 import pygameMenu as pgM
-
 import Client
 
 
 class Screen:
-    screen = None
-    h = None
-    w = None
-    screenState = 0  # 0: main menu structure; 1: connecting menu
-
-    # main menu structure menus:
-    mainMenu = None
-    playMenu = None
-    aboutMenu = None
-
-    # connecting menu:
-    connectingMenu = None
-    is_conn_msg_shown = False
-
-    Client = None
-
     def __init__(self, screen_height=0, screen_width=0):
         self.screen = pg.display.set_mode([screen_width, screen_height], pg.FULLSCREEN)
         [self.h, self.w] = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
+
+        self.screenState = 0  # 0: main menu structure; 1: connecting menu
 
         self.init_main_menu_play_menu()
         self.init_main_menu_about_menu()
         self.init_main_menu()
         self.init_connecting_menu()
+
+        self.is_conn_msg_shown = False
 
     def init_main_menu(self): # first needs sub menus to be initialized!
         self.mainMenu = pgM.Menu(
@@ -127,6 +114,7 @@ class Screen:
                 self.mainMenu.enable()
             self.mainMenu.mainloop(events)
         elif self.screenState == 1:
+            print("here!")
             if not self.connectingMenu.is_enabled():
                 self.connectingMenu.enable()
             self.connectingMenu.mainloop(events)
@@ -148,7 +136,7 @@ class Screen:
         return running
 
     def main_bgfun(self):
-        self.screen.fill((255, 128, 0))  # some sort of orange for background
+        self.screen.fill((0, 0, 0))  # black bg
 
     def onchange_play_menu_input_ip(self, val):  # check onchange of playMenu IP input field
         inp_widget = self.playMenu.get_widget('playMenu_input_IP')
@@ -179,10 +167,8 @@ class Screen:
         if not is_okay:
             self.playMenu.get_widget('playMenu_input_IP').set_value('')
         else:
-            self.connectingMenu.full_reset()
             self.connectingMenu.add_line('Connecting to ' + val + ', please wait.')
-            self.Client = Client.Client.get_instance()
-            self.Client.setup_connection(val)
+            Client.Client.get_instance().setup_connection(val)
             self.mainMenu.disable()
             self.screenState = 1
 
@@ -190,32 +176,41 @@ class Screen:
 
         if self.is_conn_msg_shown:
             pg.time.wait(2500)
-            self.connectingMenu.disable()
 
-            if self.Client.connection_alive:
+            if Client.Client.get_instance().connection_alive:
                 pass  # TODO: communication with server on awaited player count
             else:
                 self.screenState = 0
                 self.playMenu.get_widget('playMenu_input_IP').set_value('')  # TODO: this may be done onreturn
 
+                self.connectingMenu.disable()
                 self.init_connecting_menu()  # reinitialize connectingMenu so that it flushes its msgs
 
                 # acknowledged the connection error status, and now set back the flag to None
-                self.Client.connection_alive = None
+                Client.Client.get_instance().connection_alive = None
                 self.is_conn_msg_shown = False
 
-        elif self.Client.connection_alive is not None:
+        elif Client.Client.get_instance().connection_alive is not None:
             self.connectingMenu.add_line('')
 
-            if self.Client.connection_alive:
+            if Client.Client.get_instance().connection_alive:
                 self.connectingMenu.add_line('Connection set up successfully!')
+
+                # TODO ONLY if ID is 0, then show selector on player count, defaulted at 2
+
+                self.connectingMenu.add_selector(
+                    title='Player count: ',
+                    values=[('2', 2), ('3', 3), ('4', 4), ('5', 5)],
+                    default=1,
+                    onreturn=self.connecting_menu_player_count_selector_onreturn
+                )
+
+                self.connectingMenu.add_option('Exit', pgM.events.EXIT)
             else:
                 self.connectingMenu.add_line('Connection error, please try again!')
 
             self.is_conn_msg_shown = True
 
-
-
-
-
+    def connecting_menu_player_count_selector_onreturn(self, value):
+        print(value)
 
