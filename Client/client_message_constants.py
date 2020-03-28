@@ -4,6 +4,7 @@ from enum import Enum
 class MessageType(str, Enum):
     ACK = "acknowledged"  # received the message
     CONN = "connection"  # connection related
+    CHANGE_PLAYER_NUMBER = "change player number"
 
 
 class Target(str, Enum):

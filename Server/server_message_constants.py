@@ -4,7 +4,9 @@ from enum import Enum
 class MessageType(str, Enum):
     ACK = "acknowledged"
     CONN = "connection"
-    ID = "ID"
+    YOUR_ID = "your ID is..."
+    FIRST_PLAYER = "you are the host"
+    GAME_STARTED = "gl hf"
 
 
 class Target(str, Enum):

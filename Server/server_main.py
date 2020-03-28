@@ -10,13 +10,13 @@ def main():
         game.update()
 
     # Networking
-    server = Server()
+    server = Server.get_instance()
     server.start()
 
     # Game
     game = Game()
 
-    # Regular update "loop"
+    # Setup regular update "loop"
     s = sched.scheduler(time.time, time.sleep)
     s.enter(0.25, 1, update, ())
     s.run()
