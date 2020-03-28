@@ -5,6 +5,7 @@ class MessageType(str, Enum):
     ACK = "acknowledged"
     CONN = "connection"
     ID = "ID"
+    FIRST_PLAYER = "you are the host"
 
 
 class Target(str, Enum):

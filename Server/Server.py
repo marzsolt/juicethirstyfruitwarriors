@@ -45,6 +45,9 @@ class Server(threading.Thread):
             self.server[target] = []
         return messages
 
+    def get_client_ids(self):
+        return [com.ID for com in self.__serverCommunicatorsList]
+
     def __get_communicator_from_id(self, ID):
         for communicator in self.__serverCommunicatorsList:
             if communicator.ID == ID:
@@ -75,7 +78,3 @@ class Server(threading.Thread):
     def run(self):
         while True:
             self.__accept_clients()
-
-
-# Server()
-# Server.get_instance().start()
