@@ -1,8 +1,6 @@
 import pygame as pg
 import pygameMenu as pgM
 
-import queue
-
 import Client
 
 
@@ -19,11 +17,9 @@ class Screen:
 
     # connecting menu:
     connectingMenu = None
-
-    con_error = False
+    is_conn_msg_shown = False
 
     Client = None
-    client_bucket = queue.Queue()
 
     def __init__(self, screen_height=0, screen_width=0):
         self.screen = pg.display.set_mode([screen_width, screen_height], pg.FULLSCREEN)
@@ -188,34 +184,36 @@ class Screen:
             self.connectingMenu.full_reset()
             self.connectingMenu.add_line('Connecting to ' + val + ', please wait.')
             self.Client = Client.Client.get_instance()
-            self.Client.setup_connection(val, self.client_bucket)
+            self.Client.setup_connection(val)
             self.mainMenu.disable()
             self.screenState = 1
 
     def connecting_menu_bgfun(self):
 
-        if self.con_error:
+        if self.is_conn_msg_shown:
             pg.time.wait(2500)
-            self.screenState = 0
-            self.connectingMenu.clear()
             self.connectingMenu.disable()
-            self.playMenu.get_widget('playMenu_input_IP').set_value('')
-            self.mainMenu.enable()
-            self.con_error = False
-        else:
-            try:
-                exc = self.client_bucket.get_nowait()
-            except queue.Empty:
-                pass
+
+            if self.Client.connection_alive:
+                pass  # TODO: communication with server on awaited player count
             else:
-                exc_type, exc_obj, exc_trace = exc
+                self.screenState = 0
+                self.playMenu.get_widget('playMenu_input_IP').set_value('')  # TODO: this may be done onreturn
 
-                # deal with the exception
-                print("Main Thread: ", exc_type, exc_obj, exc_trace)
+                # acknowledged the connection status, and now set back the flag to None
+                self.Client.connection_alive = None
+                self.is_conn_msg_shown = False
 
-                self.connectingMenu.add_line('')
+        elif self.Client.connection_alive is not None:
+            self.connectingMenu.add_line('')
+
+            if self.Client.connection_alive:
+                self.connectingMenu.add_line('Connection set up successfully!')
+            else:
                 self.connectingMenu.add_line('Connection error, please try again!')
-                self.con_error = True
+
+            self.is_conn_msg_shown = True
+
 
 
 
