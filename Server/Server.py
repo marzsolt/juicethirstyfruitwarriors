@@ -38,6 +38,7 @@ class Server(threading.Thread):
         if message.target == client_constants.Target.SERVER:
             pass
         else:
+            message.from_id = ID
             self.server_message_dictionary[message.target].append(message)
 
     def get_targets_messages(self, target):

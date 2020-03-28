@@ -39,6 +39,6 @@ class Game:
     def __read_messages(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.GAME)
         for mess in messages:
-            if mess.type == climess.MessageType.CHANGE_PLAYER_NUMBER:
-                # TODO do not allow less than currently connected
+            if mess.type == climess.MessageType.CHANGE_PLAYER_NUMBER and mess.from_id == self.__first_player_id:
+                # TODO do not allow less than currently connected if we have time...
                 self.__human_player_number = mess.new_number
