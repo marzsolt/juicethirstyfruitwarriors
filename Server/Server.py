@@ -77,5 +77,5 @@ class Server(threading.Thread):
             self.__accept_clients()
 
 
-Server()
-Server.get_instance().start()
+# Server()
+# Server.get_instance().start()
