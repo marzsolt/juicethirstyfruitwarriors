@@ -1,5 +1,4 @@
 import pygame as pg
-import PlayerLogic
 from BaseMessage import BaseMessage
 from Client import Client
 import server_message_constants as sermess
@@ -37,8 +36,7 @@ class Player(pg.sprite.Sprite):
 
     def pos_update(self):
         # TODO shall be (called from)/in update, messages loaded from networking by id
-        messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER)
+        messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER+str(self._id))
         for mess in messages:
-            if mess.player_id == self._id:
-                if mess.type == sermess.MessageType.PLAYER_POS:
-                    self.rect.center = (mess.x, mess.y)  # setting Sprite's center
+            if mess.type == sermess.MessageType.PLAYER_POS:
+                self.rect.center = (mess.x, mess.y)  # setting Sprite's center

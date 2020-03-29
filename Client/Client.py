@@ -2,7 +2,6 @@ from collections import defaultdict
 import ClientCommunicator
 import client_message_constants as climess
 import server_message_constants as sermess
-import BaseMessage
 
 
 class Client:
@@ -38,6 +37,8 @@ class Client:
             if message.type == sermess.MessageType.YOUR_ID:
                 print("My id is:", message.id)
                 self.id = message.id
+        elif message.target == sermess.Target.PLAYER:
+            self.client_message_dictionary[message.target+str(message.player_id)].append(message)
         else:
             self.client_message_dictionary[message.target].append(message)
 

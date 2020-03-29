@@ -35,19 +35,10 @@ class PlayerLogic:
         Server.get_instance().send_all(msg)
 
     def update(self):  # pressed_keys, events?
-        messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC)
+        messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC+str(self._id))
         position_messages = []
         for message in messages:
-            if message.player_id == self._id:
-                if message.type == climess.MessageType.PLAYER_POS:
-                    position_messages.append(message)
+            if message.type == climess.MessageType.PLAYER_POS:
+                position_messages.append(message)
 
         self.process_requests(position_messages)
-
-
-
-# FOR testing
-# test_player = PlayerLogic(0)
-# test_player2 = PlayerLogic(1)
-# test_player3 = PlayerLogic(2)
-# players = [test_player, test_player2, test_player3]
