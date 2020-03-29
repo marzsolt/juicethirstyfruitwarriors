@@ -5,10 +5,12 @@ import Client
 import client_message_constants as climess
 import server_message_constants as sermess
 import BaseMessage
+from Player import Player
 
 
 class Screen:
     def __init__(self, screen_height=0, screen_width=0):
+        self.players = []
         self.screen = pg.display.set_mode([screen_width, screen_height], pg.FULLSCREEN)
         [self.h, self.w] = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
 
@@ -124,7 +126,7 @@ class Screen:
                 self.connectingMenu.enable()
             self.connectingMenu.mainloop(events)
         elif self.screenState == 3:
-            self.game_screen()
+            self.game_screen(events)
 
         running = True
         for event in events:  # event handling - look at every event in the queue
@@ -203,6 +205,8 @@ class Screen:
                         print("Game started")
                         self.connectingMenu.disable()
                         self.screenState = 3
+                        for id in msg.id_list:
+                            self.players.append(Player(player_id=id))
             else:
                 self.screenState = 0
                 self.playMenu.get_widget('playMenu_input_IP').set_value('')  # TODO: this may be done onreturn
@@ -239,5 +243,12 @@ class Screen:
                                       target=climess.Target.GAME)
         Client.Client.get_instance().send_message(msg)
 
-    def game_screen(self):
+    def game_screen(self, events):
         self.screen.fill((0, 0, 0))  # black bg
+        for player in self.players:
+            if player._id == Client.Client.get_instance().id:
+                player_events = events
+            else:
+                player_events = []
+            player.update(player_events)
+            self.screen.blit(player.surf, player.rect)

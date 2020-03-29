@@ -1,4 +1,6 @@
 import socket
+import pygame as pg
+
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

@@ -1,3 +1,9 @@
+from Server import Server
+import server_message_constants as sermess
+import client_message_constants as climess
+from BaseMessage import BaseMessage
+
+
 class PlayerLogic:
     X_MIN = 0
     X_MAX = 800  # TODO use screen sizes
@@ -10,26 +16,38 @@ class PlayerLogic:
         self._x = 100+player_id*100  # for testing
         self._y = 100+player_id*100
 
-    def process_requests(self, network_messages, player):
-        # TODO load messages from Network by id
-        for mess in network_messages:
-            if mess == "LEFT":
-                self._x = self._x - self._speed
-            elif mess == "RIGHT":
-                self._x = self._x + self._speed
+    def process_requests(self, network_messages):
+        for m in network_messages:
+            for mess in m.list:
+                if mess == "LEFT":
+                    self._x = self._x - self._speed
+                elif mess == "RIGHT":
+                    self._x = self._x + self._speed
 
-        # keep the player in screen
-        self._x = min(max(self._x, self.X_MIN), self.X_MAX)
-        self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
+            # keep the player in screen
+            self._x = min(max(self._x, self.X_MIN), self.X_MAX)
+            self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
 
-        player.pos_update(self._x, self._y)  # TODO again it's a network imitation here...
+        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POS, target=sermess.Target.PLAYER)
+        msg.player_id = self._id
+        msg.x = self._x
+        msg.y = self._y
+        Server.get_instance().send_all(msg)
 
-    def update(self, pressed_keys, events):
-        pass  # TODO load messages, and call process_requests...
+    def update(self):  # pressed_keys, events?
+        messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC)
+        position_messages = []
+        for message in messages:
+            if message.player_id == self._id:
+                if message.type == climess.MessageType.PLAYER_POS:
+                    position_messages.append(message)
+
+        self.process_requests(position_messages)
+
 
 
 # FOR testing
-test_player = PlayerLogic(0)
-test_player2 = PlayerLogic(1)
-test_player3 = PlayerLogic(2)
-players = [test_player, test_player2, test_player3]
+# test_player = PlayerLogic(0)
+# test_player2 = PlayerLogic(1)
+# test_player3 = PlayerLogic(2)
+# players = [test_player, test_player2, test_player3]

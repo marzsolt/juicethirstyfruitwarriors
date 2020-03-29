@@ -2,6 +2,7 @@ from Server import Server
 import client_message_constants as climess
 import server_message_constants as sermess
 from BaseMessage import BaseMessage
+from PlayerLogic import PlayerLogic
 
 
 class Game:
@@ -10,13 +11,15 @@ class Game:
         self.__AI_number = 3
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
+        self.__player_logics = []
 
     def update(self):
         self.__read_messages()
         if not self.__game_started:
             self.__collect_players()
         else:
-            pass
+            for pl in self.__player_logics:
+                pl.update()
 
     def __collect_players(self):
         connected_players = Server.get_instance().get_client_ids()
@@ -31,7 +34,10 @@ class Game:
         print("Game started")
         self.__game_started = True
         mess = BaseMessage(sermess.MessageType.GAME_STARTED, sermess.Target.SCREEN)
+        mess.id_list = Server.get_instance().get_client_ids()
         Server.get_instance().send_all(mess)
+        for player_id in Server.get_instance().get_client_ids():
+            self.__player_logics.append(PlayerLogic(player_id))
         # TODO:
         # Create PlayerLogics -> Players, PlayerManager on client side
         # Player positions to everyone - players position message generator
