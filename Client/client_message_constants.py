@@ -14,3 +14,8 @@ class Target(str, Enum):
     GAME = "game"  # the Game-related stuff on the server side
     SERVER = "server"  # e.g. for network connection setup, closure
     PLAYER_LOGIC = "playerlogic"
+
+
+class ActionRequest(str, Enum):
+    MOVE_LEFT = "move left"
+    MOVE_RIGHT = "move right"

@@ -67,6 +67,9 @@ class Server(threading.Thread):
         for communicators in self.__serverCommunicatorsList:
             communicators.send_message(message)
 
+    def get_new_id(self):
+        return next(self.__id_gen)
+
     def __new_client(self, _new_client):
         newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_new_client, ID=next(self.__id_gen))
         newCom.start()

@@ -6,6 +6,7 @@ import client_message_constants as climess
 import server_message_constants as sermess
 import BaseMessage
 from Player import Player
+from PlayerAI import PlayerAI
 
 
 class Screen:
@@ -205,8 +206,10 @@ class Screen:
                         print("Game started")
                         self.connectingMenu.disable()
                         self.screenState = 3
-                        for id in msg.id_list:
-                            self.players.append(Player(player_id=id))
+                        for _id in msg.human_ids:
+                            self.players.append(Player(player_id=_id))
+                        for _id in msg.ai_ids:
+                            self.players.append(PlayerAI(player_id=_id))
             else:
                 self.screenState = 0
                 self.playMenu.get_widget('playMenu_input_IP').set_value('')  # TODO: this may be done onreturn

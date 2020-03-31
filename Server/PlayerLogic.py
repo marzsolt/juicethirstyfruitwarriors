@@ -16,18 +16,27 @@ class PlayerLogic:
         self._x = 100+player_id*100  # for testing
         self._y = 100+player_id*100
 
-    def process_requests(self, network_messages):
+    def _process_requests(self, network_messages):
         for m in network_messages:
             for mess in m.list:
                 if mess == "LEFT":
-                    self._x = self._x - self._speed
+                    self._move_left()
                 elif mess == "RIGHT":
-                    self._x = self._x + self._speed
+                    self._move_right()
 
-            # keep the player in screen
-            self._x = min(max(self._x, self.X_MIN), self.X_MAX)
-            self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
+    def _move_left(self):
+        self._x = self._x - self._speed
 
+        self._x = min(max(self._x, self.X_MIN), self.X_MAX)
+        self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
+
+    def _move_right(self):
+        self._x = self._x + self._speed
+
+        self._x = min(max(self._x, self.X_MIN), self.X_MAX)
+        self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
+
+    def _send_updated_pos(self):
         msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POS, target=sermess.Target.PLAYER)
         msg.player_id = self._id
         msg.x = self._x
@@ -41,4 +50,8 @@ class PlayerLogic:
             if message.type == climess.MessageType.PLAYER_POS:
                 position_messages.append(message)
 
-        self.process_requests(position_messages)
+        self._process_requests(position_messages)
+        self._send_updated_pos()
+
+    def get_id(self):
+        return self._id

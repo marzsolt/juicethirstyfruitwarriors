@@ -13,7 +13,7 @@ class Player(pg.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self._id = player_id
 
-    def update(self, events):  #pressed_keys
+    def update(self, events):  # pressed_keys
         network_messages = []
         for event in events:
             if event.type == pg.KEYDOWN:
