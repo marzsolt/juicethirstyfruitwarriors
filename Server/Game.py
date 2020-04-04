@@ -35,7 +35,6 @@ class Game:
         mess = BaseMessage(sermess.MessageType.TERRAIN, sermess.Target.SCREEN)
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
-        #mess.terrain_slopes = self.__terrain.get_terrain_slopes()
         Server.get_instance().send_all(mess)
 
         # TODO:
