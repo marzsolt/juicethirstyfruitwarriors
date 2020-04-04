@@ -39,10 +39,10 @@ class Server(threading.Thread):
             pass
         else:
             message.from_id = ID
-            if message.target == client_constants.Target.PLAYER_LOGIC:
-                self.server_message_dictionary[message.target+str(message.player_id)].append(message)
-            else:
-                self.server_message_dictionary[message.target].append(message)
+            # if message.target == client_constants.Target.PLAYER_LOGIC:
+            #    self.server_message_dictionary[message.target+str(message.player_id)].append(message)
+            # else:
+            self.server_message_dictionary[message.target].append(message)
 
     def get_targets_messages(self, target):
         messages = self.server_message_dictionary.get(target) or []

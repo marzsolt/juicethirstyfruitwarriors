@@ -6,7 +6,7 @@ class MessageType(str, Enum):
     CONN = "connection"  # connection related
     CHANGE_PLAYER_NUMBER = "change player number"
     START_GAME_MANUALLY = "start game manually"
-    PLAYER_POS = "position of players"
+    PLAYER_MOVEMENT = "movement of players"
 
 
 class Target(str, Enum):

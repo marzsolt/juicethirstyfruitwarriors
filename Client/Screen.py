@@ -7,6 +7,7 @@ import server_message_constants as sermess
 import BaseMessage
 from Player import Player
 from PlayerAI import PlayerAI
+from PlayerManager import PlayerManager
 
 
 class Screen:
@@ -115,7 +116,7 @@ class Screen:
         )
 
     #  More useful functions below!!!
-    def update(self, events):
+    def update(self, events, pressed_keys):
 
         # draw the adequate screen (according to the state)
         if self.screenState == 0:
@@ -127,7 +128,7 @@ class Screen:
                 self.connectingMenu.enable()
             self.connectingMenu.mainloop(events)
         elif self.screenState == 3:
-            self.game_screen(events)
+            self.game_screen(events, pressed_keys)
 
         running = True
         for event in events:  # event handling - look at every event in the queue
@@ -206,10 +207,11 @@ class Screen:
                         print("Game started")
                         self.connectingMenu.disable()
                         self.screenState = 3
-                        for _id in msg.human_ids:
-                            self.players.append(Player(player_id=_id))
-                        for _id in msg.ai_ids:
-                            self.players.append(PlayerAI(player_id=_id))
+                        PlayerManager.get_instance().create_player(msg.human_ids, msg.ai_ids)
+#                        for _id in msg.human_ids:
+#                            self.players.append(Player(player_id=_id))
+#                        for _id in msg.ai_ids:
+#                            self.players.append(PlayerAI(player_id=_id))
             else:
                 self.screenState = 0
                 self.playMenu.get_widget('playMenu_input_IP').set_value('')  # TODO: this may be done onreturn
@@ -246,12 +248,16 @@ class Screen:
                                       target=climess.Target.GAME)
         Client.Client.get_instance().send_message(msg)
 
-    def game_screen(self, events):
+    def game_screen(self, events, pressed_keys):
         self.screen.fill((0, 0, 0))  # black bg
-        for player in self.players:
-            if player._id == Client.Client.get_instance().id:
-                player_events = events
-            else:
-                player_events = []
-            player.update(player_events)
-            self.screen.blit(player.surf, player.rect)
+#        for player in self.players:
+#            if player._id == Client.Client.get_instance().id:
+#                player_events = events
+#                player_keys = pressed_keys
+#            else:
+#                player_events = []
+#                player_keys = []
+#            player.update(player_events, player_keys)
+#            self.screen.blit(player.surf, player.rect)
+        PlayerManager.get_instance().update(events, pressed_keys, Client.Client.get_instance().id)
+        PlayerManager.get_instance().draw_players(screen=self.screen)

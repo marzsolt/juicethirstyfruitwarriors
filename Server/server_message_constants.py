@@ -7,7 +7,7 @@ class MessageType(str, Enum):
     YOUR_ID = "your ID is..."
     FIRST_PLAYER = "you are the host"
     GAME_STARTED = "gl hf"
-    PLAYER_POS = "position of players"
+    PLAYER_MOVEMENT = "movement of players"
 
 
 class Target(str, Enum):

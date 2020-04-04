@@ -19,9 +19,9 @@ class PlayerLogic:
     def _process_requests(self, network_messages):
         for m in network_messages:
             for mess in m.list:
-                if mess == "LEFT":
+                if mess == climess.ActionRequest.MOVE_LEFT:
                     self._move_left()
-                elif mess == "RIGHT":
+                elif mess == climess.ActionRequest.MOVE_RIGHT:
                     self._move_right()
 
     def _move_left(self):
@@ -37,7 +37,7 @@ class PlayerLogic:
         self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
 
     def _send_updated_pos(self):
-        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POS, target=sermess.Target.PLAYER)
+        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_MOVEMENT, target=sermess.Target.PLAYER + str(self._id))
         msg.player_id = self._id
         msg.x = self._x
         msg.y = self._y
@@ -45,10 +45,12 @@ class PlayerLogic:
 
     def update(self):  # pressed_keys, events?
         messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC+str(self._id))
-        position_messages = []
-        for message in messages:
-            if message.type == climess.MessageType.PLAYER_POS:
-                position_messages.append(message)
+        position_messages = list(filter(lambda x: x.type == climess.MessageType.PLAYER_MOVEMENT, messages))
+        #result = filter(lambda x: x % 2, seq)
+#       print(list(result))
+        #for message in messages:
+        #    if message.type == climess.MessageType.PLAYER_MOVEMENT:
+        #        position_messages.append(message)
 
         self._process_requests(position_messages)
         self._send_updated_pos()
