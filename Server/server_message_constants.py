@@ -6,7 +6,7 @@ class MessageType(str, Enum):
     CONN = "connection"
     YOUR_ID = "your ID is..."
     FIRST_PLAYER = "you are the host"
-    GAME_STARTED = "gl hf"
+    TERRAIN = "game start & terrain"
 
 
 class Target(str, Enum):

@@ -2,6 +2,7 @@ from Server import Server
 import client_message_constants as climess
 import server_message_constants as sermess
 from BaseMessage import BaseMessage
+import Terrain
 
 
 class Game:
@@ -10,6 +11,7 @@ class Game:
         self.__AI_number = 3
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
+        self.__terrain = Terrain.Terrain()
 
     def update(self):
         self.__read_messages()
@@ -28,10 +30,15 @@ class Game:
             self.__start_game()
 
     def __start_game(self):
-        print("Game started")
+        print("Game started, terrain sent to everyone")
         self.__game_started = True
-        mess = BaseMessage(sermess.MessageType.GAME_STARTED, sermess.Target.SCREEN)
+        mess = BaseMessage(sermess.MessageType.TERRAIN, sermess.Target.SCREEN)
+        prev = 0
+        for i in range(30, len(self.__terrain.get_terrain_levels()), 30):
+            setattr(mess, str(int(i/30)-1), self.__terrain.get_terrain_levels()[prev:i])
+            prev = i
         Server.get_instance().send_all(mess)
+
         # TODO:
         # Create PlayerLogics -> Players, PlayerManager on client side
         # Player positions to everyone - players position message generator

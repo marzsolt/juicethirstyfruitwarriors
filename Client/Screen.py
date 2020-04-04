@@ -8,8 +8,8 @@ import BaseMessage
 
 
 class Screen:
-    def __init__(self, screen_height=0, screen_width=0):
-        self.screen = pg.display.set_mode([screen_width, screen_height], pg.FULLSCREEN)
+    def __init__(self, screen_height=600, screen_width=800):
+        self.screen = pg.display.set_mode([screen_width, screen_height])
         [self.h, self.w] = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
 
         self.screenState = 0  # 0: main menu structure; 1: connecting menu
@@ -199,8 +199,9 @@ class Screen:
                         )
 
                         self.connectingMenu.add_option('Play', self.connecting_menu_start_pressed)
-                    elif msg.type == sermess.MessageType.GAME_STARTED:
-                        print("Game started")
+                    elif msg.type == sermess.MessageType.TERRAIN:
+                        print("Game started, terrain loaded")
+                        self.terrain_levels = msg.terrain_levels
                         self.connectingMenu.disable()
                         self.screenState = 3
             else:
@@ -239,5 +240,10 @@ class Screen:
                                       target=climess.Target.GAME)
         Client.Client.get_instance().send_message(msg)
 
-    def game_screen(self):
+    def _draw_background_and_terrain(self):
         self.screen.fill((0, 0, 0))  # black bg
+        for i in range(len(self.terrain_levels)):
+            pg.draw.line(self.screen, (255, 255, 255), (i, self.terrain_levels[i]), (0, 0))
+
+    def game_screen(self):
+        self._draw_background_and_terrain()
