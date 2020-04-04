@@ -31,7 +31,6 @@ class ClientCommunicator(threading.Thread):
         while True:
             message = self.client_socket.recv(1024)
             message = message.decode()
-            print(message)
             deserialized = json.loads(message)
             deserialized = dict_to_object(deserialized)
             self.client.receive_message(deserialized)

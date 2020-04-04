@@ -23,23 +23,20 @@ class Player(pg.sprite.Sprite):
                 if event.key == pg.K_RIGHT:
                     print("RIGHT PRESSED")
                     network_messages.append(climess.ActionRequest.MOVE_RIGHT)
-        if pressed_keys is not []:
-            #pass
-            print("pressed_key: ", pressed_keys)
+        if pressed_keys:
             if pressed_keys[pg.K_LEFT]:
-                pass
-#                network_messages.append(climess.ActionRequest.MOVE_LEFT)
- #           if pressed_keys[pg.K_RIGHT]:
-  #              network_messages.append(climess.ActionRequest.MOVE_RIGHT)
-        mes = BaseMessage(climess.MessageType.PLAYER_MOVEMENT, climess.Target.PLAYER_LOGIC + str(self._id))
-        mes.list = network_messages
-        mes.player_id = self._id
-        Client.get_instance().send_message(mes)
+                network_messages.append(climess.ActionRequest.MOVE_LEFT)
+            if pressed_keys[pg.K_RIGHT]:
+                network_messages.append(climess.ActionRequest.MOVE_RIGHT)
+        if network_messages:
+            mes = BaseMessage(climess.MessageType.PLAYER_MOVEMENT, climess.Target.PLAYER_LOGIC + str(self._id))
+            mes.movement_list = network_messages
+            mes.player_id = self._id
+            Client.get_instance().send_message(mes)
 
         self.pos_update()
 
     def pos_update(self):
-        # TODO shall be (called from)/in update, messages loaded from networking by id
         messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER+str(self._id))
         for mess in messages:
             if mess.type == sermess.MessageType.PLAYER_MOVEMENT:

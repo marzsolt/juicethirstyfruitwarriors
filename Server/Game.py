@@ -12,7 +12,7 @@ class Game:
     def __init__(self):
         self.__game_started = False
         self.__chose_host = False
-        self.__AI_number = 0 # TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        self.__AI_number = 2
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__player_logics = []
 
@@ -52,10 +52,6 @@ class Game:
         mess.human_ids = human_ids
         mess.ai_ids = ai_ids
         Server.get_instance().send_all(mess)
-
-        # TODO:
-        # Create PlayerLogics -> Players, PlayerManager on client side
-        # Player positions to everyone - players position message generator
 
     def __read_messages(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.GAME)

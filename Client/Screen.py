@@ -208,10 +208,7 @@ class Screen:
                         self.connectingMenu.disable()
                         self.screenState = 3
                         PlayerManager.get_instance().create_player(msg.human_ids, msg.ai_ids)
-#                        for _id in msg.human_ids:
-#                            self.players.append(Player(player_id=_id))
-#                        for _id in msg.ai_ids:
-#                            self.players.append(PlayerAI(player_id=_id))
+
             else:
                 self.screenState = 0
                 self.playMenu.get_widget('playMenu_input_IP').set_value('')  # TODO: this may be done onreturn
@@ -250,14 +247,6 @@ class Screen:
 
     def game_screen(self, events, pressed_keys):
         self.screen.fill((0, 0, 0))  # black bg
-#        for player in self.players:
-#            if player._id == Client.Client.get_instance().id:
-#                player_events = events
-#                player_keys = pressed_keys
-#            else:
-#                player_events = []
-#                player_keys = []
-#            player.update(player_events, player_keys)
-#            self.screen.blit(player.surf, player.rect)
+
         PlayerManager.get_instance().update(events, pressed_keys, Client.Client.get_instance().id)
         PlayerManager.get_instance().draw_players(screen=self.screen)
