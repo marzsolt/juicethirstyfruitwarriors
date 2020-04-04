@@ -201,7 +201,9 @@ class Screen:
                         self.connectingMenu.add_option('Play', self.connecting_menu_start_pressed)
                     elif msg.type == sermess.MessageType.TERRAIN:
                         print("Game started, terrain loaded")
-                        self.terrain_levels = msg.terrain_levels
+                        self.terrain_points = msg.terrain_points
+                        self.terrain_points_levels = msg.terrain_points_levels
+                        #self.terrain_slopes = msg.terrain_slopes
                         self.connectingMenu.disable()
                         self.screenState = 3
             else:
@@ -242,8 +244,13 @@ class Screen:
 
     def _draw_background_and_terrain(self):
         self.screen.fill((0, 0, 0))  # black bg
-        for i in range(len(self.terrain_levels)):
-            pg.draw.line(self.screen, (255, 255, 255), (i, self.terrain_levels[i]), (0, 0))
+        for i in range(1, len(self.terrain_points)):
+            pg.draw.line(
+                self.screen,
+                (255, 255, 255),
+                (self.terrain_points[i - 1], self.h - self.terrain_points_levels[i - 1]),
+                (self.terrain_points[i], self.h - self.terrain_points_levels[i])
+            )
 
     def game_screen(self):
         self._draw_background_and_terrain()

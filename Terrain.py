@@ -6,7 +6,8 @@ import bresenham as br
 class Terrain:
     def __init__(self):
         self.screen_width = 800  # let screen width 800 pixels
-        self.base_level = 200
+        self.screen_height = 600
+        self.base_level = 120
 
         self.min_level = 50
         self.max_abs_slope = 15
@@ -72,3 +73,9 @@ class Terrain:
 
     def get_terrain_levels(self):
         return self.levels
+
+    def get_terrain_points(self):
+        return self.points
+
+    def get_terrain_slopes(self):
+        return self.slopes

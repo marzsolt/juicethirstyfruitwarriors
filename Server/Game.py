@@ -33,10 +33,9 @@ class Game:
         print("Game started, terrain sent to everyone")
         self.__game_started = True
         mess = BaseMessage(sermess.MessageType.TERRAIN, sermess.Target.SCREEN)
-        prev = 0
-        for i in range(30, len(self.__terrain.get_terrain_levels()), 30):
-            setattr(mess, str(int(i/30)-1), self.__terrain.get_terrain_levels()[prev:i])
-            prev = i
+        mess.terrain_points = self.__terrain.get_terrain_points()
+        mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
+        #mess.terrain_slopes = self.__terrain.get_terrain_slopes()
         Server.get_instance().send_all(mess)
 
         # TODO:
