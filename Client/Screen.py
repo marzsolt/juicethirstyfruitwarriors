@@ -12,7 +12,6 @@ from PlayerManager import PlayerManager
 
 class Screen:
     def __init__(self, screen_height=0, screen_width=0):
-        self.players = []
         self.screen = pg.display.set_mode([screen_width, screen_height], pg.FULLSCREEN)
         [self.h, self.w] = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
 
@@ -128,7 +127,7 @@ class Screen:
                 self.connectingMenu.enable()
             self.connectingMenu.mainloop(events)
         elif self.screenState == 3:
-            self.game_screen(events, pressed_keys)
+            self.game_screen(pressed_keys)
 
         running = True
         for event in events:  # event handling - look at every event in the queue
@@ -207,7 +206,7 @@ class Screen:
                         print("Game started")
                         self.connectingMenu.disable()
                         self.screenState = 3
-                        PlayerManager.get_instance().create_player(msg.human_ids, msg.ai_ids)
+                        PlayerManager.get_instance().create_players(msg.human_ids, msg.ai_ids)
 
             else:
                 self.screenState = 0
@@ -245,8 +244,8 @@ class Screen:
                                       target=climess.Target.GAME)
         Client.Client.get_instance().send_message(msg)
 
-    def game_screen(self, events, pressed_keys):
+    def game_screen(self, pressed_keys):
         self.screen.fill((0, 0, 0))  # black bg
 
-        PlayerManager.get_instance().update(events, pressed_keys, Client.Client.get_instance().id)
+        PlayerManager.get_instance().update(pressed_keys)
         PlayerManager.get_instance().draw_players(screen=self.screen)

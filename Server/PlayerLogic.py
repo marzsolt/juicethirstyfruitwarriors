@@ -39,7 +39,7 @@ class PlayerLogic:
         self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
 
     def _send_updated_pos(self):
-        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_MOVEMENT, target=sermess.Target.PLAYER + str(self._id))
+        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POSITION, target=sermess.Target.PLAYER + str(self._id))
         msg.player_id = self._id
         msg.x = self._x
         msg.y = self._y

@@ -13,16 +13,9 @@ class Player(pg.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self._id = player_id
 
-    def update(self, events, pressed_keys):  # pressed_keys
+    def update(self, pressed_keys):
         network_messages = []
-        for event in events:
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_LEFT:
-                    print("LEFT PRESSED")
-                    network_messages.append(climess.ActionRequest.MOVE_LEFT)
-                if event.key == pg.K_RIGHT:
-                    print("RIGHT PRESSED")
-                    network_messages.append(climess.ActionRequest.MOVE_RIGHT)
+
         if pressed_keys:
             if pressed_keys[pg.K_LEFT]:
                 network_messages.append(climess.ActionRequest.MOVE_LEFT)
@@ -31,7 +24,6 @@ class Player(pg.sprite.Sprite):
         if network_messages:
             mes = BaseMessage(climess.MessageType.PLAYER_MOVEMENT, climess.Target.PLAYER_LOGIC + str(self._id))
             mes.movement_list = network_messages
-            mes.player_id = self._id
             Client.get_instance().send_message(mes)
 
         self.pos_update()
@@ -39,5 +31,5 @@ class Player(pg.sprite.Sprite):
     def pos_update(self):
         messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER+str(self._id))
         for mess in messages:
-            if mess.type == sermess.MessageType.PLAYER_MOVEMENT:
+            if mess.type == sermess.MessageType.PLAYER_POSITION:
                 self.rect.center = (mess.x, mess.y)  # setting Sprite's center

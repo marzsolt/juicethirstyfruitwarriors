@@ -5,7 +5,7 @@ import random
 
 class Movement(Enum):
     LEFT = "LEFT"
-    RIGHT = 'RIGHT'
+    RIGHT = "RIGHT"
     IDLE = "IDLE"
 
 
@@ -16,7 +16,6 @@ class PlayerAILogic(PlayerLogic):
 
     def update(self):  # override player's update
         self.decide_direction()
-        print(self._dir, Movement.LEFT, Movement.RIGHT)
         if self._dir == Movement.LEFT:
             self._move_left()
         elif self._dir == Movement.RIGHT:

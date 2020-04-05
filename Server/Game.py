@@ -14,6 +14,7 @@ class Game:
         self.__chose_host = False
         self.__AI_number = 2
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
+        self.__first_player_id = None
         self.__player_logics = []
 
     def update(self):
