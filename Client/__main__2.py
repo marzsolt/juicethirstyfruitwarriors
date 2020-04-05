@@ -1,10 +1,6 @@
-
-
 import pygame as pg
 
-
 # Self defined classes
-
 import Screen as sc
 
 
@@ -19,9 +15,8 @@ def main():
     running = True  # variable to keep the main loop running
 
     while running:  # main loop
-
-        running = screen.update(pg.event.get(), pg.key.get_pressed())  # update screen & pass all the events in the queue for handling
-
+        # update screen & pass all the events in the queue for handling
+        running = screen.update(pg.event.get(), pg.key.get_pressed())  
         clock.tick(60)  # Ensure program maintains a rate of 60 frames per second
 
     pg.quit()  # all done

@@ -1,7 +1,6 @@
 import socket
 import threading
 import json
-import sys
 from utils.domi_utils import dict_to_object
 
 
