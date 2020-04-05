@@ -11,7 +11,7 @@ class Terrain:
     MIN_LEVEL = 50
 
     MAX_ABS_ANGLE = 15
-    NO_ANGLE_BASE_P = 0.45
+    ZERO_ANGLE_BASE_PROB = 0.45
 
     def __init__(self):
         ra.seed()  # initializing the pseudo-random generator
@@ -34,10 +34,10 @@ class Terrain:
         for point in self.__points[1:]:
             self.__angle_rand_gen_and_append()
 
-            angle = mat.tan(mat.radians(self.__angles[-1]))
+            angle_in_radians = mat.radians(self.__angles[-1])
             y_prev_point = self.__levels[prev_point]
             y_point = max(
-                angle * (point - prev_point) + y_prev_point,
+                mat.tan(angle_in_radians) * (point - prev_point) + y_prev_point,
                 self.MIN_LEVEL
             )
 
@@ -62,7 +62,7 @@ class Terrain:
 
     def __angle_rand_gen_and_append(self):
         p_gen = ra.random()
-        if p_gen <= self.NO_ANGLE_BASE_P:
+        if p_gen <= self.ZERO_ANGLE_BASE_PROB:
             self.__angles.append(0)
         else:
             self.__angles.append(ra.randint(-self.MAX_ABS_ANGLE, self.MAX_ABS_ANGLE))
