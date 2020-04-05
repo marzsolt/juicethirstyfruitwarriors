@@ -3,37 +3,28 @@ import math as mat
 import bresenham as br
 
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-BASE_LEVEL = 120
-MIN_LEVEL = 50
-
-MAX_ABS_ANGLE = 15
-NO_ANGLE_BASE_P = 0.45
-
-
 class Terrain:
+    SCREEN_WIDTH = 800
+    SCREEN_HEIGHT = 600
+
+    BASE_LEVEL = 120
+    MIN_LEVEL = 50
+
+    MAX_ABS_ANGLE = 15
+    NO_ANGLE_BASE_P = 0.45
+
     def __init__(self):
-        self.__screen_width = SCREEN_WIDTH
-        self.__screen_height = SCREEN_HEIGHT
-
-        self.__base_level = BASE_LEVEL
-        self.__min_level = MIN_LEVEL
-
-        self.__max_abs_slope = MIN_LEVEL
-        self.__no_slope_base_p = NO_ANGLE_BASE_P
-
         ra.seed()  # initializing the pseudo-random generator
-        self.__points = [0, self.__screen_width - 1]
+        self.__points = [0, self.SCREEN_WIDTH - 1]
         self.__angles = []
-        self.__levels = [self.__base_level, ]
+        self.__levels = [self.BASE_LEVEL, ]
 
-        self.regenerate_terrain()  # initial terrain generation
+        self.generate_terrain()  # initial terrain generation
 
-    def regenerate_terrain(self):
+    def generate_terrain(self):
         # generating the points for the piecewise linear terrain
-        for useless in range(int(self.__screen_width/100)):  # how many middle points shall be generated
+        for _ in range(int(self.SCREEN_WIDTH/100)):  # how many middle points shall be generated
+            # always insert a random point into the longest interval
             [a, b] = self.__get_longest_interval_of_points()
             self.__points.append(ra.randint(a+1, b-1))
             self.__points.sort()
@@ -42,9 +33,12 @@ class Terrain:
         prev_point = 0
         for point in self.__points[1:]:
             self.__angle_rand_gen_and_append()
+
+            angle = mat.tan(mat.radians(self.__angles[-1]))
+            y_prev_point = self.__levels[prev_point]
             y_point = max(
-                mat.tan(mat.radians(self.__angles[-1])) * (point - prev_point) + self.__levels[prev_point],
-                self.__min_level
+                angle * (point - prev_point) + y_prev_point,
+                self.MIN_LEVEL
             )
 
             br_line = list(br.bresenham(prev_point, self.__levels[prev_point], point, y_point))  # list of tuples (x, y)
@@ -57,7 +51,7 @@ class Terrain:
         max_len = 0
         a = None
         b = None
-        for intervals in range(len(self.__points) - 1):  # always insert a random point into the longest interval
+        for intervals in range(len(self.__points) - 1):
             curr_diff = self.__points[intervals + 1] - self.__points[intervals]
             if max_len < curr_diff:
                 max_len = curr_diff
@@ -68,10 +62,10 @@ class Terrain:
 
     def __angle_rand_gen_and_append(self):
         p_gen = ra.random()
-        if p_gen <= self.__no_slope_base_p:
+        if p_gen <= self.NO_ANGLE_BASE_P:
             self.__angles.append(0)
         else:
-            self.__angles.append(ra.randint(-self.__max_abs_slope, self.__max_abs_slope))
+            self.__angles.append(ra.randint(-self.MAX_ABS_ANGLE, self.MAX_ABS_ANGLE))
 
     def get_angle(self, x):
         for i in range(1, len(self.__points)):
