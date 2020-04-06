@@ -38,17 +38,17 @@ class Screen:
 
         self.__is_first_player = None
 
-    def update(self, events):
-        self._draw_adequate_screen(events)
+    def update(self, events, pressed_keys):
+        self._draw_adequate_screen(events, pressed_keys)
 
         pg.display.flip()  # flip the display
 
         return self._check_keyboard_exit_request(events)
 
-    def _game_screen(self):
+    def _game_screen(self, pressed_keys):
         self._draw_background_and_terrain()
         PlayerManager.get_instance().update(pressed_keys)
-        PlayerManager.get_instance().draw_players(screen=self.screen)
+        PlayerManager.get_instance().draw_players(screen=self.__screen)
 
     @staticmethod
     def _check_keyboard_exit_request(events):
@@ -65,14 +65,14 @@ class Screen:
 
         return running
 
-    def _draw_adequate_screen(self, events):
+    def _draw_adequate_screen(self, events, pressed_keys):
         # draw the adequate screen (according to the state)
         if self.__screenState == sstatecons.ScreenState.MAIN_MENU:
             self.__mainMenu.mainloop(events)
         elif self.__screenState == sstatecons.ScreenState.CONNECTION_MENU:
             self.__connectionMenu.mainloop(events)
         elif self.__screenState == sstatecons.ScreenState.GAME:
-            self._game_screen()
+            self._game_screen(pressed_keys)
 
     def _init_main_menu(self):  # first needs sub menus to be initialized!
         main_menu = pgM.Menu(
@@ -235,10 +235,10 @@ class Screen:
                         )
 
                         self.__connectionMenu.add_option('Play', self._connection_menu_start_pressed)
-                    elif msg.type == sermess.MessageType.GAME_STARTED:
+                    elif msg.type == sermess.MessageType.INITIAL_DATA:
                         print("Game started, terrain loaded")
                         self.__terrain_points = msg.terrain_points
-                        self.__terrain_points_levels = msg.terrain_points_level
+                        self.__terrain_points_levels = msg.terrain_points_levels
                         self.__screenState = sstatecons.ScreenState.GAME
                         self.__connectionMenu.disable()
                         PlayerManager.get_instance().create_players(msg.human_ids, msg.ai_ids)
@@ -271,10 +271,8 @@ class Screen:
         self.__screen.fill(self.BLACK)  # black bg
         for i in range(1, len(self.__terrain_points)):
             pg.draw.line(
-                self.screen,
+                self.__screen,
                 self.WHITE,
-                (self.__terrain_points[i - 1], self.h - self.__terrain_points_levels[i - 1]),
-                (self.__terrain_points[i], self.h - self.__terrain_points_levels[i])
+                (self.__terrain_points[i - 1], self.__h - self.__terrain_points_levels[i - 1]),
+                (self.__terrain_points[i], self.__h - self.__terrain_points_levels[i])
             )
-
-    def game_screen(self, pressed_keys):
