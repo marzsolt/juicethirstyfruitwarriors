@@ -24,5 +24,5 @@ class PlayerAILogic(PlayerLogic):
         self._send_updated_pos()
 
     def decide_direction(self):
-        if random.random() < 0.3:  # so that it won't shake too much
+        if random.random() < 0.03:  # so that it won't shake too much
             self._dir = random.choice([Movement.LEFT, Movement.RIGHT, Movement.IDLE])

@@ -17,7 +17,7 @@ def main():
     while running:  # main loop
         # update screen & pass all the events in the queue for handling
         running = screen.update(pg.event.get(), pg.key.get_pressed())  
-        clock.tick(60)  # Ensure program maintains a rate of 60 frames per second
+        clock.tick(40)  # Ensure program maintains a rate of 40 frames per second
 
     pg.quit()  # all done
 

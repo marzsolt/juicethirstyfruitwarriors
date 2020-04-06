@@ -257,7 +257,7 @@ class Screen:
                 (self.terrain_points[i], self.h - self.terrain_points_levels[i])
             )
 
-    def game_screen(self):
+    def game_screen(self, pressed_keys):
         self._draw_background_and_terrain()
         PlayerManager.get_instance().update(pressed_keys)
         PlayerManager.get_instance().draw_players(screen=self.screen)

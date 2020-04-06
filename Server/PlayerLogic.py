@@ -12,7 +12,7 @@ class PlayerLogic:
 
     def __init__(self, player_id):
         self._id = player_id
-        self._speed = 5
+        self._speed = 2
         self._x = 100+player_id*100  # for testing
         self._y = 100+player_id*100
 
