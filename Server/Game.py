@@ -6,6 +6,7 @@ import server_message_constants as sermess
 from BaseMessage import BaseMessage
 from PlayerLogic import PlayerLogic
 from PlayerAILogic import PlayerAILogic
+import Terrain
 
 
 class Game:
@@ -16,6 +17,7 @@ class Game:
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
         self.__player_logics = []
+        self.__terrain = Terrain.Terrain()
 
     def update(self):
         self.__read_messages()
@@ -37,7 +39,7 @@ class Game:
             self.__start_game()
 
     def __start_game(self):
-        print("Game started")
+        print("Game started, terrain sent to everyone")
         self.__game_started = True
 
         human_ids = Server.get_instance().get_client_ids()
@@ -49,10 +51,13 @@ class Game:
             self.__player_logics.append(PlayerAILogic(new_id))
             ai_ids.append(new_id)
 
-        mess = BaseMessage(sermess.MessageType.GAME_STARTED, sermess.Target.SCREEN)
+        mess = BaseMessage(sermess.MessageType.INITIAL_DATA, sermess.Target.SCREEN)
         mess.human_ids = human_ids
         mess.ai_ids = ai_ids
+        mess.terrain_points = self.__terrain.get_terrain_points()
+        mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
         Server.get_instance().send_all(mess)
+
 
     def __read_messages(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.GAME)

@@ -11,8 +11,8 @@ from PlayerManager import PlayerManager
 
 
 class Screen:
-    def __init__(self, screen_height=0, screen_width=0):
-        self.screen = pg.display.set_mode([screen_width, screen_height], pg.FULLSCREEN)
+    def __init__(self, screen_height=600, screen_width=800):
+        self.screen = pg.display.set_mode([screen_width, screen_height])
         [self.h, self.w] = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
 
         self.screenState = 0  # 0: main menu structure; 1: connecting menu
@@ -202,8 +202,11 @@ class Screen:
                         )
 
                         self.connectingMenu.add_option('Play', self.connecting_menu_start_pressed)
-                    elif msg.type == sermess.MessageType.GAME_STARTED:
-                        print("Game started")
+                    elif msg.type == sermess.MessageType.INITIAL_DATA:
+                        print("Game started, terrain loaded")
+                        self.terrain_points = msg.terrain_points
+                        self.terrain_points_levels = msg.terrain_points_levels
+                        #self.terrain_slopes = msg.terrain_slopes
                         self.connectingMenu.disable()
                         self.screenState = 3
                         PlayerManager.get_instance().create_players(msg.human_ids, msg.ai_ids)
@@ -244,8 +247,17 @@ class Screen:
                                       target=climess.Target.GAME)
         Client.Client.get_instance().send_message(msg)
 
-    def game_screen(self, pressed_keys):
+    def _draw_background_and_terrain(self):
         self.screen.fill((0, 0, 0))  # black bg
+        for i in range(1, len(self.terrain_points)):
+            pg.draw.line(
+                self.screen,
+                (255, 255, 255),
+                (self.terrain_points[i - 1], self.h - self.terrain_points_levels[i - 1]),
+                (self.terrain_points[i], self.h - self.terrain_points_levels[i])
+            )
 
+    def game_screen(self):
+        self._draw_background_and_terrain()
         PlayerManager.get_instance().update(pressed_keys)
         PlayerManager.get_instance().draw_players(screen=self.screen)
