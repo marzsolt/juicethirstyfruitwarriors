@@ -1,15 +1,15 @@
 import pygame as pg
 
 # Self defined classes
-import Screen as sc
+import Screen
 
 
 def main():
     pg.init()
 
-    screen = sc.Screen()  # set up the screen
+    screen = Screen.Screen()  # set up the screen
 
-    # Setup the clock for a decent framerate
+    # Setup the clock for a decent frame rate
     clock = pg.time.Clock()
 
     running = True  # variable to keep the main loop running
