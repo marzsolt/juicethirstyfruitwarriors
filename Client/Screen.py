@@ -5,14 +5,12 @@ import screen_state_constants as sstatecons
 
 # networking
 import Client
+import socket  # to be able to set default IP on connection screen to OUR IP
 
 # messaging
 import client_message_constants as climess
 import server_message_constants as sermess
 import BaseMessage
-
-# temp
-import socket  # temporarily, to be able to set default IP on connection screen to OUR IP
 
 
 class Screen:
@@ -23,18 +21,52 @@ class Screen:
 
     def __init__(self, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH):
         self.__screen = pg.display.set_mode([screen_width, screen_height])
-        [self.__h, self.__w] = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
+        self.__h, self.__w = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
 
         self.__screenState = sstatecons.ScreenState.MAIN_MENU
 
-        # initializing the menus
-        self.__playMenu = self._init_main_menu_play_menu()
-        self.__aboutMenu = self._init_main_menu_about_menu()
+        # initializing the menus, the order is important! (i.e. the sub menus of main menu - about & play menus first)
+        self.__playMenu = self._init_play_menu()
+        self.__aboutMenu = self._init_about_menu()
         self.__mainMenu = self._init_main_menu()
 
-        [self.__connectionMenu, self.__connectionMenuState] = self._init_connection_menu()
+        self.__connectionMenu, self.__connectionMenuState = self._init_connection_menu()
 
         self.__is_first_player = None
+
+    def update(self, events):
+        self._draw_adequate_screen(events)
+
+        pg.display.flip()  # flip the display
+
+        return self._check_keyboard_exit_request(events)
+
+    def _game_screen(self):
+        self.__screen.fill(self.BLACK)
+
+    @staticmethod
+    def _check_keyboard_exit_request(events):
+        running = True
+        for event in events:  # event handling - look at every event in the queue
+            if event.type == pg.KEYDOWN:  # did the user hit a key?
+
+                if event.key == pg.K_ESCAPE:  # Was it the Escape key? If so, stop the loop.
+                    running = False
+
+            # Did the user click the window close button? If so, stop the loop. w/o. doesn't work
+            if event.type == pg.QUIT:
+                running = False
+
+        return running
+
+    def _draw_adequate_screen(self, events):
+        # draw the adequate screen (according to the state)
+        if self.__screenState == sstatecons.ScreenState.MAIN_MENU:
+            self.__mainMenu.mainloop(events)
+        elif self.__screenState == sstatecons.ScreenState.CONNECTION_MENU:
+            self.__connectionMenu.mainloop(events)
+        elif self.__screenState == sstatecons.ScreenState.GAME:
+            self._game_screen()
 
     def _init_main_menu(self):  # first needs sub menus to be initialized!
         main_menu = pgM.Menu(
@@ -56,7 +88,7 @@ class Screen:
 
         return main_menu
 
-    def _init_main_menu_play_menu(self):
+    def _init_play_menu(self):
         play_menu = pgM.TextMenu(
             self.__screen,
             self.__w,
@@ -89,7 +121,7 @@ class Screen:
 
         return play_menu
 
-    def _init_main_menu_about_menu(self):
+    def _init_about_menu(self):
         about_menu = pgM.TextMenu(
             self.__screen,
             self.__w,
@@ -125,8 +157,8 @@ class Screen:
             pgM.font.FONT_OPEN_SANS,
             'Connecting Menu',
             bgfun=self._connection_menu_bgfun,
-            menu_color=(0, 0, 0),
-            menu_color_title=(0, 0, 0),
+            menu_color=self.BLACK,
+            menu_color_title=self.BLACK,
             menu_alpha=100,
             back_box=False
         )
@@ -160,6 +192,7 @@ class Screen:
             Client.Client.get_instance().setup_connection(val)
             self.__screenState = sstatecons.ScreenState.CONNECTION_MENU
             self.__mainMenu.disable()
+            self.__connectionMenu.enable()
 
     def _connection_menu_bgfun(self):
         # when in INITIAL state and client connection got a status
@@ -170,7 +203,8 @@ class Screen:
 
             if Client.Client.get_instance().connection_alive:
                 self.__connectionMenu.disable()
-                [self.__connectionMenu, _] = self._init_connection_menu()
+                self.__connectionMenu, _ = self._init_connection_menu()
+                self.__connectionMenu.enable()
                 self.__connectionMenu.add_line('Successfully connected.')
             else:
                 self.__connectionMenu.add_line('Connection error, please try again!')
@@ -202,53 +236,23 @@ class Screen:
             else:
                 self.__screenState = sstatecons.ScreenState.MAIN_MENU
                 self.__connectionMenu.disable()
+                self.__mainMenu.enable()
 
                 # reinitialize. connectionMenu so that it flushes msgs
-                [self.__connectionMenu, self.__connectionMenuState] = self._init_connection_menu()
+                self.__connectionMenu, self.__connectionMenuState = self._init_connection_menu()
 
                 # acknowledged the connection error status, and now set back the flag to None
                 Client.Client.get_instance().connection_alive = None
 
                 pg.time.wait(2500)
 
-    def _connection_menu_player_count_selector_onchange(self, _, value):
+    @staticmethod
+    def _connection_menu_player_count_selector_onchange(_, value):
         msg = BaseMessage.BaseMessage(mess_type=climess.MessageType.CHANGE_PLAYER_NUMBER, target=climess.Target.GAME)
         msg.new_number = value
         Client.Client.get_instance().send_message(msg)
 
-    def _connection_menu_start_pressed(self):
+    @staticmethod
+    def _connection_menu_start_pressed():
         msg = BaseMessage.BaseMessage(mess_type=climess.MessageType.START_GAME_MANUALLY, target=climess.Target.GAME)
         Client.Client.get_instance().send_message(msg)
-
-    #  More useful functions below!!!
-    def update(self, events):
-        # draw the adequate screen (according to the state)
-        if self.__screenState == sstatecons.ScreenState.MAIN_MENU:
-            if not self.__mainMenu.is_enabled():
-                self.__mainMenu.enable()
-            self.__mainMenu.mainloop(events)
-        elif self.__screenState == sstatecons.ScreenState.CONNECTION_MENU:
-            if not self.__connectionMenu.is_enabled():
-                self.__connectionMenu.enable()
-            self.__connectionMenu.mainloop(events)
-        elif self.__screenState == sstatecons.ScreenState.GAME:
-            self._game_screen()
-
-        running = True
-        for event in events:  # event handling - look at every event in the queue
-
-            if event.type == pg.KEYDOWN:  # did the user hit a key?
-
-                if event.key == pg.K_ESCAPE:  # Was it the Escape key? If so, stop the loop.
-                    running = False
-
-            # Did the user click the window close button? If so, stop the loop. w/o. doesn't work
-            if event.type == pg.QUIT:
-                running = False
-
-        pg.display.flip()  # flip the display
-
-        return running
-
-    def _game_screen(self):
-        self.__screen.fill(self.BLACK)
