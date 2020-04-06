@@ -1,3 +1,9 @@
+from Server import Server
+import server_message_constants as sermess
+import client_message_constants as climess
+from BaseMessage import BaseMessage
+
+
 class PlayerLogic:
     X_MIN = 0
     X_MAX = 800  # TODO use screen sizes
@@ -10,26 +16,44 @@ class PlayerLogic:
         self._x = 100+player_id*100  # for testing
         self._y = 100+player_id*100
 
-    def process_requests(self, network_messages, player):
-        # TODO load messages from Network by id
-        for mess in network_messages:
-            if mess == "LEFT":
-                self._x = self._x - self._speed
-            elif mess == "RIGHT":
-                self._x = self._x + self._speed
+        self.initial_pos_sending = True
 
-        # keep the player in screen
+    def _process_requests(self, network_messages):
+        for m in network_messages:
+            for mess in m.movement_list:
+                if mess == climess.ActionRequest.MOVE_LEFT:
+                    self._move_left()
+                elif mess == climess.ActionRequest.MOVE_RIGHT:
+                    self._move_right()
+
+    def _move_left(self):
+        self._x = self._x - self._speed
+
         self._x = min(max(self._x, self.X_MIN), self.X_MAX)
         self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
 
-        player.pos_update(self._x, self._y)  # TODO again it's a network imitation here...
+    def _move_right(self):
+        self._x = self._x + self._speed
 
-    def update(self, pressed_keys, events):
-        pass  # TODO load messages, and call process_requests...
+        self._x = min(max(self._x, self.X_MIN), self.X_MAX)
+        self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
 
+    def _send_updated_pos(self):
+        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POSITION, target=sermess.Target.PLAYER + str(self._id))
+        msg.player_id = self._id
+        msg.x = self._x
+        msg.y = self._y
+        Server.get_instance().send_all(msg)
 
-# FOR testing
-test_player = PlayerLogic(0)
-test_player2 = PlayerLogic(1)
-test_player3 = PlayerLogic(2)
-players = [test_player, test_player2, test_player3]
+    def update(self):
+        messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC+str(self._id))
+        position_messages = list(filter(lambda x: x.type == climess.MessageType.PLAYER_MOVEMENT, messages))
+        if position_messages:
+            self._process_requests(position_messages)
+            self._send_updated_pos()
+        if self.initial_pos_sending:
+            self._send_updated_pos()
+            self.initial_pos_sending = False
+
+    def get_id(self):
+        return self._id

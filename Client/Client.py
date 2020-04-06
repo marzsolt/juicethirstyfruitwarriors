@@ -2,7 +2,6 @@ from collections import defaultdict
 import ClientCommunicator
 import client_message_constants as climess
 import server_message_constants as sermess
-import BaseMessage
 
 
 class Client:

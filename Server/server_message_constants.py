@@ -6,7 +6,9 @@ class MessageType(str, Enum):
     CONN = "connection"
     YOUR_ID = "your ID is..."
     FIRST_PLAYER = "you are the host"
-    TERRAIN = "game start & terrain"
+    INITIAL_DATA = "gl hf"
+    PLAYER_POSITION = "movement of players"
+
 
 
 class Target(str, Enum):
@@ -14,3 +16,4 @@ class Target(str, Enum):
     SCREEN = "screen"
     PLAYER = "player"  # should use ID someway 
     CLIENT = "client"  # e.g. for network connection setup, closure
+    PLAYER_MANAGER = "player manager"

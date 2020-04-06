@@ -5,6 +5,9 @@ import Client
 import client_message_constants as climess
 import server_message_constants as sermess
 import BaseMessage
+from Player import Player
+from PlayerAI import PlayerAI
+from PlayerManager import PlayerManager
 
 
 class Screen:
@@ -112,7 +115,7 @@ class Screen:
         )
 
     #  More useful functions below!!!
-    def update(self, events):
+    def update(self, events, pressed_keys):
 
         # draw the adequate screen (according to the state)
         if self.screenState == 0:
@@ -124,7 +127,7 @@ class Screen:
                 self.connectingMenu.enable()
             self.connectingMenu.mainloop(events)
         elif self.screenState == 3:
-            self.game_screen()
+            self.game_screen(pressed_keys)
 
         running = True
         for event in events:  # event handling - look at every event in the queue
@@ -199,13 +202,15 @@ class Screen:
                         )
 
                         self.connectingMenu.add_option('Play', self.connecting_menu_start_pressed)
-                    elif msg.type == sermess.MessageType.TERRAIN:
+                    elif msg.type == sermess.MessageType.INITIAL_DATA:
                         print("Game started, terrain loaded")
                         self.terrain_points = msg.terrain_points
                         self.terrain_points_levels = msg.terrain_points_levels
                         #self.terrain_slopes = msg.terrain_slopes
                         self.connectingMenu.disable()
                         self.screenState = 3
+                        PlayerManager.get_instance().create_players(msg.human_ids, msg.ai_ids)
+
             else:
                 self.screenState = 0
                 self.playMenu.get_widget('playMenu_input_IP').set_value('')  # TODO: this may be done onreturn
@@ -254,3 +259,5 @@ class Screen:
 
     def game_screen(self):
         self._draw_background_and_terrain()
+        PlayerManager.get_instance().update(pressed_keys)
+        PlayerManager.get_instance().draw_players(screen=self.screen)
