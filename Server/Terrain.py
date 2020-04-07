@@ -2,6 +2,8 @@ import random as ra
 import math as mat
 import bresenham as br
 
+from Vector2D import Vector2D
+
 
 class Terrain:
     SCREEN_WIDTH = 800
@@ -10,8 +12,8 @@ class Terrain:
     BASE_LEVEL = 120
     MIN_LEVEL = 50
 
-    MAX_ABS_ANGLE = 15
-    ZERO_ANGLE_BASE_PROB = 0.45
+    MAX_ABS_ANGLE = 25
+    ZERO_ANGLE_BASE_PROB = 0.25
 
     def __init__(self):
         ra.seed()  # initializing the pseudo-random generator
@@ -67,13 +69,21 @@ class Terrain:
         else:
             self.__angles.append(ra.randint(-self.MAX_ABS_ANGLE, self.MAX_ABS_ANGLE))
 
-    def get_angle(self, x):
+    def get_angle_deg(self, x):
         for i in range(1, len(self.__points)):
             if x <= self.__points[i]:
                 return self.__angles[i - 1]
 
+    def get_angle_rad(self, x):
+        for i in range(1, len(self.__points)):
+            if x <= self.__points[i]:
+                return mat.radians(self.__angles[i - 1])
+
     def get_level(self, x):
         return self.__levels[round(x)]
+
+    def slope_grad(self, x):
+        return Vector2D.mag_ang_init(1, self.get_angle_rad(x))
 
     def get_terrain_levels(self):
         return self.__levels

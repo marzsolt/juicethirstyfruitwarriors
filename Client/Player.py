@@ -32,4 +32,4 @@ class Player(pg.sprite.Sprite):
         messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER+str(self._id))
         for mess in messages:
             if mess.type == sermess.MessageType.PLAYER_POSITION:
-                self.rect.center = (mess.x, mess.y)  # setting Sprite's center
+                self.rect.center = (mess.x, 600 - mess.y)  # setting Sprite's center TODO 600...
