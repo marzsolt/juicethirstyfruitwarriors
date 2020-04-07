@@ -5,6 +5,7 @@ from BaseMessage import BaseMessage
 from Vector2D import Vector2D
 
 import math
+import copy
 
 
 class PlayerLogic:
@@ -13,14 +14,12 @@ class PlayerLogic:
     Y_MIN = 0
     Y_MAX = 600
     G = -1
-    C_AIR = 0.005
+    C_AIR = 0.3
 
     def __init__(self, player_id, terrain):
         self._id = player_id
         self._terrain = terrain
-        self._mobility = 1
-        # self._x = 100+player_id*100  # for testing
-        # self._y = 100+player_id*100
+        self._mobility = 0.3
         self._mass = 1
         self._pos = Vector2D(50+player_id*100, 300)
         self._vel = Vector2D(0, 0)
@@ -57,19 +56,25 @@ class PlayerLogic:
                 elif mess == climess.ActionRequest.MOVE_RIGHT:
                     self._move_right()
 
-    def _move_left(self):
-        self._add_ground_directed_force(-self._mobility)
-        # self._x = self._x - self._speed
+    def can_accelerate(self, direction=1):
+        if direction*self._vel.x < 0:
+            return True
+        base_max_vel = 10.0
+        angle_dependency = 3.0
+        angle_bonus = -direction * math.sin(self._terrain.get_angle_rad(self._pos.x)) * angle_dependency
+        return self._vel.mag() < base_max_vel + angle_bonus
 
-        # self._x = min(max(self._x, self.X_MIN), self.X_MAX)
-        # self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
+    def _move_left(self):
+        if self.can_accelerate(-1):
+            self._add_ground_directed_force(-self._mobility)
+        else:
+            print(":(")
 
     def _move_right(self):
-        self._add_ground_directed_force(self._mobility)
-        # self._x = self._x + self._speed
-
-        # self._x = min(max(self._x, self.X_MIN), self.X_MAX)
-        # self._y = min(max(self._y, self.Y_MIN), self.Y_MAX)
+        if self.can_accelerate(1):
+            self._add_ground_directed_force(self._mobility)
+        else:
+            print(":(")
 
     def _send_updated_pos(self):
         msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POSITION, target=sermess.Target.PLAYER + str(self._id))
@@ -78,46 +83,49 @@ class PlayerLogic:
         msg.y = self._pos.y
         Server.get_instance().send_all(msg)
 
+    def _stop(self):
+        self._vel = Vector2D.zero()
+
     def _do_physics(self):
         if self._is_flying:
-            self._forces = []
+            # self._forces = []
             mg = self.G * self._mass
             self._add_force(Vector2D(0, mg))
         else:
-            mgx = self.G * self._mass * math.sin(self._terrain.get_angle_rad(self._pos.x))
-            self._add_ground_directed_force(mgx)
-            air_resistance = self._vel
-            print(air_resistance)
-            air_resistance.scalar_mult(-self.C_AIR)
-            print(air_resistance)
-            self._add_force(air_resistance)
+            friction = self._mass * 0.1
+            friction = min(self._vel.mag(), friction)
+            if self._vel.x > 0:
+                friction = -friction
+            self._add_ground_directed_force(friction)
 
         resultant_force = Vector2D.sum(self._forces)
-        # print(self._forces)
         self._forces = []
         res_acc = resultant_force.scalar_div(self._mass)
-        # print(res_acc)
         self._vel += res_acc
-        # print(self._vel)
         self._pos += self._vel
 
         if self._pos.x < self.X_MIN:
             self._pos.x = self.X_MIN
-            self._vel = Vector2D.zero()
+            self._stop()
         elif self._pos.x > self.X_MAX:
             self._pos.x = self.X_MAX
-            self._vel = Vector2D.zero()
+            self._stop()
 
-
-
-        threshold = 0.1
-        if self._pos.y > self._terrain.get_level(self._pos.x) + threshold:
+        threshold = 2*3.14/180.0
+        vel_angle_diff = math.fabs(self._vel.domi_ang()-self._terrain.get_angle_rad(self._pos.x))
+        # print("vel, velng, slop, posd", self._vel, self._vel.domi_ang(), self._terrain.get_angle_rad(self._pos.x), self._pos.y - self._terrain.get_level(self._pos.x))
+        if vel_angle_diff > threshold and self._pos.y - 1 > self._terrain.get_level(self._pos.x):
+            if not self._is_flying:
+                self._add_force(Vector2D(0, 10))
             self._is_flying = True
+            print(vel_angle_diff, self._pos.y - self._terrain.get_level(self._pos.x))
         else:
+            print("not fly")
+
+        if self._pos.y < self._terrain.get_level(self._pos.x):  # underground
             self._is_flying = False
             self._pos.y = self._terrain.get_level(self._pos.x)
             if self._vel.mag() > 0:
                 loss = self._vel.dot_product(self._terrain.slope_grad(self._pos.x)) / self._vel.mag()
                 self._vel.change_dir(self._terrain.get_angle_rad(self._pos.x))
                 self._vel.scalar_mult(loss)
-

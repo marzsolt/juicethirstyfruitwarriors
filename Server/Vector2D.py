@@ -1,4 +1,5 @@
 import math
+import cmath
 
 
 class Vector2D:
@@ -17,6 +18,17 @@ class Vector2D:
     def mag(self):
         return math.sqrt(self.x**2+self.y**2)
 
+    def ang(self):
+        return cmath.phase(complex(self.x, self.y))
+
+    def domi_ang(self):
+        if self.x < 0:
+            if self.y < 0:
+                return self.ang()+math.pi
+            else:
+                return self.ang()-math.pi
+        return self.ang()
+
     '''Same magnitude, different angle'''
     def change_dir(self, new_angle_rad):
         m = self.mag()
@@ -31,7 +43,7 @@ class Vector2D:
         return ret
 
     def __str__(self):
-        return "({0},{1})".format(self.x, self.y)
+        return "(x: {0}, y: {1})".format(self.x, self.y)
 
     def __add__(self, other):
         x = self.x + other.x
