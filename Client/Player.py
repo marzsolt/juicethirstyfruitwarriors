@@ -6,6 +6,8 @@ import client_message_constants as climess
 
 
 class Player(pg.sprite.Sprite):
+    SCREEN_HEIGHT = 600  # TODO use general constant
+
     def __init__(self, player_id):
         super(Player, self).__init__()
         self.surf = pg.image.load("img/apple_test_image.png").convert()  # may have to change the path
@@ -32,4 +34,4 @@ class Player(pg.sprite.Sprite):
         messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER+str(self._id))
         for mess in messages:
             if mess.type == sermess.MessageType.PLAYER_POSITION:
-                self.rect.center = (mess.x, 600 - mess.y)  # setting Sprite's center TODO 600...
+                self.rect.center = (mess.x, self.SCREEN_HEIGHT - mess.y)  # graphical y axis is weird

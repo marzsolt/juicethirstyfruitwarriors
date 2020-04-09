@@ -37,7 +37,7 @@ class Vector2D:
 
     @staticmethod
     def sum(vectors):
-        ret = Vector2D(0, 0)
+        ret = Vector2D.zero()
         for v in vectors:
             ret += v
         return ret

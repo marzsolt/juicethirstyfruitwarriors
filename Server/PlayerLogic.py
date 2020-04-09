@@ -14,9 +14,10 @@ class Direction(Enum):
 
 
 class PlayerLogic:
+    SCREEN_WIDTH = 800  # TODO use general constant
     RADIUS = 25
     X_MIN = RADIUS
-    X_MAX = 800-RADIUS  # TODO use screen sizes
+    X_MAX = SCREEN_WIDTH-RADIUS  # TODO use screen sizes
     G = -1
     C_AIR = 0.3
 
@@ -75,10 +76,10 @@ class PlayerLogic:
     def can_accelerate(self, direction=1):
         if direction*self._vel.x < 0:  # it can always decelerate
             return True
-        base_max_vel = 3.0
-        angle_dependency = 3.0
-        angle_bonus = -direction * math.sin(self._terrain.get_angle_rad(self._pos.x)) * angle_dependency
-        return self._vel.mag() < base_max_vel + angle_bonus
+        BASE_MAX_VEL = 3.0
+        ANGLE_DEPENDENCY = 3.0
+        angle_bonus = -direction * math.sin(self._terrain.get_angle_rad(self._pos.x)) * ANGLE_DEPENDENCY
+        return self._vel.mag() < BASE_MAX_VEL + angle_bonus
 
     def _move_left(self):
         if self.can_accelerate(-1):
@@ -120,15 +121,18 @@ class PlayerLogic:
         self._pos += self._vel
 
         # Check if it flies
-        threshold_ang = 2*3.14/180.0  # 2 degrees
-        threshold_pos = 2  # 2 pixels
-        threshold_big_pos = 5  # 5 pixels alone is surely flying
+        # minimum velocity angle difference (to ground grad) which is considered flying with pos diff threshold together
+        threshold_ang = 2*3.14/180.0
+        # minimum y difference to ground level which is considered flying with angle threshold together
+        threshold_pos = 2
+        # minimum y difference to ground level which alone is considered flying
+        threshold_big_pos = 5
         vel_angle_diff = math.fabs(self._vel.domi_ang()-self._terrain.get_angle_rad(self._pos.x))
         pos_diff = self._get_y_to_ground_level()
         if (vel_angle_diff > threshold_ang and pos_diff > threshold_pos)\
                 or pos_diff > threshold_big_pos:
             if not self._is_flying:
-                self._add_force(Vector2D(0, 10))  # for fun :)
+                self._add_force(Vector2D(0, 10))  # a little jump for fun :)
             self._is_flying = True
 
         # Check if it's under ground, make corrections

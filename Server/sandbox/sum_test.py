@@ -1,8 +1,26 @@
-from Vector2D import Vector2D
-import math
+class A:
+    def m(self):
+        print("m of A called")
 
-a = [1, 2, 3]
-b = list(filter(lambda x: x < 2, a))
-a.remove(b)
-print(a, b)
+
+class B(A):
+    def m(self):
+        print("m of B called")
+        A.m(self)
+
+
+class C(A):
+    def m(self):
+        print("m of C called")
+        A.m(self)
+
+
+class D(B, C):
+    def m(self):
+        print("m of D called")
+        B.m(self)
+        C.m(self)
+
+d = D()
+d.m()
 
