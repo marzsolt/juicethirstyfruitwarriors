@@ -110,7 +110,7 @@ class PlayerLogic:
         else:
             # add friction
             friction = self._mass * self.mu  # yes it's not perfectly accurate physics
-            friction = min(self._vel.mag(), friction)  # friction shouldn't accelerate to the opposite direction
+            friction = min(self._vel.mag()*self._mass, friction)  # shouldn't accelerate to the opposite direction
             self._add_ground_directed_force(-friction, self.my_dir())
 
         # Compute main properties!
