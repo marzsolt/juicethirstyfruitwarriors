@@ -1,4 +1,4 @@
-from Player import Player
+import Player
 from PlayerAI import PlayerAI
 from Client import Client
 
@@ -22,9 +22,15 @@ class PlayerManager:
 
     def create_players(self, player_ids, ai_ids):
         for player_id in player_ids:
-            self.players.append(Player(player_id=player_id))
+            if player_id % 2 == 0:  # TODO only for testing!
+                self.players.append(Player.Player(player_id, Player.PicFile.APPLE))
+            else:
+                self.players.append(Player.Player(player_id, Player.PicFile.ORANGE))
         for player_id in ai_ids:
-            self.players.append(PlayerAI(player_id=player_id))
+            if player_id % 2 == 0:
+                self.players.append(PlayerAI(player_id, Player.PicFile.ORANGE))
+            else:
+                self.players.append(PlayerAI(player_id, Player.PicFile.APPLE))
 
     def update(self, pressed_keys):
         for player in self.players:

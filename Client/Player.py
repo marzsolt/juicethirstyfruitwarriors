@@ -1,16 +1,22 @@
 import pygame as pg
+from enum import Enum
 from BaseMessage import BaseMessage
 from Client import Client
 import server_message_constants as sermess
 import client_message_constants as climess
 
 
+class PicFile(Enum):
+    ORANGE = "img/orange_test_image.png"
+    APPLE = "img/apple_test_image.png"
+
+
 class Player(pg.sprite.Sprite):
     SCREEN_HEIGHT = 600  # TODO use general constant
 
-    def __init__(self, player_id):
+    def __init__(self, player_id, pic_file):
         super(Player, self).__init__()
-        self.surf = pg.image.load("img/apple_test_image.png").convert()  # may have to change the path
+        self.surf = pg.image.load(pic_file.value).convert()  # may have to change the path
         self.surf.set_colorkey((255, 253, 201), pg.RLEACCEL)  # background color of the picture -> that color not shown
         self.rect = self.surf.get_rect()
         self._id = player_id

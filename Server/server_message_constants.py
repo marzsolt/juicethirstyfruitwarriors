@@ -10,7 +10,6 @@ class MessageType(str, Enum):
     PLAYER_POSITION = "movement of players"
 
 
-
 class Target(str, Enum):
     """Who is the target of the message."""
     SCREEN = "screen"
