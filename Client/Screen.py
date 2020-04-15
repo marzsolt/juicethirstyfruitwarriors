@@ -11,8 +11,6 @@ import socket  # to be able to set default IP on connection screen to OUR IP
 import client_message_constants as climess
 import server_message_constants as sermess
 import BaseMessage
-from Player import Player
-from PlayerAI import PlayerAI
 from PlayerManager import PlayerManager
 
 

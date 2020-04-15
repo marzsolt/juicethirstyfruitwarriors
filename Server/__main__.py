@@ -6,7 +6,7 @@ from Game import Game
 
 def main():
     def update():
-        s.enter(0.025, 1, update, ())  # call update again in 25 ms
+        s.enter(1.0/fps, 1, update, ())  # call update again in 25 ms
         game.update()
 
     # Networking
@@ -19,7 +19,7 @@ def main():
     # Setup regular update "loop"
     s = sched.scheduler(time.time, time.sleep)
     fps = 40.0
-    s.enter(1/fps, 1, update, ())
+    s.enter(1.0/fps, 1, update, ())
     s.run()
 
 

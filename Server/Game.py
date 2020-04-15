@@ -45,10 +45,10 @@ class Game:
         human_ids = Server.get_instance().get_client_ids()
         ai_ids = []
         for player_id in human_ids:  # create server side players for humans
-            self.__player_logics.append(PlayerLogic(player_id))
+            self.__player_logics.append(PlayerLogic(player_id, self.__terrain))
         for i in range(self.__AI_number):  # create server side players for AIs
             new_id = Server.get_instance().get_new_id()
-            self.__player_logics.append(PlayerAILogic(new_id))
+            self.__player_logics.append(PlayerAILogic(new_id, self.__terrain))
             ai_ids.append(new_id)
 
         mess = BaseMessage(sermess.MessageType.INITIAL_DATA, sermess.Target.SCREEN)
