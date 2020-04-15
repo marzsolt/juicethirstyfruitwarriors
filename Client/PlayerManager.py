@@ -20,17 +20,15 @@ class PlayerManager:
         else:
             self.players = []
 
-    def create_players(self, player_ids, ai_ids):
-        for player_id in player_ids:
-            if player_id % 2 == 0:  # TODO only for testing!
-                self.players.append(Player.Player(player_id, Player.PicFile.APPLE))
-            else:
-                self.players.append(Player.Player(player_id, Player.PicFile.ORANGE))
-        for player_id in ai_ids:
-            if player_id % 2 == 0:
-                self.players.append(PlayerAI(player_id, Player.PicFile.ORANGE))
-            else:
-                self.players.append(PlayerAI(player_id, Player.PicFile.APPLE))
+    def create_players(self, apple_human_ids, orange_human_ids, apple_ai_ids, orange_ai_ids):
+        for player_id in apple_human_ids:
+            self.players.append(Player.Player(player_id, Player.PicFile.APPLE))
+        for player_id in orange_human_ids:
+            self.players.append(Player.Player(player_id, Player.PicFile.ORANGE))
+        for player_id in apple_ai_ids:
+            self.players.append(PlayerAI(player_id, Player.PicFile.ORANGE))
+        for player_id in orange_ai_ids:
+            self.players.append(PlayerAI(player_id, Player.PicFile.APPLE))
 
     def update(self, pressed_keys):
         for player in self.players:

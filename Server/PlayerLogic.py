@@ -50,8 +50,13 @@ class PlayerLogic:
                     self._move_right()
 
     def _process_requests(self, network_messages):
-        position_messages = list(filter(lambda x: x.type == climess.MessageType.PLAYER_MOVEMENT, network_messages))
-        self._process_movement_messages(position_messages)
+        pos_mess = []
+        for mess in reversed(network_messages):  # reverse looping is needed because we remove elements
+            if mess.type == climess.MessageType.PLAYER_MOVEMENT:
+                pos_mess.append(mess)
+                network_messages.remove(mess)
+        # position_messages = list(filter(lambda x: x.type == climess.MessageType.PLAYER_MOVEMENT, network_messages))
+        self._process_movement_messages(pos_mess)
 
     def _send_updated_pos(self):
         msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POSITION, target=sermess.Target.PLAYER + str(self._id))
@@ -59,6 +64,9 @@ class PlayerLogic:
         msg.x = self._pos.x
         msg.y = self._pos.y
         Server.get_instance().send_all(msg)
+
+    def _attack(self):
+        return True  # TODO cooldown?
 
     def _add_force(self, force2d):
         self._forces.append(force2d)

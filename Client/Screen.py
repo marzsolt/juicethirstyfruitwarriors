@@ -239,7 +239,8 @@ class Screen:
                         self.__terrain_points_levels = msg.terrain_points_levels
                         self.__screenState = sstatecons.ScreenState.GAME
                         self.__connectionMenu.disable()
-                        PlayerManager.get_instance().create_players(msg.human_ids, msg.ai_ids)
+                        PlayerManager.get_instance().create_players(msg.apple_human_ids, msg.orange_human_ids,
+                                                                    msg.apple_ai_ids, msg.orange_ai_ids)
 
             else:
                 self.__screenState = sstatecons.ScreenState.MAIN_MENU
