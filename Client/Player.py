@@ -19,6 +19,8 @@ class Player(pg.sprite.Sprite):
         self.surf = pg.image.load(pic_file.value).convert()  # may have to change the path
         self.surf.set_colorkey((255, 253, 201), pg.RLEACCEL)  # background color of the picture -> that color not shown
         self.rect = self.surf.get_rect()
+        if Client.get_instance().id == player_id:  # Show that it's the client's own player
+            pg.draw.line(self.surf, (0, 255, 0), (15, 0), (45, 0))
         self._id = player_id
 
     def update(self, pressed_keys):
