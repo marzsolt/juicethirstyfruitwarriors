@@ -19,6 +19,16 @@ class ServerCommunicator(threading.Thread):
         while True:
             message = self.socket.recv(1024)
             message = message.decode()
-            deserialized = json.loads(message)
-            deserialized = dict_to_object(deserialized)
-            self.server.receive_message(deserialized, self.ID)
+
+            mes_separated = []
+            mes_end_index = 0
+            for i in range(len(message)):
+                if message[i] == '}':
+                    mes_separated.append(message[mes_end_index:i+1])
+                    print(message[mes_end_index:i+1])
+                    mes_end_index = i+1
+
+            for m in mes_separated:
+                deserialized = json.loads(m)
+                deserialized = dict_to_object(deserialized)
+                self.server.receive_message(deserialized, self.ID)

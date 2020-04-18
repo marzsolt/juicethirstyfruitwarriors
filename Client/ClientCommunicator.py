@@ -30,6 +30,15 @@ class ClientCommunicator(threading.Thread):
         while True:
             message = self.client_socket.recv(1024)
             message = message.decode()
-            deserialized = json.loads(message)
-            deserialized = dict_to_object(deserialized)
-            self.client.receive_message(deserialized)
+
+            mes_separated = []
+            mes_end_index = 0
+            for i in range(len(message)):
+                if message[i] == '}':
+                    mes_separated.append(message[mes_end_index:i+1])
+                    mes_end_index = i+1
+
+            for m in mes_separated:
+                deserialized = json.loads(m)
+                deserialized = dict_to_object(deserialized)
+                self.client.receive_message(deserialized)
