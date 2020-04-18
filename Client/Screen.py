@@ -43,9 +43,9 @@ class Screen:
 
         return self._check_keyboard_exit_request(events)
 
-    def _game_screen(self, pressed_keys):
+    def _game_screen(self, pressed_keys, events):
         self._draw_background_and_terrain()
-        PlayerManager.get_instance().update(pressed_keys)
+        PlayerManager.get_instance().update(pressed_keys, events)
         PlayerManager.get_instance().draw_players(screen=self.__screen)
 
     @staticmethod
@@ -70,7 +70,7 @@ class Screen:
         elif self.__screenState == sstatecons.ScreenState.CONNECTION_MENU:
             self.__connectionMenu.mainloop(events)
         elif self.__screenState == sstatecons.ScreenState.GAME:
-            self._game_screen(pressed_keys)
+            self._game_screen(pressed_keys, events)
 
     def _init_main_menu(self):  # first needs sub menus to be initialized!
         main_menu = pgM.Menu(

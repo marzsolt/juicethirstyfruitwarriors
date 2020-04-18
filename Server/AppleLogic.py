@@ -12,17 +12,16 @@ class AppleLogic(PlayerLogic.PlayerLogic):
         super()._process_requests(network_messages)
         for mess in network_messages:
             if mess.type == climess.MessageType.APPLE_ATTACK:
-                if mess.x - self._pos.x > 0:
-                    # mouse_pos = mess.mouse_pos
-                    dist = math.sqrt((mess.x - self._pos.x) ** 2 + (mess.y - self._pos.y) ** 2)
-                    #side = abs(mess.y - self._pos.y)
-                    #angle = math. asin(side/dist)
-                    x = (10/dist)*(mess.x-self._pos.x)
-                    y =  (10 / dist) *(mess.y-self._pos.y)
+                # mouse_pos = mess.mouse_pos
+                dist = math.sqrt((mess.x - self._pos.x) ** 2 + (mess.y - self._pos.y) ** 2)
+                #side = abs(mess.y - self._pos.y)
+                #angle = math. asin(side/dist)
+                x = (10/dist)*(mess.x-self._pos.x)
+                y =  (10 / dist) *(mess.y-self._pos.y)
 
-                    print(x,y)
-                    angle = Vector2D.Vector2D(x, y)
-                    self._attack(angle)
+                print(x,y)
+                angle = Vector2D.Vector2D(x, y)
+                self._attack(angle)
 
     def _attack(self, angle):
         if super()._attack():

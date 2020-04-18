@@ -10,13 +10,10 @@ class ApplePlayer(Player.Player):
     def __init__(self, player_id):
         super(ApplePlayer, self).__init__(player_id, Player.PicFile.APPLE)
 
-    def update(self, pressed_keys):
-        super().update(pressed_keys)
-        ev = pg.event.get()
-        for event in ev:
-            print("eve")
+    def update(self, pressed_keys, events):
+        super().update(pressed_keys, events)
+        for event in events:
             if event.type == pg.MOUSEBUTTONUP:
-                print("fggfds")
                 x, y = pg.mouse.get_pos()
                 print(x, y)
                 mes = BaseMessage(climess.MessageType.APPLE_ATTACK, climess.Target.PLAYER_LOGIC + str(self._id))

@@ -23,7 +23,7 @@ class Player(pg.sprite.Sprite):
             pg.draw.line(self.surf, (0, 255, 0), (15, 0), (45, 0))
         self._id = player_id
 
-    def update(self, pressed_keys):
+    def update(self, pressed_keys, events):
         network_messages = []
 
         if pressed_keys:

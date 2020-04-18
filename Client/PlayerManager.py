@@ -32,13 +32,15 @@ class PlayerManager:
         for player_id in orange_ai_ids:
             self.players.append(PlayerAI(player_id, Player.PicFile.ORANGE))
 
-    def update(self, pressed_keys):
+    def update(self, pressed_keys, events):
         for player in self.players:
             if player._id == Client.get_instance().id:
                 player_keys = pressed_keys
+                player_events = events
             else:
                 player_keys = []
-            player.update(player_keys)
+                player_events = []
+            player.update(player_keys, player_events)
 
     def draw_players(self, screen):
         for p in self.players:
