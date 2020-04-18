@@ -1,6 +1,8 @@
 import Player
 from PlayerAI import PlayerAI
 from Client import Client
+import ApplePlayer
+import OrangePlayer
 
 
 class PlayerManager:
@@ -22,13 +24,13 @@ class PlayerManager:
 
     def create_players(self, apple_human_ids, orange_human_ids, apple_ai_ids, orange_ai_ids):
         for player_id in apple_human_ids:
-            self.players.append(Player.Player(player_id, Player.PicFile.APPLE))
+            self.players.append(ApplePlayer.ApplePlayer(player_id))
         for player_id in orange_human_ids:
-            self.players.append(Player.Player(player_id, Player.PicFile.ORANGE))
+            self.players.append(OrangePlayer.OrangePlayer(player_id))
         for player_id in apple_ai_ids:
-            self.players.append(PlayerAI(player_id, Player.PicFile.ORANGE))
-        for player_id in orange_ai_ids:
             self.players.append(PlayerAI(player_id, Player.PicFile.APPLE))
+        for player_id in orange_ai_ids:
+            self.players.append(PlayerAI(player_id, Player.PicFile.ORANGE))
 
     def update(self, pressed_keys):
         for player in self.players:
