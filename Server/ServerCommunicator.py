@@ -22,11 +22,16 @@ class ServerCommunicator(threading.Thread):
 
             mes_separated = []
             mes_end_index = 0
+            brackets = 0
+
             for i in range(len(message)):
-                if message[i] == '}':
-                    mes_separated.append(message[mes_end_index:i+1])
-                    print(message[mes_end_index:i+1])
-                    mes_end_index = i+1
+                if message[i] == '{':
+                    brackets += 1
+                elif message[i] == '}':
+                    brackets += -1
+                    if brackets == 0:
+                        mes_separated.append(message[mes_end_index:i+1])
+                        mes_end_index = i+1
 
             for m in mes_separated:
                 deserialized = json.loads(m)
