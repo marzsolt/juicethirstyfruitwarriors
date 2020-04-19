@@ -15,7 +15,7 @@ class ApplePlayer(Player.Player):
         for event in events:
             if event.type == pg.MOUSEBUTTONUP:
                 x, y = pg.mouse.get_pos()
-                print(x, y)
+                
                 mes = BaseMessage(climess.MessageType.APPLE_ATTACK, climess.Target.PLAYER_LOGIC + str(self._id))
                 mes.x = x
                 mes.y = self.SCREEN_HEIGHT - y

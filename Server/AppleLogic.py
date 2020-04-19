@@ -12,25 +12,25 @@ class AppleLogic(PlayerLogic.PlayerLogic):
         super()._process_requests(network_messages)
         for mess in network_messages:
             if mess.type == climess.MessageType.APPLE_ATTACK:
-                # mouse_pos = mess.mouse_pos
-                dist = math.sqrt((mess.x - self._pos.x) ** 2 + (mess.y - self._pos.y) ** 2)
-                #side = abs(mess.y - self._pos.y)
-                #angle = math. asin(side/dist)
-                x = (10/dist)*(mess.x-self._pos.x)
-                y =  (10 / dist) *(mess.y-self._pos.y)
 
-                print(x,y)
-                angle = Vector2D.Vector2D(x, y)
-                self._attack(angle)
+                if mess.y > self._pos.y:
+                    dist = math.sqrt((mess.x - self._pos.x) ** 2 + (mess.y - self._pos.y) ** 2)
+                    strength = 10
 
-    def _attack(self, angle):
-        if super()._attack():
-            self._add_force(angle)
+                    x = (strength/dist)*(mess.x-self._pos.x)
+                    y = (strength/dist)*(mess.y-self._pos.y)
+
+                    force_of_jump = Vector2D.Vector2D(x, y)
+                    self._attack(force_of_jump)
+
+    def _attack(self, force):
+        if not self._is_flying:
+            self._add_force(force)
             self._impact()
             return True
         return False
 
     def _impact(self):
-        print("bumm bumm nyaff")
+        print("bumm apple bumm")
 
 
