@@ -11,13 +11,13 @@ class OrangePlayer(Player.Player):
 
         self.surf_angle = 0
         self.surf_base = None
-        self.rotation_angle = 30  # it must be a divisor of 360 degrees for correct functioning!
+        self.rotation_angle = 20  # it must be a divisor of 360 degrees for correct functioning!
         self.rotation_dir = None
 
     def update(self, pressed_keys, events):
         super().update(pressed_keys, events)
 
-        if pressed_keys[pg.K_a] and self.surf_angle == 0:
+        if pressed_keys and pressed_keys[pg.K_a] and self.surf_angle == 0:
             mes = BaseMessage(climess.MessageType.ORANGE_ATTACK, climess.Target.PLAYER_LOGIC + str(self._id))
             Client.get_instance().send_message(mes)
 

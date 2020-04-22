@@ -4,6 +4,7 @@ from Server import Server
 import client_message_constants as climess
 import server_message_constants as sermess
 from BaseMessage import BaseMessage
+from PlayerLogic import PlayerLogic
 from OrangeLogic import OrangeLogic
 from AppleLogic import AppleLogic
 from OrangeAI import OrangeAI
@@ -26,8 +27,19 @@ class Game:
         if not self.__game_started:
             self.__collect_players()
         else:
-            for pl in self.__player_logics:
-                pl.update()
+            for pl_i_ind in range(len(self.__player_logics)):
+                pl_i = self.__player_logics[pl_i_ind]
+                
+                # HP update for each player:
+                for pl_j_ind in range(pl_i_ind + 1, len(self.__player_logics)):
+                    pl_j = self.__player_logics[pl_j_ind]
+
+                    if(abs(pl_i._pos.x - pl_j._pos.x) <= PlayerLogic.RADIUS and
+                            abs(pl_i._pos.y - pl_j._pos.y) <= PlayerLogic.RADIUS):
+                        pl_i.hp -= 1
+                        pl_j.hp -= 1
+
+                pl_i.update()
                 time.sleep(0.001)  # TODO remove this!
 
     def __collect_players(self):
