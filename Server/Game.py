@@ -50,7 +50,7 @@ class Game:
         orange_ai_ids = []
         apple_ai_ids = []
         for player_id in human_ids:  # create server side players for humans
-            if player_id % 2 == 0:  # TODO this distribution is only for testing!
+            if player_id % 2 != 0:  # TODO this distribution is only for testing!
                 new_player_logic = AppleLogic(player_id, self.__terrain)
                 apple_human_ids.append(player_id)
             else:

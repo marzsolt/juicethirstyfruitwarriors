@@ -43,3 +43,4 @@ class Player(pg.sprite.Sprite):
         for mess in messages:
             if mess.type == sermess.MessageType.PLAYER_POSITION:
                 self.rect.center = (mess.x, self.SCREEN_HEIGHT - mess.y)  # graphical y axis is weird
+                self.dir = mess.dir

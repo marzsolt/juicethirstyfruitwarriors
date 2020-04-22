@@ -28,7 +28,7 @@ class PlayerLogic:
         self.mu = 0.1  # friction constant
         self._mass = 1
         self._pos = Vector2D(50+player_id*100, 300)
-        self._vel = Vector2D(0, 0)
+        self._vel = Vector2D.zero()
         self._forces = []
         self._is_flying = True
 
@@ -63,6 +63,7 @@ class PlayerLogic:
         msg.player_id = self._id
         msg.x = self._pos.x
         msg.y = self._pos.y
+        msg.dir = self.my_dir().value
         Server.get_instance().send_all(msg)
 
     def _attack(self):
@@ -97,7 +98,7 @@ class PlayerLogic:
         if self.can_accelerate(1):
             self._add_ground_directed_force(self._mobility, Direction.RIGHT)
 
-    def _stop(self):
+    def _stop(self): # TODO: this seems to benevr used
         self._vel = Vector2D.zero()
 
     def _put_to_ground_level(self):
