@@ -34,10 +34,10 @@ class Game:
                 for pl_j_ind in range(pl_i_ind + 1, len(self.__player_logics)):
                     pl_j = self.__player_logics[pl_j_ind]
 
-                    if(abs(pl_i._pos.x - pl_j._pos.x) <= PlayerLogic.RADIUS and
-                            abs(pl_i._pos.y - pl_j._pos.y) <= PlayerLogic.RADIUS):
-                        pl_i.hp -= 1
-                        pl_j.hp -= 1
+                    if(abs(pl_i._pos.x - pl_j._pos.x) <= 2 * PlayerLogic.RADIUS and
+                            abs(pl_i._pos.y - pl_j._pos.y) <= 2 * PlayerLogic.RADIUS):
+                        pl_i.hp -= 1 if pl_i.hp != 0 else 0
+                        pl_j.hp -= 1 if pl_j.hp != 0 else 0
 
                 pl_i.update()
                 time.sleep(0.001)  # TODO remove this!
