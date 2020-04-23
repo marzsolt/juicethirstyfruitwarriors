@@ -11,7 +11,7 @@ class AppleLogic(PlayerLogic.PlayerLogic):
         self._is_attacking = False
         self._min_attack_angle = 0.15
         self._normal_attack_strength = 7
-        self._min_attack_strength = 3
+        self._min_attack_strength = 7
 
         self._min_attack_x, self._min_attack_y = self._attack_constants()
 
@@ -19,12 +19,10 @@ class AppleLogic(PlayerLogic.PlayerLogic):
         super()._process_requests(network_messages)
         for mess in network_messages:
             if mess.type == climess.MessageType.APPLE_ATTACK:
+                x, y = self._calculate_attack_force(mess.x, mess.y)
 
-                if mess.y > self._pos.y:
-                    x, y = self._calculate_attack_force(mess.x, mess.y)
-
-                    force_of_jump = Vector2D.Vector2D(x, y)
-                    self._attack(force_of_jump)
+                force_of_jump = Vector2D.Vector2D(x, y)
+                self._attack(force_of_jump)
 
     def _attack_constants(self):
         x = -1 * self._min_attack_strength * math.cos(self._min_attack_angle)
