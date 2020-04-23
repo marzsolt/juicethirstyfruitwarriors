@@ -1,6 +1,5 @@
 import Player
 import pygame as pg
-import Vector2D
 from BaseMessage import BaseMessage
 from Client import Client
 import client_message_constants as climess

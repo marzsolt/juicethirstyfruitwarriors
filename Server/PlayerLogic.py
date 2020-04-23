@@ -28,15 +28,16 @@ class PlayerLogic:
         self.mu = 0.1  # friction constant
         self._mass = 1
         self._pos = Vector2D(50+player_id*100, 300)
-        self._vel = Vector2D(0, 0)
+        self._vel = Vector2D.zero()
         self._forces = []
         self._is_flying = True
+        self.hp = 100
 
     def update(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC+str(self._id))
         self._process_requests(messages)
         self._do_physics()
-        self._send_updated_pos()
+        self._send_updated_pos_hp()
 
     def get_id(self):
         return self._id
@@ -58,12 +59,15 @@ class PlayerLogic:
         # position_messages = list(filter(lambda x: x.type == climess.MessageType.PLAYER_MOVEMENT, network_messages))
         self._process_movement_messages(pos_mess)
 
-    def _send_updated_pos(self):
-        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POSITION, target=sermess.Target.PLAYER + str(self._id))
+    def _send_updated_pos_hp(self):
+        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POS_HP, target=sermess.Target.PLAYER + str(self._id))
         msg.player_id = self._id
         msg.x = self._pos.x
         msg.y = self._pos.y
+        msg.dir = self.my_dir().value
+        msg.hp = self.hp
         Server.get_instance().send_all(msg)
+
 
     def _attack(self):
         return True  # TODO cooldown?
@@ -97,7 +101,7 @@ class PlayerLogic:
         if self.can_accelerate(1):
             self._add_ground_directed_force(self._mobility, Direction.RIGHT)
 
-    def _stop(self):
+    def _stop(self): # TODO: this seems to benevr used
         self._vel = Vector2D.zero()
 
     def _put_to_ground_level(self):

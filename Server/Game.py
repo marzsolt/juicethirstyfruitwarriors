@@ -4,6 +4,7 @@ from Server import Server
 import client_message_constants as climess
 import server_message_constants as sermess
 from BaseMessage import BaseMessage
+from PlayerLogic import PlayerLogic
 from OrangeLogic import OrangeLogic
 from AppleLogic import AppleLogic
 from OrangeAI import OrangeAI
@@ -26,8 +27,19 @@ class Game:
         if not self.__game_started:
             self.__collect_players()
         else:
-            for pl in self.__player_logics:
-                pl.update()
+            for pl_i_ind in range(len(self.__player_logics)):
+                pl_i = self.__player_logics[pl_i_ind]
+                
+                # HP update for each player:
+                for pl_j_ind in range(pl_i_ind + 1, len(self.__player_logics)):
+                    pl_j = self.__player_logics[pl_j_ind]
+
+                    if(abs(pl_i._pos.x - pl_j._pos.x) <= 2 * PlayerLogic.RADIUS and
+                            abs(pl_i._pos.y - pl_j._pos.y) <= 2 * PlayerLogic.RADIUS):
+                        pl_i.hp -= 1 if pl_i.hp != 0 else 0
+                        pl_j.hp -= 1 if pl_j.hp != 0 else 0
+
+                pl_i.update()
                 time.sleep(0.001)  # TODO remove this!
 
     def __collect_players(self):
@@ -50,7 +62,7 @@ class Game:
         orange_ai_ids = []
         apple_ai_ids = []
         for player_id in human_ids:  # create server side players for humans
-            if player_id % 2 == 0:  # TODO this distribution is only for testing!
+            if player_id % 2 != 0:  # TODO this distribution is only for testing!
                 new_player_logic = AppleLogic(player_id, self.__terrain)
                 apple_human_ids.append(player_id)
             else:
