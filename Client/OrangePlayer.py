@@ -3,6 +3,7 @@ import pygame as pg
 from BaseMessage import BaseMessage
 from Client import Client
 import client_message_constants as climess
+import server_message_constants as sermess
 
 
 class OrangePlayer(Player.Player):
@@ -21,10 +22,15 @@ class OrangePlayer(Player.Player):
             mes = BaseMessage(climess.MessageType.ORANGE_ATTACK, climess.Target.PLAYER_LOGIC + str(self._id))
             Client.get_instance().send_message(mes)
 
-            self.surf_angle += self.rotation_angle
-            self.surf_base = self.surf
-            self.rotation_dir = self.dir
-            print(self.dir)
+        self.orange_rolling()
+
+    def orange_rolling(self):
+        messages = Client.get_instance().get_targets_messages(sermess.Target.ORANGE_PLAYER + str(self._id))
+        for mes in messages:
+            if mes.type == sermess.MessageType.ORANGE_ROLL and self.surf_angle == 0:
+                self.surf_angle += self.rotation_angle
+                self.surf_base = self.surf
+                self.rotation_dir = self.dir
 
         if self.surf_angle != 0:
             self.surf = self.surf_base
