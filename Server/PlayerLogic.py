@@ -1,11 +1,13 @@
-from Server import Server
-import server_message_constants as sermess
-import client_message_constants as climess
-from BaseMessage import BaseMessage
-from Vector2D import Vector2D
-
 import math
 from enum import Enum
+
+from juicethirstyfruitwarriors.Server.Server import Server
+from juicethirstyfruitwarriors.Server.Vector2D import Vector2D
+import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+
+import juicethirstyfruitwarriors.Client.client_message_constants as climess
+
+from juicethirstyfruitwarriors.BaseMessage import BaseMessage
 
 
 class Direction(Enum):

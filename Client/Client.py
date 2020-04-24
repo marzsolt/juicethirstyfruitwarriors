@@ -1,7 +1,8 @@
 from collections import defaultdict
-import ClientCommunicator
-import client_message_constants as climess
-import server_message_constants as sermess
+
+from juicethirstyfruitwarriors.Client.ClientCommunicator import ClientCommunicator
+import juicethirstyfruitwarriors.Client.client_message_constants as climess
+import juicethirstyfruitwarriors.Server.server_message_constants as sermess
 
 
 class Client:
@@ -29,7 +30,7 @@ class Client:
     def setup_connection(self, ip):
         host = ip
         port = 12145  # Random port number
-        self.__communicator = ClientCommunicator.ClientCommunicator(self, host, port)
+        self.__communicator = ClientCommunicator(self, host, port)
         self.__communicator.start()
 
     def receive_message(self, message):
@@ -48,3 +49,4 @@ class Client:
 
     def send_message(self, message):
         self.__communicator.send_message(message)
+        

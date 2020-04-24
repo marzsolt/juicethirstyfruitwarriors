@@ -1,17 +1,18 @@
 import pygame as pg
 import pygameMenu as pgM
 
-import screen_state_constants as sstatecons
+import juicethirstyfruitwarriors.Client.screen_state_constants as sstatecons
 
 # networking
-import Client
+from juicethirstyfruitwarriors.Client.Client import Client
+
 import socket  # to be able to set default IP on connection screen to OUR IP
 
 # messaging
-import client_message_constants as climess
-import server_message_constants as sermess
-import BaseMessage
-from PlayerManager import PlayerManager
+from juicethirstyfruitwarriors.Client.PlayerManager import PlayerManager
+import juicethirstyfruitwarriors.Client.client_message_constants as climess
+import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+from juicethirstyfruitwarriors.BaseMessage import BaseMessage
 
 
 class Screen:
@@ -193,7 +194,7 @@ class Screen:
             self.__playMenu.get_widget('playMenu_input_IP').set_value('')
         else:
             self.__connectionMenu.add_line('Connecting to ' + val + ', please wait.')
-            Client.Client.get_instance().setup_connection(val)
+            Client.get_instance().setup_connection(val)
             self.__screenState = sstatecons.ScreenState.CONNECTION_MENU
             self.__mainMenu.disable()
             self.__connectionMenu.enable()
@@ -201,11 +202,11 @@ class Screen:
     def _connection_menu_bgfun(self):
         # when in INITIAL state and client connection got a status
         if self.__connectionMenuState == sstatecons.ConnectionMenuState.INITIAL and\
-                Client.Client.get_instance().connection_alive is not None:
+                Client.get_instance().connection_alive is not None:
 
             self.__connectionMenu.add_line('')
 
-            if Client.Client.get_instance().connection_alive:
+            if Client.get_instance().connection_alive:
                 self.__connectionMenu.disable()
                 self.__connectionMenu, _ = self._init_connection_menu()
                 self.__connectionMenu.enable()
@@ -216,8 +217,8 @@ class Screen:
             self.__connectionMenuState = sstatecons.ConnectionMenuState.CONN_MSG_SHOWN
 
         elif self.__connectionMenuState == sstatecons.ConnectionMenuState.CONN_MSG_SHOWN:
-            if Client.Client.get_instance().connection_alive:
-                msgs = Client.Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
+            if Client.get_instance().connection_alive:
+                msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
 
                 for msg in msgs:
                     # if this is the first time got FIRST PLAYER msg, then set it accordingly to true
@@ -251,20 +252,20 @@ class Screen:
                 self.__connectionMenu, self.__connectionMenuState = self._init_connection_menu()
 
                 # acknowledged the connection error status, and now set back the flag to None
-                Client.Client.get_instance().connection_alive = None
+                Client.get_instance().connection_alive = None
 
                 pg.time.wait(2500)
 
     @staticmethod
     def _connection_menu_player_count_selector_onchange(_, value):
-        msg = BaseMessage.BaseMessage(mess_type=climess.MessageType.CHANGE_PLAYER_NUMBER, target=climess.Target.GAME)
+        msg = BaseMessage(mess_type=climess.MessageType.CHANGE_PLAYER_NUMBER, target=climess.Target.GAME)
         msg.new_number = value
-        Client.Client.get_instance().send_message(msg)
+        Client.get_instance().send_message(msg)
 
     @staticmethod
     def _connection_menu_start_pressed():
-        msg = BaseMessage.BaseMessage(mess_type=climess.MessageType.START_GAME_MANUALLY, target=climess.Target.GAME)
-        Client.Client.get_instance().send_message(msg)
+        msg = BaseMessage(mess_type=climess.MessageType.START_GAME_MANUALLY, target=climess.Target.GAME)
+        Client.get_instance().send_message(msg)
 
     def _draw_background_and_terrain(self):
         self.__screen.fill(self.BLACK)  # black bg

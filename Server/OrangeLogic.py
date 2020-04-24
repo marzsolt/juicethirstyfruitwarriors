@@ -1,12 +1,15 @@
-import PlayerLogic
-from Vector2D import Vector2D
-import client_message_constants as climess
-import server_message_constants as sermess
-from BaseMessage import BaseMessage
-from Server import Server
+from juicethirstyfruitwarriors.Server.Server import Server
+from juicethirstyfruitwarriors.Server.PlayerLogic import PlayerLogic
+from juicethirstyfruitwarriors.Server.Vector2D import Vector2D
+import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+
+import juicethirstyfruitwarriors.Client.client_message_constants as climess
+
+from juicethirstyfruitwarriors.BaseMessage import BaseMessage
 
 
-class OrangeLogic(PlayerLogic.PlayerLogic):
+
+class OrangeLogic(PlayerLogic):
     def __init__(self, player_id, terrain):
         super(OrangeLogic, self).__init__(player_id, terrain)
 

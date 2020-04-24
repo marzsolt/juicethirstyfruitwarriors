@@ -1,8 +1,8 @@
-import Player
-from PlayerAI import PlayerAI
-from Client import Client
-import ApplePlayer
-import OrangePlayer
+from juicethirstyfruitwarriors.Client.Client import Client
+from juicethirstyfruitwarriors.Client.Player import Player
+from juicethirstyfruitwarriors.Client.PlayerAI import PlayerAI
+from juicethirstyfruitwarriors.Client.ApplePlayer import ApplePlayer
+from juicethirstyfruitwarriors.Client.OrangePlayer import OrangePlayer
 
 
 class PlayerManager:
@@ -24,9 +24,9 @@ class PlayerManager:
 
     def create_players(self, apple_human_ids, orange_human_ids, apple_ai_ids, orange_ai_ids):
         for player_id in apple_human_ids:
-            self.players.append(ApplePlayer.ApplePlayer(player_id))
+            self.players.append(ApplePlayer(player_id))
         for player_id in orange_human_ids:
-            self.players.append(OrangePlayer.OrangePlayer(player_id))
+            self.players.append(OrangePlayer(player_id))
         for player_id in apple_ai_ids:
             self.players.append(PlayerAI(player_id, Player.PicFile.APPLE))
         for player_id in orange_ai_ids:

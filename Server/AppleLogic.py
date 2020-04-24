@@ -1,10 +1,12 @@
-import PlayerLogic
-import client_message_constants as climess
 import math
-import Vector2D
+
+import juicethirstyfruitwarriors.Client.client_message_constants as climess
+
+from juicethirstyfruitwarriors.Server.PlayerLogic import PlayerLogic
+from juicethirstyfruitwarriors.Server.Vector2D import Vector2D
 
 
-class AppleLogic(PlayerLogic.PlayerLogic):
+class AppleLogic(PlayerLogic):
     def __init__(self, player_id, terrain):
         super(AppleLogic, self).__init__(player_id, terrain)
 
@@ -21,7 +23,7 @@ class AppleLogic(PlayerLogic.PlayerLogic):
             if mess.type == climess.MessageType.APPLE_ATTACK:
                 x, y = self._calculate_attack_force(mess.x, mess.y)
 
-                force_of_jump = Vector2D.Vector2D(x, y)
+                force_of_jump = Vector2D(x, y)
                 self._attack(force_of_jump)
 
     def _attack_constants(self):

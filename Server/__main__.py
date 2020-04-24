@@ -1,7 +1,8 @@
 import sched
 import time
-from Server import Server
-from Game import Game
+
+from juicethirstyfruitwarriors.Server.Server import Server
+from juicethirstyfruitwarriors.Server.Game import Game
 
 
 def main():

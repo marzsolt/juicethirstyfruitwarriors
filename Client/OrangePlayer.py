@@ -1,14 +1,18 @@
-import Player
 import pygame as pg
-from BaseMessage import BaseMessage
-from Client import Client
-import client_message_constants as climess
-import server_message_constants as sermess
+
+from juicethirstyfruitwarriors.Client.Client import Client
+from juicethirstyfruitwarriors.Client.Player import Player
+from juicethirstyfruitwarriors.Client.Player import PicFile
+import juicethirstyfruitwarriors.Client.client_message_constants as climess
+
+import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+
+from juicethirstyfruitwarriors.BaseMessage import BaseMessage
 
 
-class OrangePlayer(Player.Player):
+class OrangePlayer(Player):
     def __init__(self, player_id):
-        super(OrangePlayer, self).__init__(player_id, Player.PicFile.ORANGE)
+        super(OrangePlayer, self).__init__(player_id, PicFile.ORANGE)
 
         self.surf_angle = 0
         self.surf_base = None

@@ -1,11 +1,15 @@
 import socket
 import threading
 from collections import defaultdict
-import ServerCommunicator
-from utils.domi_utils import id_generator
-import server_message_constants
-import client_message_constants as client_constants
-import BaseMessage
+
+from juicethirstyfruitwarriors.Server.ServerCommunicator import ServerCommunicator
+import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+
+import juicethirstyfruitwarriors.Client.client_message_constants as client_constants
+
+from juicethirstyfruitwarriors.BaseMessage import BaseMessage
+
+from juicethirstyfruitwarriors.utils.domi_utils import id_generator
 
 
 class Server(threading.Thread):
@@ -68,13 +72,13 @@ class Server(threading.Thread):
         return next(self.__id_gen)
 
     def __new_client(self, _new_client):
-        newCom = ServerCommunicator.ServerCommunicator(_server=self, _client=_new_client, ID=next(self.__id_gen))
+        newCom = ServerCommunicator(_server=self, _client=_new_client, ID=next(self.__id_gen))
         newCom.start()
         self.__serverCommunicatorsList.append(newCom)
 
         # sending client id
-        message = BaseMessage.BaseMessage(mess_type=server_message_constants.MessageType.YOUR_ID,
-                                          target=server_message_constants.Target.CLIENT)
+        message = BaseMessage(mess_type=sermess.MessageType.YOUR_ID,
+                                          target=sermess.Target.CLIENT)
         message.id = newCom.ID
         self.send_message(message, newCom.ID)
 

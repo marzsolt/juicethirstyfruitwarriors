@@ -1,13 +1,12 @@
 import pygame as pg
 
-# Self defined classes
-import Screen
+from juicethirstyfruitwarriors.Client.Screen import Screen
 
 
 def main():
     pg.init()
 
-    screen = Screen.Screen()  # set up the screen
+    screen = Screen()  # set up the screen
 
     # Setup the clock for a decent framerate
     clock = pg.time.Clock()
