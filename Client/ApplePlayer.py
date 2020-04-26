@@ -1,13 +1,18 @@
-import Player
 import pygame as pg
-from BaseMessage import BaseMessage
-from Client import Client
-import client_message_constants as climess
+
+from juicethirstyfruitwarriors.Client.Client import Client
+from juicethirstyfruitwarriors.Client.Player import Player
+from juicethirstyfruitwarriors.Client.Player import PicFile
+import juicethirstyfruitwarriors.Client.client_message_constants as climess
+
+from juicethirstyfruitwarriors.BaseMessage import BaseMessage
 
 
-class ApplePlayer(Player.Player):
+
+
+class ApplePlayer(Player):
     def __init__(self, player_id):
-        super(ApplePlayer, self).__init__(player_id, Player.PicFile.APPLE)
+        super(ApplePlayer, self).__init__(player_id, PicFile.APPLE)
 
     def update(self, pressed_keys, events):
         super().update(pressed_keys, events)

@@ -1,12 +1,15 @@
 import sched
 import time
-from Server import Server
-from Game import Game
+
+from juicethirstyfruitwarriors.Server.Server import Server
+from juicethirstyfruitwarriors.Server.Game import Game
+from juicethirstyfruitwarriors.Server.Timer import Timer
 
 
-def main():
+def main():            
     def update():
         s.enter(1.0/fps, 1, update, ())  # call update again in 25 ms
+        Timer.update()
         game.update()
 
     # Networking

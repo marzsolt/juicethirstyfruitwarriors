@@ -1,9 +1,15 @@
-import PlayerLogic
-from Vector2D import Vector2D
-import client_message_constants as climess
+from juicethirstyfruitwarriors.Server.Server import Server
+from juicethirstyfruitwarriors.Server.PlayerLogic import PlayerLogic
+from juicethirstyfruitwarriors.Server.Vector2D import Vector2D
+import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+
+import juicethirstyfruitwarriors.Client.client_message_constants as climess
+
+from juicethirstyfruitwarriors.BaseMessage import BaseMessage
 
 
-class OrangeLogic(PlayerLogic.PlayerLogic):
+
+class OrangeLogic(PlayerLogic):
     def __init__(self, player_id, terrain):
         super(OrangeLogic, self).__init__(player_id, terrain)
 
@@ -17,6 +23,10 @@ class OrangeLogic(PlayerLogic.PlayerLogic):
             if mess.type == climess.MessageType.ORANGE_ATTACK:
                 if self._vel != Vector2D.zero():
                     self._attack()
+
+                    #  ACK valid attack -> actually for rolling purposes
+                    mes = BaseMessage(sermess.MessageType.ORANGE_ROLL, sermess.Target.ORANGE_PLAYER + str(self._id))
+                    Server.get_instance().send_all(mes)
 
     def _attack(self):
         if super()._attack() and not self._is_flying:

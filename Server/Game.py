@@ -1,15 +1,18 @@
 import time
 
-from Server import Server
-import client_message_constants as climess
-import server_message_constants as sermess
-from BaseMessage import BaseMessage
-from PlayerLogic import PlayerLogic
-from OrangeLogic import OrangeLogic
-from AppleLogic import AppleLogic
-from OrangeAI import OrangeAI
-from AppleAI import AppleAI
-import Terrain
+from juicethirstyfruitwarriors.Server.Server import Server
+from juicethirstyfruitwarriors.Server.PlayerLogic import PlayerLogic
+from juicethirstyfruitwarriors.Server.OrangeLogic import OrangeLogic
+from juicethirstyfruitwarriors.Server.AppleLogic import AppleLogic
+from juicethirstyfruitwarriors.Server.OrangeAI import OrangeAI
+from juicethirstyfruitwarriors.Server.AppleAI import AppleAI
+from juicethirstyfruitwarriors.Server.Terrain import Terrain
+import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+
+import juicethirstyfruitwarriors.Client.client_message_constants as climess
+
+from juicethirstyfruitwarriors.BaseMessage import BaseMessage
+
 
 
 class Game:
@@ -20,7 +23,7 @@ class Game:
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
         self.__player_logics = []
-        self.__terrain = Terrain.Terrain()
+        self.__terrain = Terrain()
 
     def update(self):
         self.__read_messages()
