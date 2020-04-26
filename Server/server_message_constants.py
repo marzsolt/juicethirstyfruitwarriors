@@ -7,13 +7,14 @@ class MessageType(str, Enum):
     YOUR_ID = "your ID is..."
     FIRST_PLAYER = "you are the host"
     INITIAL_DATA = "gl hf"
-    PLAYER_POSITION = "movement of players"
-
+    PLAYER_POS_HP = "movement and health of players"
+    ORANGE_ROLL = "roll orange..."
 
 
 class Target(str, Enum):
     """Who is the target of the message."""
     SCREEN = "screen"
-    PLAYER = "player"  # should use ID someway 
+    PLAYER = "player"  # should use ID someway
+    ORANGE_PLAYER = "orange player" # for rolling purposes, iinf of ACK of valid attack
     CLIENT = "client"  # e.g. for network connection setup, closure
     PLAYER_MANAGER = "player manager"

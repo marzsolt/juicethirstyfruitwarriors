@@ -2,7 +2,7 @@ import random as ra
 import math as mat
 import bresenham as br
 
-from Vector2D import Vector2D
+from juicethirstyfruitwarriors.Server.Vector2D import Vector2D
 
 
 class Terrain:

@@ -1,31 +1,48 @@
 import time
 
-from Server import Server
-import client_message_constants as climess
-import server_message_constants as sermess
-from BaseMessage import BaseMessage
-from PlayerLogic import PlayerLogic
-from PlayerAILogic import PlayerAILogic
-import Terrain
+from juicethirstyfruitwarriors.Server.Server import Server
+from juicethirstyfruitwarriors.Server.PlayerLogic import PlayerLogic
+from juicethirstyfruitwarriors.Server.OrangeLogic import OrangeLogic
+from juicethirstyfruitwarriors.Server.AppleLogic import AppleLogic
+from juicethirstyfruitwarriors.Server.OrangeAI import OrangeAI
+from juicethirstyfruitwarriors.Server.AppleAI import AppleAI
+from juicethirstyfruitwarriors.Server.Terrain import Terrain
+import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+
+import juicethirstyfruitwarriors.Client.client_message_constants as climess
+
+from juicethirstyfruitwarriors.BaseMessage import BaseMessage
+
 
 
 class Game:
     def __init__(self):
         self.__game_started = False
         self.__chose_host = False
-        self.__AI_number = 2
+        self.__AI_number = 0
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
         self.__player_logics = []
-        self.__terrain = Terrain.Terrain()
+        self.__terrain = Terrain()
 
     def update(self):
         self.__read_messages()
         if not self.__game_started:
             self.__collect_players()
         else:
-            for pl in self.__player_logics:
-                pl.update()
+            for pl_i_ind in range(len(self.__player_logics)):
+                pl_i = self.__player_logics[pl_i_ind]
+                
+                # HP update for each player:
+                for pl_j_ind in range(pl_i_ind + 1, len(self.__player_logics)):
+                    pl_j = self.__player_logics[pl_j_ind]
+
+                    if(abs(pl_i._pos.x - pl_j._pos.x) <= 2 * PlayerLogic.RADIUS and
+                            abs(pl_i._pos.y - pl_j._pos.y) <= 2 * PlayerLogic.RADIUS):
+                        pl_i.hp -= 1 if pl_i.hp != 0 else 0
+                        pl_j.hp -= 1 if pl_j.hp != 0 else 0
+
+                pl_i.update()
                 time.sleep(0.001)  # TODO remove this!
 
     def __collect_players(self):
@@ -43,21 +60,37 @@ class Game:
         self.__game_started = True
 
         human_ids = Server.get_instance().get_client_ids()
-        ai_ids = []
+        orange_human_ids = []
+        apple_human_ids = []
+        orange_ai_ids = []
+        apple_ai_ids = []
         for player_id in human_ids:  # create server side players for humans
-            self.__player_logics.append(PlayerLogic(player_id, self.__terrain))
+            if player_id % 2 != 0:  # TODO this distribution is only for testing!
+                new_player_logic = AppleLogic(player_id, self.__terrain)
+                apple_human_ids.append(player_id)
+            else:
+                new_player_logic = OrangeLogic(player_id, self.__terrain)
+                orange_human_ids.append(player_id)
+            self.__player_logics.append(new_player_logic)
         for i in range(self.__AI_number):  # create server side players for AIs
-            new_id = Server.get_instance().get_new_id()
-            self.__player_logics.append(PlayerAILogic(new_id, self.__terrain))
-            ai_ids.append(new_id)
+            player_id = Server.get_instance().get_new_id()
+
+            if player_id % 2 == 0:  # TODO this distribution is only for testing!
+                new_player_logic = AppleAI(player_id, self.__terrain)
+                apple_ai_ids.append(player_id)
+            else:
+                new_player_logic = OrangeAI(player_id, self.__terrain)
+                orange_ai_ids.append(player_id)
+            self.__player_logics.append(new_player_logic)
 
         mess = BaseMessage(sermess.MessageType.INITIAL_DATA, sermess.Target.SCREEN)
-        mess.human_ids = human_ids
-        mess.ai_ids = ai_ids
+        mess.apple_human_ids = apple_human_ids
+        mess.orange_human_ids = orange_human_ids
+        mess.apple_ai_ids = apple_ai_ids
+        mess.orange_ai_ids = orange_ai_ids
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
         Server.get_instance().send_all(mess)
-
 
     def __read_messages(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.GAME)

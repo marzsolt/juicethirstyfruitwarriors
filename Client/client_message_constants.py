@@ -7,6 +7,8 @@ class MessageType(str, Enum):
     CHANGE_PLAYER_NUMBER = "change player number"
     START_GAME_MANUALLY = "start game manually"
     PLAYER_MOVEMENT = "movement of player"
+    APPLE_ATTACK = "Into the sky!"
+    ORANGE_ATTACK = "Rock 'n ROLL!"
 
 
 class Target(str, Enum):
