@@ -16,7 +16,7 @@ class OrangePlayer(Player):
 
         self.surf_angle = 0
         self.surf_base = None
-        self.rotation_angle = 20  # it must be a divisor of 360 degrees for correct functioning!
+        self.rotation_angle = 15  # it must be a divisor of 360 degrees for correct functioning!
         self.rotation_dir = None
 
     def update(self, pressed_keys, events):

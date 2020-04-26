@@ -8,8 +8,6 @@ import juicethirstyfruitwarriors.Client.client_message_constants as climess
 from juicethirstyfruitwarriors.BaseMessage import BaseMessage
 
 
-
-
 class ApplePlayer(Player):
     def __init__(self, player_id):
         super(ApplePlayer, self).__init__(player_id, PicFile.APPLE)
@@ -24,6 +22,3 @@ class ApplePlayer(Player):
                 mes.x = x
                 mes.y = self.SCREEN_HEIGHT - y
                 Client.get_instance().send_message(mes)
-
-
-
