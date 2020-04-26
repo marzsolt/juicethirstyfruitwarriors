@@ -11,7 +11,6 @@ class AppleLogic(PlayerLogic.PlayerLogic):
         self._is_attacking = False
         self._min_attack_angle = 0.15
         self._normal_attack_strength = 7
-        self._min_attack_strength = 7
 
         self._min_attack_x, self._min_attack_y = self._attack_constants()
 
@@ -25,8 +24,8 @@ class AppleLogic(PlayerLogic.PlayerLogic):
                 self._attack(force_of_jump)
 
     def _attack_constants(self):
-        x = -1 * self._min_attack_strength * math.cos(self._min_attack_angle)
-        y = self._min_attack_strength * math.sin(self._min_attack_angle)
+        x = -1 * self._normal_attack_strength * math.cos(self._min_attack_angle)
+        y = self._normal_attack_strength * math.sin(self._min_attack_angle)
         return x, y
 
     def _calculate_attack_force(self, x, y):
