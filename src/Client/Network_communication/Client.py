@@ -48,4 +48,4 @@ class Client:
 
     def send_message(self, message):
         self.__communicator.send_message(message)
-        
+
