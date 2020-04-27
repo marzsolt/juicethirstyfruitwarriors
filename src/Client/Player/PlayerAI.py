@@ -1,4 +1,4 @@
-from juicethirstyfruitwarriors.Client.Player.Player import Player
+from src.Client.Player.Player import Player
 
 
 class PlayerAI(Player):

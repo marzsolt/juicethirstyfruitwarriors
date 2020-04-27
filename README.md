@@ -1,4 +1,4 @@
-"# juicethirstyfruitwarriors" 
+"# src" 
 # Short description
 My team would like to create a real-time platformer arena game (with multiplayer and AI players options). We plan to create different player-types, with different attacking abilities (e.g. one could become a deadly ball for a short time; another could throw himself into a direction with force set by the mouse, causing damage at impact...). Who survives the others, wins.
 

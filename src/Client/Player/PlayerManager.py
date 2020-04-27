@@ -1,8 +1,8 @@
-from juicethirstyfruitwarriors.Client.Network_communication.Client import Client
-from juicethirstyfruitwarriors.Client.Player.Player import Player
-from juicethirstyfruitwarriors.Client.Player.PlayerAI import PlayerAI
-from juicethirstyfruitwarriors.Client.Player.ApplePlayer import ApplePlayer
-from juicethirstyfruitwarriors.Client.Player.OrangePlayer import OrangePlayer
+from src.Client.Network_communication.Client import Client
+from src.Client.Player.Player import Player
+from src.Client.Player.PlayerAI import PlayerAI
+from src.Client.Player.ApplePlayer import ApplePlayer
+from src.Client.Player.OrangePlayer import OrangePlayer
 
 
 class PlayerManager:

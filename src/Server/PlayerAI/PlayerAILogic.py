@@ -1,7 +1,7 @@
 from enum import Enum
 import random
 
-from juicethirstyfruitwarriors.Server.Player.PlayerLogic import PlayerLogic
+from src.Server.Player.PlayerLogic import PlayerLogic
 
 
 class Movement(Enum):

@@ -1,6 +1,6 @@
 import pygame as pg
 
-from juicethirstyfruitwarriors.Client.Screen.Screen import Screen
+from src.Client.Screen.Screen import Screen
 
 
 def main():
@@ -8,7 +8,7 @@ def main():
 
     screen = Screen()  # set up the screen
 
-    # Setup the clock for a decent frame rate
+    # Setup the clock for a decent framerate
     clock = pg.time.Clock()
 
     running = True  # variable to keep the main loop running

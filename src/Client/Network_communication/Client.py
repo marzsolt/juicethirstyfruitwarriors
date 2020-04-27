@@ -1,7 +1,7 @@
 from collections import defaultdict
 
-from juicethirstyfruitwarriors.Client.Network_communication.ClientCommunicator import ClientCommunicator
-import juicethirstyfruitwarriors.Server.Network_communication.server_message_constants as sermess
+from src.Client.Network_communication.ClientCommunicator import ClientCommunicator
+import src.Server.Network_communication.server_message_constants as sermess
 
 
 class Client:

@@ -1,17 +1,17 @@
 import time
 
-from juicethirstyfruitwarriors.Server.Network_communication.Server import Server
-from juicethirstyfruitwarriors.Server.Player.PlayerLogic import PlayerLogic
-from juicethirstyfruitwarriors.Server.Player.OrangeLogic import OrangeLogic
-from juicethirstyfruitwarriors.Server.Player.AppleLogic import AppleLogic
-from juicethirstyfruitwarriors.Server.PlayerAI.OrangeAI import OrangeAI
-from juicethirstyfruitwarriors.Server.PlayerAI.AppleAI import AppleAI
-from juicethirstyfruitwarriors.Server.Game.Terrain import Terrain
-import juicethirstyfruitwarriors.Server.Network_communication.server_message_constants as sermess
+from src.Server.Network_communication.Server import Server
+from src.Server.Player.PlayerLogic import PlayerLogic
+from src.Server.Player.OrangeLogic import OrangeLogic
+from src.Server.Player.AppleLogic import AppleLogic
+from src.Server.PlayerAI.OrangeAI import OrangeAI
+from src.Server.PlayerAI.AppleAI import AppleAI
+from src.Server.Game.Terrain import Terrain
+import src.Server.Network_communication.server_message_constants as sermess
 
-import juicethirstyfruitwarriors.Client.Network_communication.client_message_constants as climess
+import src.Client.Network_communication.client_message_constants as climess
 
-from juicethirstyfruitwarriors.utils.BaseMessage import BaseMessage
+from src.utils.BaseMessage import BaseMessage
 
 
 

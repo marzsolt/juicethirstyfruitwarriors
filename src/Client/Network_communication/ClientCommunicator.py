@@ -2,7 +2,7 @@ import socket
 import threading
 import json
 
-from juicethirstyfruitwarriors.utils.domi_utils import dict_to_object
+from src.utils.domi_utils import dict_to_object
 
 
 class ClientCommunicator(threading.Thread):

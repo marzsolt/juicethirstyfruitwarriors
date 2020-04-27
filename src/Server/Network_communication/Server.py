@@ -2,14 +2,14 @@ import socket
 import threading
 from collections import defaultdict
 
-from juicethirstyfruitwarriors.Server.Network_communication.ServerCommunicator import ServerCommunicator
-import juicethirstyfruitwarriors.Server.Network_communication.server_message_constants as sermess
+from src.Server.Network_communication.ServerCommunicator import ServerCommunicator
+import src.Server.Network_communication.server_message_constants as sermess
 
-import juicethirstyfruitwarriors.Client.Network_communication.client_message_constants as client_constants
+import src.Client.Network_communication.client_message_constants as client_constants
 
-from juicethirstyfruitwarriors.utils.BaseMessage import BaseMessage
+from src.utils.BaseMessage import BaseMessage
 
-from juicethirstyfruitwarriors.utils.domi_utils import id_generator
+from src.utils.domi_utils import id_generator
 
 
 class Server(threading.Thread):
