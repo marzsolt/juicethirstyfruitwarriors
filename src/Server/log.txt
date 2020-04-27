@@ -1,0 +1,3 @@
+2020-04-27 21:38:35,376 - Imigyen szóla Domi.Server: - INFO - Server IP address: 192.168.1.14.
+2020-04-27 21:38:41,632 - Imigyen szóla Domi.Game: - INFO - Received manual game start signal.
+2020-04-27 21:38:41,632 - Imigyen szóla Domi.Game: - INFO - Game started, terrain sent to everyone

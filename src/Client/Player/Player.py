@@ -1,5 +1,6 @@
 import pygame as pg
 from enum import Enum
+import logging
 
 from src.Client.Network_communication.Client import Client
 import src.Client.Network_communication.client_message_constants as climess
@@ -10,7 +11,7 @@ from src.utils.BaseMessage import BaseMessage
 
 
 class PicFile(Enum):
-    ORANGE = "img/orange_test_image.png"
+    ORANGE = "img/orange_test_imag.png"
     APPLE = "img/apple_test_image.png"
 
 
@@ -22,7 +23,12 @@ class Player(pg.sprite.Sprite):
 
     def __init__(self, player_id, pic_file):
         super(Player, self).__init__()
-        self.surf = pg.image.load(pic_file.value).convert()  # may have to change the path
+        self.logger = logging.getLogger('Domi.Player')
+        try:
+            self.surf = pg.image.load(pic_file.value).convert()  # may have to change the path
+        except pg.error:  # PyCharm you are a liar, it's perfectly OK
+            self.logger.exception("Cannot load image!")
+            self.logger.critical("Atya ég!")
         self.surf.set_colorkey((255, 253, 201), pg.RLEACCEL)  # background color of the picture -> that color not shown
         self.rect = self.surf.get_rect()
         # TODO: replace this current player funcionality by showing it's health in green instead of re
