@@ -14,7 +14,7 @@ class ClientCommunicator(threading.Thread):
         self.port = _port
 
     def send_message(self, message):
-        serialized = json.dumps(message.__dict__)
+        serialized = json.dumps(json.dumps(message, default=lambda o: getattr(o, '__dict__', str(o))))  # recursive
         serialized = str.encode(serialized)
         self.client_socket.send(serialized)
 

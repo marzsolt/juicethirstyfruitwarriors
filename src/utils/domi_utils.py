@@ -21,7 +21,7 @@ def id_generator():
         yield cur_id
 
 
-def dict_to_object(dictionary):
+def dict_to_object(dictionary):  # recursive
     obj = type('new', (object,), dictionary)
     for a, b in dictionary.items():
         if isinstance(b, (list, tuple)):
