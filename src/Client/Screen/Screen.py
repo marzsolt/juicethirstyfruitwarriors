@@ -1,5 +1,6 @@
 import pygame as pg
 import pygameMenu as pgM
+import logging
 
 import src.Client.Screen.screen_state_constants as sstatecons
 
@@ -23,6 +24,7 @@ class Screen:
     WHITE = (255, 255, 255)
 
     def __init__(self, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH):
+        self.logger = logging.getLogger('Domi.Screen')
         self.__screen = pg.display.set_mode([screen_width, screen_height])
         self.__h, self.__w = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
 
@@ -223,7 +225,7 @@ class Screen:
                 for msg in msgs:
                     # if this is the first time got FIRST PLAYER msg, then set it accordingly to true
                     if self.__is_first_player is None and msg.type == sermess.MessageType.FIRST_PLAYER:
-                        print("I am the host.")
+                        self.logger.info("I am the host.")
                         self.__is_first_player = True
 
                         self.__connectionMenu.add_selector(
@@ -235,7 +237,7 @@ class Screen:
 
                         self.__connectionMenu.add_option('Play', self._connection_menu_start_pressed)
                     elif msg.type == sermess.MessageType.INITIAL_DATA:
-                        print("Game started, terrain loaded")
+                        self.logger.info("Game started, terrain loaded")
                         self.__terrain_points = msg.terrain_points
                         self.__terrain_points_levels = msg.terrain_points_levels
                         self.__screenState = sstatecons.ScreenState.GAME

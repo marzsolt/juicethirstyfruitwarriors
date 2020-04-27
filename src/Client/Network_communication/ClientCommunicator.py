@@ -1,6 +1,7 @@
 import socket
 import threading
 import json
+import logging
 
 from src.utils.domi_utils import dict_to_object
 
@@ -12,6 +13,7 @@ class ClientCommunicator(threading.Thread):
         self.client = _client
         self.host = _host
         self.port = _port
+        self.logger = logging.getLogger('Domi.ClientCommunicator')
 
     def send_message(self, message):
         serialized = json.dumps(message.__dict__)
@@ -22,11 +24,12 @@ class ClientCommunicator(threading.Thread):
         try:
             self.client_socket.connect((self.host, self.port))
         except socket.error:
-            print("ClientCommunicator Thread: Error connecting, returning from run()!")
+            self.logger.exception("Error during connecting, returning from run!")
             self.client.connection_alive = False
             return
         else:
             self.client.connection_alive = True
+            self.logger.info("Successful connection!")
 
         while True:
             message = self.client_socket.recv(1024)

@@ -1,6 +1,7 @@
 import socket
 import threading
 from collections import defaultdict
+import logging
 
 from src.Server.Network_communication.ServerCommunicator import ServerCommunicator
 import src.Server.Network_communication.server_message_constants as sermess
@@ -28,9 +29,10 @@ class Server(threading.Thread):
             raise Exception("This class is a singleton!")
         else:
             threading.Thread.__init__(self)
+            self.logger = logging.getLogger('Domi.Server')
             self.__port_number = 12145
             self.__host = socket.gethostbyname(socket.gethostname())
-            print(self.__host)
+            self.logger.info(f"Server IP address: {self.__host}.")
             self.__serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.__serverSocket.bind((self.__host, self.__port_number))
             self.__serverSocket.listen(5)

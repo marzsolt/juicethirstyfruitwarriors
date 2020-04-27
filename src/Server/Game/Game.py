@@ -1,4 +1,5 @@
 import time
+import logging
 
 from src.Server.Network_communication.Server import Server
 from src.Server.Player.PlayerLogic import PlayerLogic
@@ -17,6 +18,7 @@ from src.utils.BaseMessage import BaseMessage
 
 class Game:
     def __init__(self):
+        self.logger = logging.getLogger('Domi.Game')
         self.__game_started = False
         self.__chose_host = False
         self.__AI_number = 0
@@ -43,7 +45,6 @@ class Game:
                         pl_j.hp -= 1 if pl_j.hp != 0 else 0
 
                 pl_i.update()
-                time.sleep(0.001)  # TODO remove this!
 
     def __collect_players(self):
         connected_players = Server.get_instance().get_client_ids()
@@ -56,7 +57,7 @@ class Game:
             self.__start_game()
 
     def __start_game(self):
-        print("Game started, terrain sent to everyone")
+        self.logger.info("Game started, terrain sent to everyone")
         self.__game_started = True
 
         human_ids = Server.get_instance().get_client_ids()
@@ -98,7 +99,7 @@ class Game:
             if mess.type == climess.MessageType.CHANGE_PLAYER_NUMBER and mess.from_id == self.__first_player_id:
                 # TODO do not allow less than currently connected if we have time...
                 self.__human_player_number = mess.new_number
-                print("Changed player number, new is: ", mess.new_number)
+                self.logger.info(f"Changed player number, new is: {mess.new_number}.")
             elif mess.type == climess.MessageType.START_GAME_MANUALLY and mess.from_id == self.__first_player_id:
-                print("Received manual game start signal.")
+                self.logger.info("Received manual game start signal.")
                 self.__start_game()

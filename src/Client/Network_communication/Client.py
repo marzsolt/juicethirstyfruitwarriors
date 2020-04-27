@@ -1,4 +1,5 @@
 from collections import defaultdict
+import logging
 
 from src.Client.Network_communication.ClientCommunicator import ClientCommunicator
 import src.Server.Network_communication.server_message_constants as sermess
@@ -19,6 +20,7 @@ class Client:
         if Client.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
+            self.logger = logging.getLogger('Domi.Client')
             self.client_message_dictionary = defaultdict(list)
             self.__communicator = None
             self.id = None
@@ -35,7 +37,7 @@ class Client:
     def receive_message(self, message):
         if message.target == sermess.Target.CLIENT:
             if message.type == sermess.MessageType.YOUR_ID:
-                print("My id is:", message.id)
+                self.logger.info(f"I got my id: {message.id}")
                 self.id = message.id
         else:
             self.client_message_dictionary[message.target].append(message)
@@ -48,4 +50,4 @@ class Client:
 
     def send_message(self, message):
         self.__communicator.send_message(message)
-        
+

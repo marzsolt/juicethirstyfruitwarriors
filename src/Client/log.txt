@@ -1,0 +1,1 @@
+2020-04-27 21:12:34,067 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!

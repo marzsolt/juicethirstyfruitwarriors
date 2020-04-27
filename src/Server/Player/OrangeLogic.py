@@ -32,7 +32,7 @@ class OrangeLogic(PlayerLogic):
         if super()._attack() and not self._is_flying:
             self._is_attacking = True
             self._add_ground_directed_force(self._attack_strength, self.my_dir())
-            self._impact()
+            self._impact()   # TODO LIAR!
             return True
         return False
 
