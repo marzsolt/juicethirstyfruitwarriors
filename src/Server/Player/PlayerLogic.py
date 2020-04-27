@@ -29,8 +29,8 @@ class PlayerLogic:
         self._terrain = terrain
         self._mobility = 0.3  # acceleration force, for max velocity check can_accelerate function
         self.mu = 0.1  # friction constant
-        self._mass = 1
-        self.pos = Vector2D(50 + player_id * 100, 300)
+        self._mass = 10  # effects how fast player can accelerate/decelerate
+        self._pos = Vector2D(50+player_id*100, 300)
         self._vel = Vector2D.zero()
         self._forces = []
         self._is_flying = True

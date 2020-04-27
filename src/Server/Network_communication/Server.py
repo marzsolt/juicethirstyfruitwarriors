@@ -81,8 +81,7 @@ class Server(threading.Thread):
         self.__serverCommunicatorsList.append(newCom)
 
         # sending client id
-        message = BaseMessage(mess_type=sermess.MessageType.YOUR_ID,
-                                          target=sermess.Target.CLIENT)
+        message = BaseMessage(mess_type=sermess.MessageType.YOUR_ID, target=sermess.Target.CLIENT)
         message.id = newCom.ID
         self.send_message(message, newCom.ID)
 
