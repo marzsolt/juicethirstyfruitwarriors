@@ -64,7 +64,3 @@ class TestDictToObject(TestCaseTurbo):
         self.assertEqual(len(result.array), 3)  # checking array length
         self.assertHasAttr(result.array[2], "x")  # checking if attribute generated
         self.assertAlmostEqual(result.array[2].x, 1/3)  # checking value, floats are sometimes tricky :)
-
-
-if __name__ == '__main__':
-    unittest.main()
