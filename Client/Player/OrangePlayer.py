@@ -1,13 +1,13 @@
 import pygame as pg
 
-from juicethirstyfruitwarriors.Client.Client import Client
-from juicethirstyfruitwarriors.Client.Player import Player
-from juicethirstyfruitwarriors.Client.Player import PicFile
-import juicethirstyfruitwarriors.Client.client_message_constants as climess
+from juicethirstyfruitwarriors.Client.Network_communication.Client import Client
+from juicethirstyfruitwarriors.Client.Player.Player import Player
+from juicethirstyfruitwarriors.Client.Player.Player import PicFile
+import juicethirstyfruitwarriors.Client.Network_communication.client_message_constants as climess
 
-import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+import juicethirstyfruitwarriors.Server.Network_communication.server_message_constants as sermess
 
-from juicethirstyfruitwarriors.BaseMessage import BaseMessage
+from juicethirstyfruitwarriors.utils.BaseMessage import BaseMessage
 
 
 class OrangePlayer(Player):

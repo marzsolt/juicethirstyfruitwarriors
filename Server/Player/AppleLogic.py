@@ -1,9 +1,9 @@
 import math
 
-import juicethirstyfruitwarriors.Client.client_message_constants as climess
+import juicethirstyfruitwarriors.Client.Network_communication.client_message_constants as climess
 
-from juicethirstyfruitwarriors.Server.PlayerLogic import PlayerLogic
-from juicethirstyfruitwarriors.Server.Vector2D import Vector2D
+from juicethirstyfruitwarriors.Server.Player.PlayerLogic import PlayerLogic
+from juicethirstyfruitwarriors.utils.Vector2D import Vector2D
 
 
 class AppleLogic(PlayerLogic):

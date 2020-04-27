@@ -1,9 +1,9 @@
 import sched
 import time
 
-from juicethirstyfruitwarriors.Server.Server import Server
-from juicethirstyfruitwarriors.Server.Game import Game
-from juicethirstyfruitwarriors.Server.Timer import Timer
+from juicethirstyfruitwarriors.Server.Network_communication.Server import Server
+from juicethirstyfruitwarriors.Server.Game.Game import Game
+from juicethirstyfruitwarriors.utils.Timer import Timer
 
 
 def main():            

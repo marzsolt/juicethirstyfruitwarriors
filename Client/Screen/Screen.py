@@ -1,18 +1,18 @@
 import pygame as pg
 import pygameMenu as pgM
 
-import juicethirstyfruitwarriors.Client.screen_state_constants as sstatecons
+import juicethirstyfruitwarriors.Client.Screen.screen_state_constants as sstatecons
 
 # networking
-from juicethirstyfruitwarriors.Client.Client import Client
+from juicethirstyfruitwarriors.Client.Network_communication.Client import Client
 
 import socket  # to be able to set default IP on connection screen to OUR IP
 
 # messaging
-from juicethirstyfruitwarriors.Client.PlayerManager import PlayerManager
-import juicethirstyfruitwarriors.Client.client_message_constants as climess
-import juicethirstyfruitwarriors.Server.server_message_constants as sermess
-from juicethirstyfruitwarriors.BaseMessage import BaseMessage
+from juicethirstyfruitwarriors.Client.Player.PlayerManager import PlayerManager
+import juicethirstyfruitwarriors.Client.Network_communication.client_message_constants as climess
+import juicethirstyfruitwarriors.Server.Network_communication.server_message_constants as sermess
+from juicethirstyfruitwarriors.utils.BaseMessage import BaseMessage
 
 
 class Screen:

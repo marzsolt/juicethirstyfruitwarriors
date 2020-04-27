@@ -1,12 +1,12 @@
 import pygame as pg
 from enum import Enum
 
-from juicethirstyfruitwarriors.Client.Client import Client
-import juicethirstyfruitwarriors.Client.client_message_constants as climess
+from juicethirstyfruitwarriors.Client.Network_communication.Client import Client
+import juicethirstyfruitwarriors.Client.Network_communication.client_message_constants as climess
 
-import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+import juicethirstyfruitwarriors.Server.Network_communication.server_message_constants as sermess
 
-from juicethirstyfruitwarriors.BaseMessage import BaseMessage
+from juicethirstyfruitwarriors.utils.BaseMessage import BaseMessage
 
 
 class PicFile(Enum):

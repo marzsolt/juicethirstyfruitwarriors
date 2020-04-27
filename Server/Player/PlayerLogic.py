@@ -1,13 +1,13 @@
 import math
 from enum import Enum
 
-from juicethirstyfruitwarriors.Server.Server import Server
-from juicethirstyfruitwarriors.Server.Vector2D import Vector2D
-import juicethirstyfruitwarriors.Server.server_message_constants as sermess
+from juicethirstyfruitwarriors.Server.Network_communication.Server import Server
+from juicethirstyfruitwarriors.utils.Vector2D import Vector2D
+import juicethirstyfruitwarriors.Server.Network_communication.server_message_constants as sermess
 
-import juicethirstyfruitwarriors.Client.client_message_constants as climess
+import juicethirstyfruitwarriors.Client.Network_communication.client_message_constants as climess
 
-from juicethirstyfruitwarriors.BaseMessage import BaseMessage
+from juicethirstyfruitwarriors.utils.BaseMessage import BaseMessage
 
 
 class Direction(Enum):

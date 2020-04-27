@@ -1,6 +1,6 @@
 import pygame as pg
 
-from juicethirstyfruitwarriors.Client.Screen import Screen
+from juicethirstyfruitwarriors.Client.Screen.Screen import Screen
 
 
 def main():
