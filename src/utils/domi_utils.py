@@ -23,6 +23,9 @@ def id_generator():
 
 def dict_to_object(dictionary):
     obj = type('new', (object,), dictionary)
-    for key in dictionary:
-        setattr(obj, key, dictionary[key])
+    for a, b in dictionary.items():
+        if isinstance(b, (list, tuple)):
+            setattr(obj, a, [dict_to_object(x) if isinstance(x, dict) else x for x in b])
+        else:
+            setattr(obj, a, dict_to_object(b) if isinstance(b, dict) else b)
     return obj
