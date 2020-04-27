@@ -1,4 +1,6 @@
 import socket
+import pygame as pg
+
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -8,4 +10,4 @@ port = 12145                 # Random port number
 s.connect((host, port))
 print(s.recv(1024))
 print(s.recv(1024))
-s.close()                     # Close the socket when done
+s.close()                    # Close the socket when done
