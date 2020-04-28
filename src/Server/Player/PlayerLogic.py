@@ -8,6 +8,7 @@ import src.Server.Network_communication.server_message_constants as sermess
 import src.Client.Network_communication.client_message_constants as climess
 
 from src.utils.BaseMessage import BaseMessage
+from src.utils.Timer import Timer
 
 
 class Direction(Enum):

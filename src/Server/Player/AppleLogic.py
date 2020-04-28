@@ -4,6 +4,7 @@ import src.Client.Network_communication.client_message_constants as climess
 
 from src.Server.Player.PlayerLogic import PlayerLogic
 from src.utils.Vector2D import Vector2D
+from src.utils.Timer import Timer
 
 
 class AppleLogic(PlayerLogic):
@@ -11,6 +12,7 @@ class AppleLogic(PlayerLogic):
         super(AppleLogic, self).__init__(player_id, terrain)
 
         self._is_attacking = False
+        self._can_attack = True
         self._min_attack_angle = 0.15
         self._normal_attack_strength = 7
 
@@ -47,16 +49,26 @@ class AppleLogic(PlayerLogic):
 
         return attack_x, attack_y
 
+    def restore_attackaibility(self):
+        self._can_attack = True
+
     def _attack(self, force):
-        if super()._attack() and not self._is_flying:
+        if super()._attack() and not self._is_flying and self._can_attack:
             self._is_attacking = True
             self._add_force(force)
             self._impact()
+            self._can_attack = False
+            # Timer.sch_fun(30, self.restore_attackaibility, (self, self._can_attack, ))
+
             return True
+        else:
+            print("you cant attack", self._can_attack)
         return False
 
     def _impact(self):
         if self._is_attacking:
             print("bumm apple bumm")
             self._is_attacking = False
+
+            Timer.sch_fun(100, self.restore_attackaibility, ())
 
