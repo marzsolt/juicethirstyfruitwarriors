@@ -29,7 +29,7 @@ class PlayerLogic:
         self._terrain = terrain
         self._mobility = 0.3  # acceleration force, for max velocity check can_accelerate function
         self.mu = 0.1  # friction constant
-        self._mass = 10  # effects how fast player can accelerate/decelerate
+        self._mass = 1  # effects how fast player can accelerate/decelerate (shouldn't be much different than 1)
         self._pos = Vector2D(50+player_id*100, 300)
         self._vel = Vector2D.zero()
         self._forces = []
@@ -40,7 +40,7 @@ class PlayerLogic:
     def update(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC+str(self._id))
         self._process_requests(messages)
-        self._do_physics()
+        self._do_physics()  # main physic computations
         self._send_updated_pos_hp()
 
     def get_id(self):
@@ -55,50 +55,56 @@ class PlayerLogic:
                     self._move_right()
 
     def _process_requests(self, network_messages):
+        """ Basic movement requests are filtered and delegated to _process_movement_messages.
+        As of the other type of requests, derivations shall process them (after super!)."""
         pos_mess = []
         for mess in reversed(network_messages):  # reverse looping is needed because we remove elements
             if mess.type == climess.MessageType.PLAYER_MOVEMENT:
                 pos_mess.append(mess)
                 network_messages.remove(mess)
-        # position_messages = list(filter(lambda x: x.type == climess.MessageType.PLAYER_MOVEMENT, network_messages))
         self._process_movement_messages(pos_mess)
 
     def _send_updated_pos_hp(self):
+        """ Sends player's updated data to all clients. """
         msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POS_HP, target=sermess.Target.PLAYER + str(self._id))
         msg.player_id = self._id
         msg.x = self.pos.x
         msg.y = self.pos.y
         msg.dir = self.my_dir().value
         msg.hp = self.hp
-        Server.get_instance().send_all(msg)
+        Server.get_instance().send_all(msg)  # all clients shall know the data of all players
 
     def _attack(self):
-        #if self._can_attack:
-        self._can_attack = False
-        Timer.sch_fun(100, self.restore_attackaibility, ())
-
-    def restore_attackaibility(self):
-        self._can_attack = True
+        """ Returns whether the payer can attack now, based on cooldown.
+        Derivations may add extra conditions."""
+        return True  # TODO cooldown?
 
     def _add_force(self, force2d):
+        """ Base of physics. By adding a force, you accelerate the player a little bit. """
         self._forces.append(force2d)
 
     def _add_ground_directed_force(self, force_mag, direction):
-        ang = self._terrain.get_angle_rad(self.pos.x)
+        """ Adds force which is parallel with terrain, so that it's
+        enough to set magnitude and direction: right/left  1/-1. """
+        ang = self._terrain.get_angle_rad(self._pos.x)
         force = Vector2D.mag_ang_init(force_mag*direction.value, ang)
         self._add_force(force)
 
     def my_dir(self):
+        """ Determines whether the player moves right (1) or left (-1).
+        Zero velocity is considered left directed. """
         if self._vel.x > 0:
             return Direction.RIGHT
         return Direction.LEFT
 
     def can_accelerate(self, direction=1):
+        """ Determines if player can accelerate int he given direction.
+         This is for basic left/right movement, other forces doesn't use this."""
         if direction*self._vel.x < 0:  # it can always decelerate
             return True
-        BASE_MAX_VEL = 3.0
-        ANGLE_DEPENDENCY = 3.0
-        angle_bonus = -direction * math.sin(self._terrain.get_angle_rad(self.pos.x)) * ANGLE_DEPENDENCY
+        BASE_MAX_VEL = 3.0  # can accelerate until this amount without angle
+        ANGLE_DEPENDENCY = 3.0  # how much terrain's angle effects max velocity
+        angle_bonus = -direction * math.sin(self._terrain.get_angle_rad(self._pos.x)) * ANGLE_DEPENDENCY
         return self._vel.mag() < BASE_MAX_VEL + angle_bonus
 
     def _move_left(self):
@@ -109,19 +115,24 @@ class PlayerLogic:
         if self.can_accelerate(1):
             self._add_ground_directed_force(self._mobility, Direction.RIGHT)
 
-    def _stop(self): # TODO: this seems to benevr used
+    def _stop(self):
         self._vel = Vector2D.zero()
 
     def _put_to_ground_level(self):
-        self.pos.y = self._terrain.get_level(self.pos.x) + self.RADIUS
+        """ Sets y position so that the player will be on ground. """
+        self._pos.y = self._terrain.get_level(self._pos.x)+self.RADIUS
 
     def _get_y_to_ground_level(self):
-        return self.pos.y - (self._terrain.get_level(self.pos.x) + self.RADIUS)
+        """ Difference of y position and ground level."""
+        return self._pos.y - (self._terrain.get_level(self._pos.x)+self.RADIUS)
 
     def _impact(self):
-        pass  # BUMM!
+        """ Called when player hits ground after flying. """
+        pass
 
     def _do_physics(self):
+        """ Physics engine... coputes environmental forces, resultant force, acceleration,
+        velocity, position. It also checks for flying and may make position corrections. """
         # Add some environmental forces
         if self._is_flying:
             # add gravitation

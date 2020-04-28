@@ -8,7 +8,6 @@ import src.Client.Network_communication.client_message_constants as climess
 from src.utils.BaseMessage import BaseMessage
 from src.utils.Timer import Timer
 
-
 class OrangeLogic(PlayerLogic):
     def __init__(self, player_id, terrain):
         super(OrangeLogic, self).__init__(player_id, terrain)
