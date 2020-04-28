@@ -18,7 +18,7 @@ class Game:
     def __init__(self):
         self.__game_started = False
         self.__chose_host = False
-        self.__AI_number = 1
+        self.__AI_number = 2
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
         self.__player_logics = []
