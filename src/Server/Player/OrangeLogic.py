@@ -6,7 +6,7 @@ import src.Server.Network_communication.server_message_constants as sermess
 import src.Client.Network_communication.client_message_constants as climess
 
 from src.utils.BaseMessage import BaseMessage
-
+from src.utils.Timer import Timer
 
 
 class OrangeLogic(PlayerLogic):
@@ -15,7 +15,6 @@ class OrangeLogic(PlayerLogic):
 
         self._is_attacking = False
         self._attack_strength = 5
-
 
     def _process_requests(self, network_messages):
         super()._process_requests(network_messages)
@@ -29,11 +28,15 @@ class OrangeLogic(PlayerLogic):
                     Server.get_instance().send_all(mes)
 
     def _attack(self):
-        if super()._attack() and not self._is_flying:
+        if self._can_attack and not self._is_flying:
+            # super()._attack()
             self._is_attacking = True
             self._add_ground_directed_force(self._attack_strength, self.my_dir())
+            Timer.sch_fun(50, super()._attack, ())
             self._impact()
             return True
+        else:
+            print("you cant attack")
         return False
 
     def _impact(self):

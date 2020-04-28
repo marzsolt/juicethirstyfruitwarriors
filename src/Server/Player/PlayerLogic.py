@@ -34,6 +34,7 @@ class PlayerLogic:
         self._vel = Vector2D.zero()
         self._forces = []
         self._is_flying = True
+        self._can_attack = True
         self.hp = 100
 
     def update(self):
@@ -73,7 +74,13 @@ class PlayerLogic:
 
 
     def _attack(self):
+        if self._can_attack:
+            self._can_attack = False
+            Timer.sch_fun(100, self.restore_attackaibility, ())
         return True  # TODO cooldown?
+
+    def restore_attackaibility(self):
+        self._can_attack = True
 
     def _add_force(self, force2d):
         self._forces.append(force2d)
