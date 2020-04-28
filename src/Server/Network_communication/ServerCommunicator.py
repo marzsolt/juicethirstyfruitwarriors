@@ -12,7 +12,7 @@ class ServerCommunicator(threading.Thread):
         self.ID = ID
 
     def send_message(self, message):
-        serialized = json.dumps(json.dumps(message, default=lambda o: getattr(o, '__dict__', str(o))))  # recursive
+        serialized = json.dumps(message, default=lambda o: getattr(o, '__dict__', str(o)))  # recursive
         serialized = str.encode(serialized)
         self.socket.send(serialized)
 

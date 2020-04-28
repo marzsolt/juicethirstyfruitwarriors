@@ -19,7 +19,7 @@ class OrangeLogic(PlayerLogic):
     def _process_requests(self, network_messages):
         super()._process_requests(network_messages)
         for mess in network_messages:
-            if mess.type == climess.MessageType.ORANGE_ATTACK:
+            if mess.type == climess.MessageType.ORANGE_ATTACK and self._can_attack:
                 if self._vel != Vector2D.zero():
                     self._attack()
 
@@ -29,10 +29,9 @@ class OrangeLogic(PlayerLogic):
 
     def _attack(self):
         if self._can_attack and not self._is_flying:
-            # super()._attack()
+            super()._attack()
             self._is_attacking = True
             self._add_ground_directed_force(self._attack_strength, self.my_dir())
-            Timer.sch_fun(50, super()._attack, ())
             self._impact()
             return True
         else:
