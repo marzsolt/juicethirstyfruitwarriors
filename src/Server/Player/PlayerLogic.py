@@ -17,6 +17,7 @@ class Direction(Enum):
 
 
 class PlayerLogic:
+    """ Server side player. Processes movement/attack/... request, handles physics and more! :) """
     SCREEN_WIDTH = 800  # TODO use general constant
     RADIUS = 25
     X_MIN = RADIUS
