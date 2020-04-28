@@ -33,10 +33,12 @@ class Player(pg.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self._id = player_id
         self.hp = None
+        self.dir = 1
 
     def update(self, pressed_keys, events):
         network_messages = []
 
+        # Collect basic movement requests (go left/right) and send them to server.
         if pressed_keys:
             if pressed_keys[pg.K_LEFT]:
                 network_messages.append(climess.ActionRequest.MOVE_LEFT)
@@ -58,7 +60,9 @@ class Player(pg.sprite.Sprite):
 
                 if self.hp != mess.hp:
                     self.hp = mess.hp
-                    pg.draw.rect(self.surf, self.WHITE, (14, 0, 32, 7))  # 1-1 pixel thicker in every dir. to form border
+                    # draw a white rect which is 1-1 pixel thicker in every direction to form border
+                    pg.draw.rect(self.surf, self.WHITE, (14, 0, 32, 7))
+                    # draw green/red health bar for own/enemy player respectively
                     pg.draw.rect(
                         self.surf,
                         self.GREEN if Client.get_instance().id == self._id else self.RED,

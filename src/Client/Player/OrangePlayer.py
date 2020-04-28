@@ -22,6 +22,7 @@ class OrangePlayer(Player):
     def update(self, pressed_keys, events):
         super().update(pressed_keys, events)
 
+        # Request attack if 'A' is pressed.
         if pressed_keys and pressed_keys[pg.K_a] and self.surf_angle == 0:
             mes = BaseMessage(climess.MessageType.ORANGE_ATTACK, climess.Target.PLAYER_LOGIC + str(self._id))
             Client.get_instance().send_message(mes)
@@ -29,6 +30,7 @@ class OrangePlayer(Player):
         self.orange_rolling()
 
     def orange_rolling(self):
+        """ Handle orange's rolling animation. """
         messages = Client.get_instance().get_targets_messages(sermess.Target.ORANGE_PLAYER + str(self._id))
         for mes in messages:
             if mes.type == sermess.MessageType.ORANGE_ROLL and self.surf_angle == 0:

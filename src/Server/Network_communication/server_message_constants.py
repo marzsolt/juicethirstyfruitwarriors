@@ -15,7 +15,7 @@ class MessageType(str, Enum):
 
 
 class Target(str, Enum):
-    """Who is the target of the message."""
+    """ Who is the target of the message. """
     SCREEN = "screen"
     PLAYER = "player"  # should use ID someway
     ORANGE_PLAYER = "orange player" # for rolling purposes, iinf of ACK of valid attack
