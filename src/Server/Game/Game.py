@@ -14,7 +14,6 @@ import src.Client.Network_communication.client_message_constants as climess
 from src.utils.BaseMessage import BaseMessage
 
 
-
 class Game:
     def __init__(self):
         self.__game_started = False
@@ -30,8 +29,9 @@ class Game:
         if not self.__game_started:
             self.__collect_players()
         else:
+            # TODO move this part into a separate function
             for pl_i_ind in range(len(self.__player_logics)):
-                pl_i = self.__player_logics[pl_i_ind]
+                pl_i = self.__player_logics[pl_i_ind]  # you can do a hybrid for+foreach in python!
                 
                 # HP update for each player:
                 for pl_j_ind in range(pl_i_ind + 1, len(self.__player_logics)):
@@ -44,6 +44,9 @@ class Game:
 
                 pl_i.update()
                 time.sleep(0.001)  # TODO remove this!
+
+    def get_players(self):
+        return self.__player_logics
 
     def __collect_players(self):
         connected_players = Server.get_instance().get_client_ids()
@@ -76,10 +79,10 @@ class Game:
             player_id = Server.get_instance().get_new_id()
 
             if player_id % 2 == 0:  # TODO this distribution is only for testing!
-                new_player_logic = AppleAI(player_id, self.__terrain)
+                new_player_logic = AppleAI(player_id, self.__terrain, self)
                 apple_ai_ids.append(player_id)
             else:
-                new_player_logic = OrangeAI(player_id, self.__terrain)
+                new_player_logic = OrangeAI(player_id, self.__terrain, self)
                 orange_ai_ids.append(player_id)
             self.__player_logics.append(new_player_logic)
 
