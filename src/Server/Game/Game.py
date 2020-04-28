@@ -18,7 +18,7 @@ class Game:
     def __init__(self):
         self.__game_started = False
         self.__chose_host = False
-        self.__AI_number = 0
+        self.__AI_number = 1
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
         self.__player_logics = []
@@ -37,8 +37,8 @@ class Game:
                 for pl_j_ind in range(pl_i_ind + 1, len(self.__player_logics)):
                     pl_j = self.__player_logics[pl_j_ind]
 
-                    if(abs(pl_i._pos.x - pl_j._pos.x) <= 2 * PlayerLogic.RADIUS and
-                            abs(pl_i._pos.y - pl_j._pos.y) <= 2 * PlayerLogic.RADIUS):
+                    if(abs(pl_i.pos.x - pl_j.pos.x) <= 2 * PlayerLogic.RADIUS and
+                            abs(pl_i.pos.y - pl_j.pos.y) <= 2 * PlayerLogic.RADIUS):
                         pl_i.hp -= 1 if pl_i.hp != 0 else 0
                         pl_j.hp -= 1 if pl_j.hp != 0 else 0
 

@@ -1,5 +1,5 @@
 from src.Client.Network_communication.Client import Client
-from src.Client.Player.Player import Player
+from src.Client.Player.Player import Player, PicFile
 from src.Client.Player.PlayerAI import PlayerAI
 from src.Client.Player.ApplePlayer import ApplePlayer
 from src.Client.Player.OrangePlayer import OrangePlayer
@@ -28,9 +28,9 @@ class PlayerManager:
         for player_id in orange_human_ids:
             self.players.append(OrangePlayer(player_id))
         for player_id in apple_ai_ids:
-            self.players.append(PlayerAI(player_id, Player.PicFile.APPLE))
+            self.players.append(PlayerAI(player_id, PicFile.APPLE))
         for player_id in orange_ai_ids:
-            self.players.append(PlayerAI(player_id, Player.PicFile.ORANGE))
+            self.players.append(PlayerAI(player_id, PicFile.ORANGE))
 
     def update(self, pressed_keys, events):
         for player in self.players:

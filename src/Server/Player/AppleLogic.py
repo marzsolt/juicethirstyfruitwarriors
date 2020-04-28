@@ -31,15 +31,15 @@ class AppleLogic(PlayerLogic):
         return x, y
 
     def _calculate_attack_force(self, x, y):
-        dist = math.sqrt((x - self._pos.x) ** 2 + (y - self._pos.y) ** 2)
-        angle = math.asin((y - self._pos.y) / dist)
+        dist = math.sqrt((x - self.pos.x) ** 2 + (y - self.pos.y) ** 2)
+        angle = math.asin((y - self.pos.y) / dist)
 
         if angle > self._min_attack_angle:
-            attack_x = (self._normal_attack_strength / dist) * (x - self._pos.x)
-            attack_y = (self._normal_attack_strength / dist) * (y - self._pos.y)
+            attack_x = (self._normal_attack_strength / dist) * (x - self.pos.x)
+            attack_y = (self._normal_attack_strength / dist) * (y - self.pos.y)
 
         else:
-            if x < self._pos.x:
+            if x < self.pos.x:
                 attack_x = self._min_attack_x
             else:
                 attack_x = -1 * self._min_attack_x
