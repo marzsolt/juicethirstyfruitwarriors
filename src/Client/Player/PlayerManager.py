@@ -46,4 +46,8 @@ class PlayerManager:
         for p in self.players:
             screen.blit(p.surf, p.rect)
 
+    def remove_player(self, player_id):
+        self.players = [player for player in self.players if player._id != player_id]
+
+
 
