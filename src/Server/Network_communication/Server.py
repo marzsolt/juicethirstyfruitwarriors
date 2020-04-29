@@ -88,6 +88,11 @@ class Server(threading.Thread):
         new_client, addr = self.__serverSocket.accept()
         self.__new_client(new_client)
 
+    def close_connection(self, ID):
+        self.__get_communicator_from_id(ID).close()
+        self.__get_communicator_from_id(ID).join()
+        print("Socket joined.")
+
     def run(self):
         while True:
             self.__accept_clients()

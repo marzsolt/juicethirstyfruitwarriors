@@ -16,6 +16,10 @@ class ServerCommunicator(threading.Thread):
         serialized = str.encode(serialized)
         self.socket.send(serialized)
 
+    def close(self):
+        self.socket.close()
+        print("Socket for player connection closed.")
+
     def run(self):
         while True:
             message = self.socket.recv(1024)

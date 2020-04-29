@@ -44,7 +44,7 @@ class Screen:
 
         pg.display.flip()  # flip the display
 
-        return self._check_keyboard_exit_request(events)
+        return self._check_exit_criteria(events)
 
     def _game_screen(self, pressed_keys, events):
         self._draw_background_and_terrain()
@@ -52,7 +52,7 @@ class Screen:
         PlayerManager.get_instance().draw_players(screen=self.__screen)
 
     @staticmethod
-    def _check_keyboard_exit_request(events):
+    def _check_exit_criteria(events):
         running = True
         for event in events:  # event handling - look at every event in the queue
             if event.type == pg.KEYDOWN:  # did the user hit a key?
@@ -63,6 +63,13 @@ class Screen:
             # Did the user click the window close button? If so, stop the loop. w/o. doesn't work
             if event.type == pg.QUIT:
                 running = False
+
+        msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
+        for msg in msgs:
+            if msg.type == sermess.MessageType.GAME_OVER:
+                print("Death of player with id ", msg.player_id, " acknowledged.")
+                PlayerManager.get_instance().remove_player(msg.player_id)
+                print("Player removed from player manager.")
 
         return running
 

@@ -9,6 +9,7 @@ class MessageType(str, Enum):
     INITIAL_DATA = "gl hf"
     PLAYER_POS_HP = "movement and health of players"
     ORANGE_ROLL = "roll orange..."
+    GAME_OVER = "that's it... the END"
 
 
 class Target(str, Enum):

@@ -20,7 +20,7 @@ class Game:
         self.logger = logging.getLogger('Domi.Game')
         self.__game_started = False
         self.__chose_host = False
-        self.__AI_number = 2
+        self.__AI_number = 0
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
         self.__player_logics = []
@@ -32,17 +32,26 @@ class Game:
             self.__collect_players()
         else:
             # TODO move this part into a separate function
-            for pl_i_ind in range(len(self.__player_logics)):
-                pl_i = self.__player_logics[pl_i_ind]  # you can do a hybrid for+foreach in python!
+            for i, pl_i in enumerate(self.__player_logics):
                 
                 # HP update for each player:
-                for pl_j_ind in range(pl_i_ind + 1, len(self.__player_logics)):
-                    pl_j = self.__player_logics[pl_j_ind]
-
+                for pl_j in self.__player_logics[i + 1:]:
                     if(abs(pl_i.pos.x - pl_j.pos.x) <= 2 * PlayerLogic.RADIUS and
                             abs(pl_i.pos.y - pl_j.pos.y) <= 2 * PlayerLogic.RADIUS):
                         pl_i.hp -= 1 if pl_i.hp != 0 else 0
                         pl_j.hp -= 1 if pl_j.hp != 0 else 0
+
+                if pl_i.hp == 0:
+                    print("Player with id ", i, " has died.")
+                    mess = BaseMessage(sermess.MessageType.GAME_OVER, sermess.Target.SCREEN)
+                    mess.player_id = i
+                    Server.get_instance().send_all(mess)
+                    print("Client notified about the death.")
+                    self.__player_logics = \
+                        [player_logic for player_logic in self.__player_logics if player_logic._id != i]
+                    print("Player logic killed.")
+                    print("Connection close requsted.")
+                    Server.get_instance().close_connection(i)
 
                 pl_i.update()
 
