@@ -7,6 +7,13 @@ class A:
     def m(self):
         print("A m")
 
+    def print(self):
+        print("5")
+        return 5
+
+    def tick(self):
+        self.print()
+
 
 class B(A):
     def __init__(self):
@@ -16,6 +23,10 @@ class B(A):
 
     def m(self):
         print("B m")
+
+    # def print(self):
+    #     print("6")
+    #     return 6
 
 
 class C(A):
@@ -28,6 +39,10 @@ class C(A):
     def m(self):
         print("C m")
 
+    def print(self):
+        print("7")
+        return 7
+
 
 class D(B, C):
     def __init__(self):
@@ -36,7 +51,12 @@ class D(B, C):
         super(D, self).__init__()
         print("<- D")
 
+    def print(self):
+        print("10")
+        return print(super().print())
+
 
 d = D()
 d.m()
+d.tick()
 
