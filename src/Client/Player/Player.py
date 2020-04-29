@@ -11,7 +11,7 @@ from src.utils.BaseMessage import BaseMessage
 
 
 class PicFile(Enum):
-    ORANGE = "img/orange_test_imag.png"
+    ORANGE = "img/orange_test_image.png"
     APPLE = "img/apple_test_image.png"
 
 
@@ -31,9 +31,6 @@ class Player(pg.sprite.Sprite):
             self.logger.critical("Atya ég!")
         self.surf.set_colorkey((255, 253, 201), pg.RLEACCEL)  # background color of the picture -> that color not shown
         self.rect = self.surf.get_rect()
-        # TODO: replace this current player funcionality by showing it's health in green instead of re
-        # if Client.get_instance().id == player_id:  # Show that it's the client's own player
-        #    pg.draw.line(self.surf, (0, 255, 0), (15, 0), (45, 0))
         self._id = player_id
         self.hp = None
 

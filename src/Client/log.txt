@@ -1,10 +1,4 @@
-2020-04-27 21:38:40,874 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
-2020-04-27 21:38:40,876 - Imigyen szóla Domi.Client: - INFO - I got my id: 0
-2020-04-27 21:38:40,902 - Imigyen szóla Domi.Screen: - INFO - I am the host.
-2020-04-27 21:38:41,635 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
-2020-04-27 21:38:41,635 - Imigyen szóla Domi.Player: - ERROR - Nincsen képem!
-Traceback (most recent call last):
-  File "C:\Users\DomonkosFarkas\Documents\GitHub\juicethirstyfruitwarriors\src\Client\Player\Player.py", line 28, in __init__
-    self.surf = pg.image.load(pic_file.value).convert()  # may have to change the path
-pygame.error: Couldn't open img/orange_test_imag.png
-2020-04-27 21:38:41,636 - Imigyen szóla Domi.Player: - CRITICAL - Atya ég!
+2020-04-29 14:41:56,427 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
+2020-04-29 14:41:56,429 - Imigyen szóla Domi.Client: - INFO - I got my id: 1
+2020-04-29 14:41:56,457 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
+41:56,440 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
