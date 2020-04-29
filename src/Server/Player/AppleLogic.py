@@ -55,15 +55,9 @@ class AppleLogic(PlayerLogic):
             self._add_force(force)
             self._impact()
 
-            return True
-        else:
-            print("you cant attack", self._can_attack)
-        return False
-
     def _impact(self):
         if self._is_attacking:
             print("bumm apple bumm")
             self._is_attacking = False
 
-     #        Timer.sch_fun(100, self.restore_attackaibility, ())
 

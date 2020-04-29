@@ -72,12 +72,10 @@ class PlayerLogic:
         msg.hp = self.hp
         Server.get_instance().send_all(msg)
 
-
     def _attack(self):
-        if self._can_attack:
-            self._can_attack = False
-            Timer.sch_fun(100, self.restore_attackaibility, ())
-        return True  # TODO cooldown?
+        #if self._can_attack:
+        self._can_attack = False
+        Timer.sch_fun(100, self.restore_attackaibility, ())
 
     def restore_attackaibility(self):
         self._can_attack = True

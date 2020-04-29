@@ -19,13 +19,11 @@ class OrangeLogic(PlayerLogic):
     def _process_requests(self, network_messages):
         super()._process_requests(network_messages)
         for mess in network_messages:
-            if mess.type == climess.MessageType.ORANGE_ATTACK and self._can_attack:
-                if self._vel != Vector2D.zero():
-                    self._attack()
-
-                    #  ACK valid attack -> actually for rolling purposes
-                    mes = BaseMessage(sermess.MessageType.ORANGE_ROLL, sermess.Target.ORANGE_PLAYER + str(self._id))
-                    Server.get_instance().send_all(mes)
+            if mess.type == climess.MessageType.ORANGE_ATTACK and self._can_attack and self._vel != Vector2D.zero():
+                self._attack()
+                #  ACK valid attack -> actually for rolling purposes
+                mes = BaseMessage(sermess.MessageType.ORANGE_ROLL, sermess.Target.ORANGE_PLAYER + str(self._id))
+                Server.get_instance().send_all(mes)
 
     def _attack(self):
         if self._can_attack and not self._is_flying:
@@ -33,10 +31,6 @@ class OrangeLogic(PlayerLogic):
             self._is_attacking = True
             self._add_ground_directed_force(self._attack_strength, self.my_dir())
             self._impact()
-            return True
-        else:
-            print("you cant attack")
-        return False
 
     def _impact(self):
         if self._is_attacking:
