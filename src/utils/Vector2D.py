@@ -42,6 +42,10 @@ class Vector2D:
             ret += v
         return ret
 
+    @staticmethod
+    def dist_square(v1, v2):
+        return (v1.x - v2.x)**2 + (v1.y - v2.y)**2
+
     def __str__(self):
         return "(x: {0}, y: {1})".format(self.x, self.y)
 

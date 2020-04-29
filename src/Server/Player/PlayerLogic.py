@@ -30,7 +30,7 @@ class PlayerLogic:
         self._mobility = 0.3  # acceleration force, for max velocity check can_accelerate function
         self.mu = 0.1  # friction constant
         self._mass = 1
-        self._pos = Vector2D(50+player_id*100, 300)
+        self.pos = Vector2D(50 + player_id * 100, 300)
         self._vel = Vector2D.zero()
         self._forces = []
         self._is_flying = True
@@ -66,8 +66,8 @@ class PlayerLogic:
     def _send_updated_pos_hp(self):
         msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POS_HP, target=sermess.Target.PLAYER + str(self._id))
         msg.player_id = self._id
-        msg.x = self._pos.x
-        msg.y = self._pos.y
+        msg.x = self.pos.x
+        msg.y = self.pos.y
         msg.dir = self.my_dir().value
         msg.hp = self.hp
         Server.get_instance().send_all(msg)
@@ -84,7 +84,7 @@ class PlayerLogic:
         self._forces.append(force2d)
 
     def _add_ground_directed_force(self, force_mag, direction):
-        ang = self._terrain.get_angle_rad(self._pos.x)
+        ang = self._terrain.get_angle_rad(self.pos.x)
         force = Vector2D.mag_ang_init(force_mag*direction.value, ang)
         self._add_force(force)
 
@@ -98,7 +98,7 @@ class PlayerLogic:
             return True
         BASE_MAX_VEL = 3.0
         ANGLE_DEPENDENCY = 3.0
-        angle_bonus = -direction * math.sin(self._terrain.get_angle_rad(self._pos.x)) * ANGLE_DEPENDENCY
+        angle_bonus = -direction * math.sin(self._terrain.get_angle_rad(self.pos.x)) * ANGLE_DEPENDENCY
         return self._vel.mag() < BASE_MAX_VEL + angle_bonus
 
     def _move_left(self):
@@ -113,10 +113,10 @@ class PlayerLogic:
         self._vel = Vector2D.zero()
 
     def _put_to_ground_level(self):
-        self._pos.y = self._terrain.get_level(self._pos.x)+self.RADIUS
+        self.pos.y = self._terrain.get_level(self.pos.x) + self.RADIUS
 
     def _get_y_to_ground_level(self):
-        return self._pos.y - (self._terrain.get_level(self._pos.x)+self.RADIUS)
+        return self.pos.y - (self._terrain.get_level(self.pos.x) + self.RADIUS)
 
     def _impact(self):
         pass  # BUMM!
@@ -138,7 +138,7 @@ class PlayerLogic:
         self._forces = []
         res_acc = resultant_force.scalar_div(self._mass)
         self._vel += res_acc
-        self._pos += self._vel
+        self.pos += self._vel
 
         # Check if it flies
         # minimum velocity angle difference (to ground grad) which is considered flying with pos diff threshold together
@@ -147,7 +147,7 @@ class PlayerLogic:
         threshold_pos = 2
         # minimum y difference to ground level which alone is considered flying
         threshold_big_pos = 5
-        vel_angle_diff = math.fabs(self._vel.domi_ang()-self._terrain.get_angle_rad(self._pos.x))
+        vel_angle_diff = math.fabs(self._vel.domi_ang() - self._terrain.get_angle_rad(self.pos.x))
         pos_diff = self._get_y_to_ground_level()
         if (vel_angle_diff > threshold_ang and pos_diff > threshold_pos)\
                 or pos_diff > threshold_big_pos:
@@ -163,14 +163,14 @@ class PlayerLogic:
             self._is_flying = False
             self._put_to_ground_level()
             if self._vel.mag() > 0:
-                loss = self._vel.dot_product(self._terrain.slope_grad(self._pos.x)) / self._vel.mag()  # projection
-                self._vel.change_dir(self._terrain.get_angle_rad(self._pos.x))
+                loss = self._vel.dot_product(self._terrain.slope_grad(self.pos.x)) / self._vel.mag()  # projection
+                self._vel.change_dir(self._terrain.get_angle_rad(self.pos.x))
                 self._vel.scalar_mult(loss)
 
         # Check if it's in screen, make corrections
-        if self._pos.x < self.X_MIN:
-            self._pos.x = self.X_MIN
+        if self.pos.x < self.X_MIN:
+            self.pos.x = self.X_MIN
             self._vel.x = -self._vel.x
-        elif self._pos.x > self.X_MAX:
-            self._pos.x = self.X_MAX
+        elif self.pos.x > self.X_MAX:
+            self.pos.x = self.X_MAX
             self._vel.x = -self._vel.x

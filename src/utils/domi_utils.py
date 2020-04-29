@@ -29,3 +29,19 @@ def dict_to_object(dictionary):  # recursive
         else:
             setattr(obj, a, dict_to_object(b) if isinstance(b, dict) else b)
     return obj
+
+
+def separate_jsons(message):
+    mes_separated = []
+    mes_end_index = 0
+    brackets = 0
+
+    for i in range(len(message)):
+        if message[i] == '{':
+            brackets += 1
+        elif message[i] == '}':
+            brackets += -1
+            if brackets == 0:
+                mes_separated.append(message[mes_end_index:i + 1])
+                mes_end_index = i + 1
+    return mes_separated

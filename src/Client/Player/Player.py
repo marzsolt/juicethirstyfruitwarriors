@@ -1,5 +1,6 @@
 import pygame as pg
 from enum import Enum
+import logging
 
 from src.Client.Network_communication.Client import Client
 import src.Client.Network_communication.client_message_constants as climess
@@ -22,12 +23,14 @@ class Player(pg.sprite.Sprite):
 
     def __init__(self, player_id, pic_file):
         super(Player, self).__init__()
-        self.surf = pg.image.load(pic_file.value).convert()  # may have to change the path
+        self.logger = logging.getLogger('Domi.Player')
+        try:
+            self.surf = pg.image.load(pic_file.value).convert()  # may have to change the path
+        except pg.error:  # PyCharm you are a liar, it's perfectly OK
+            self.logger.exception("Cannot load image!")
+            self.logger.critical("Atya ég!")
         self.surf.set_colorkey((255, 253, 201), pg.RLEACCEL)  # background color of the picture -> that color not shown
         self.rect = self.surf.get_rect()
-        # TODO: replace this current player funcionality by showing it's health in green instead of re
-        # if Client.get_instance().id == player_id:  # Show that it's the client's own player
-        #    pg.draw.line(self.surf, (0, 255, 0), (15, 0), (45, 0))
         self._id = player_id
         self.hp = None
 
