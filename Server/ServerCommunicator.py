@@ -1,6 +1,6 @@
 import threading
 import json
-from utils.domi_utils import dict_to_object
+from utils.domi_utils import dict_to_object, separate_jsons
 
 
 class ServerCommunicator(threading.Thread):
@@ -19,19 +19,8 @@ class ServerCommunicator(threading.Thread):
         while True:
             message = self.socket.recv(1024)
             message = message.decode()
-
-            mes_separated = []
-            mes_end_index = 0
-            brackets = 0
-
-            for i in range(len(message)):
-                if message[i] == '{':
-                    brackets += 1
-                elif message[i] == '}':
-                    brackets += -1
-                    if brackets == 0:
-                        mes_separated.append(message[mes_end_index:i+1])
-                        mes_end_index = i+1
+            
+            mes_separated = separate_jsons(message)
 
             for m in mes_separated:
                 deserialized = json.loads(m)
