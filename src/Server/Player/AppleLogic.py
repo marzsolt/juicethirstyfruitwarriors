@@ -4,6 +4,7 @@ import src.Client.Network_communication.client_message_constants as climess
 
 from src.Server.Player.PlayerLogic import PlayerLogic
 from src.utils.Vector2D import Vector2D
+from src.utils.Timer import Timer
 
 
 class AppleLogic(PlayerLogic):
@@ -48,15 +49,15 @@ class AppleLogic(PlayerLogic):
         return attack_x, attack_y
 
     def _attack(self, force):
-        if super()._attack() and not self._is_flying:
+        if self._can_attack and not self._is_flying:
+            super()._attack()
             self._is_attacking = True
             self._add_force(force)
             self._impact()
-            return True
-        return False
 
     def _impact(self):
         if self._is_attacking:
             print("bumm apple bumm")  # TODO remove...
             self._is_attacking = False
+
 
