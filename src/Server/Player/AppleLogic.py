@@ -57,6 +57,6 @@ class AppleLogic(PlayerLogic):
 
     def _impact(self):
         if self._is_attacking:
-            print("bumm apple bumm")
+            print("bumm apple bumm")  # TODO remove...
             self._is_attacking = False
 

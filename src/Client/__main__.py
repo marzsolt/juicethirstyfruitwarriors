@@ -1,10 +1,14 @@
 import pygame as pg
 
 from src.Client.Screen.Screen import Screen
+from src.utils.awesome_logging import setup_logger
 
 
 def main():
     pg.init()
+
+    # Logging
+    setup_logger()
 
     screen = Screen()  # set up the screen
 

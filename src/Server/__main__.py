@@ -4,6 +4,7 @@ import time
 from src.Server.Network_communication.Server import Server
 from src.Server.Game.Game import Game
 from src.utils.Timer import Timer
+from src.utils.awesome_logging import setup_logger
 
 
 def main():            
@@ -11,6 +12,9 @@ def main():
         s.enter(1.0/fps, 1, update, ())  # call update again in 25 ms
         Timer.update()
         game.update()
+
+    # Logging
+    setup_logger()
 
     # Networking
     server = Server.get_instance()
