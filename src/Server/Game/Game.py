@@ -7,6 +7,7 @@ from src.Server.Player.OrangeLogic import OrangeLogic
 from src.Server.Player.AppleLogic import AppleLogic
 from src.Server.PlayerAI.OrangeAI import OrangeAI
 from src.Server.PlayerAI.AppleAI import AppleAI
+from src.Server.PlayerAI.PlayerAILogic import PlayerAILogic
 from src.Server.Game.Terrain import Terrain
 import src.Server.Network_communication.server_message_constants as sermess
 
@@ -20,13 +21,15 @@ class Game:
         self.logger = logging.getLogger('Domi.Game')
         self.__game_started = False
         self.__chose_host = False
-        self.__AI_number = 3
+        self.__AI_number = 5
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
         self.__player_logics = []
         self.__terrain = Terrain()
 
     def update(self):
+        running = True
+
         self.__read_messages()
         if not self.__game_started:
             self.__collect_players()
@@ -40,23 +43,40 @@ class Game:
                             abs(pl_i.pos.y - pl_j.pos.y) <= 2 * PlayerLogic.RADIUS):
                         pl_i.hp -= 1 if pl_i.hp != 0 else 0
                         pl_j.hp -= 1 if pl_j.hp != 0 else 0
-
-                if pl_i.hp == 0:
-                    print("Player with id ", i, " has died.")
-                    mess = BaseMessage(sermess.MessageType.GAME_OVER, sermess.Target.SCREEN)
-                    mess.player_id = i
-                    mess.lost = True
-                    Server.get_instance().send_all(mess)
-                    print("Client notified about the death.")
-                    self.__player_logics = \
-                        [player_logic for player_logic in self.__player_logics if player_logic._id != i]
-                    print("Player logic killed.")
-
-                    # TODO: just for NOT AIs (connection closure)
-                    #print("Connection close requsted.")
-                    #Server.get_instance().close_connection(i)
-
                 pl_i.update()
+
+            # Check for deaths:
+            for pl in self.__player_logics:
+                if pl.hp == 0:
+                    print("ID: ", pl._id," Player has just died.")
+                    mess = BaseMessage(sermess.MessageType.GAME_OVER, sermess.Target.SCREEN)
+                    mess.player_id = pl._id
+                    Server.get_instance().send_all(mess)
+                    print("ID: ", pl._id, " All clients has been notified about the recent tragic death.")
+                    self.__player_logics = \
+                         [player_logic for player_logic in self.__player_logics if player_logic._id != pl._id]
+                    print("ID: ", pl._id, " Player logic killed.")
+
+            # Check if all human players dead:
+            is_there_huaman = False
+            for pl in self.__player_logics:
+                if not isinstance(pl, PlayerAILogic):
+                    is_there_huaman = True
+            running = is_there_huaman
+
+            if not is_there_huaman:
+                mess = BaseMessage(sermess.MessageType.NO_ALIVE_HUMAN, sermess.Target.SCREEN)
+                Server.get_instance().send_all(mess)
+                print("Game killed as no human players left.")
+                Server.get_instance().close_all_connection()
+
+            # TODO: kill socket when all human dead
+            # TODO: else notify winner and kill socket
+
+            # #print("Connection close requsted.")
+            # #Server.get_instance().close_connection(i)
+        return running
+
 
     def get_players(self):
         return self.__player_logics

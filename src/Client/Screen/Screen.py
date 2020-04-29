@@ -22,6 +22,10 @@ class Screen:
 
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
+    GREEN = (0, 255, 0)
+    RED = (255, 0, 0)
+
+    FPS = 40
 
     def __init__(self, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH):
         self.logger = logging.getLogger('Domi.Screen')
@@ -40,6 +44,8 @@ class Screen:
         self.__is_first_player = None
 
         self.running = True
+        self.game_over_state = None
+        self.t_to_exit = None
 
     def update(self, events, pressed_keys):
         self._draw_adequate_screen(events, pressed_keys)
@@ -56,17 +62,19 @@ class Screen:
         PlayerManager.get_instance().update(pressed_keys, events)
         PlayerManager.get_instance().draw_players(screen=self.__screen)
 
-    def _game_over_screen(self, pressed_keys, events, lost):
-        pass
-
     def _check_game_over(self):
         msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
         for msg in msgs:
             if msg.type == sermess.MessageType.GAME_OVER:
-                print("Death of player with id ", msg.player_id, " acknowledged.")
+                print("ID: ", msg.player_id, " Death of player acknowledged.")
                 PlayerManager.get_instance().remove_player(msg.player_id)
-                print("Player removed from player manager.")
-                #self.__screenState = sstatecons.ScreenState.GAME_OVER
+                print("ID: ", msg.player_id, " Player removed from player manager.")
+                if Client.get_instance().id == msg.player_id:
+                    self.game_over_state = sstatecons.GameOverState.LOST
+                    print("It is our player that died!")
+            elif msg.type == sermess.MessageType.NO_ALIVE_HUMAN:
+                self.game_over_state = sstatecons.GameOverState.ALL_HUMAN_DIED
+                self.t_to_exit = self.FPS * 10 - 1
 
     def _check_exit_criteria(self, events):
         for event in events:  # event handling - look at every event in the queue
@@ -87,8 +95,6 @@ class Screen:
             self.__connectionMenu.mainloop(events)
         elif self.__screenState == sstatecons.ScreenState.GAME:
             self._game_screen(pressed_keys, events)
-        elif self.__screenState == sstatecons.ScreenState.GAME_OVER:
-            self._game_over_screen(pressed_keys, events, lost)
 
     def _init_main_menu(self):  # first needs sub menus to be initialized!
         main_menu = pgM.Menu(
@@ -293,3 +299,38 @@ class Screen:
                 (self.__terrain_points[i - 1], self.__h - self.__terrain_points_levels[i - 1]),
                 (self.__terrain_points[i], self.__h - self.__terrain_points_levels[i])
             )
+
+        # draw game over text
+        if self.game_over_state is not None:
+            font = pg.font.Font('freesansbold.ttf', 32)
+
+            game_over_text = None
+            if self.game_over_state == sstatecons.GameOverState.LOST:
+                game_over_text = font.render("You've LOST", True, self.RED, self.BLACK)
+            elif self.game_over_state == sstatecons.GameOverState.WON:
+                game_over_text = font.render("You've WON", True, self.GREEN, self.BLACK)
+            elif self.game_over_state == sstatecons.GameOverState.ALL_HUMAN_DIED:
+                game_over_text = font.render("All human players've died and you've LOST", True, self.RED, self.BLACK)
+
+            game_over_text_rect = game_over_text.get_rect()
+            game_over_text_rect.center = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2)
+            self.__screen.blit(game_over_text, game_over_text_rect)
+
+        # draw t to exit below game over text
+        if self.t_to_exit is not None:
+            font = pg.font.Font('freesansbold.ttf', 32)
+            t_to_exit_text = font.render(
+                "Exit in " + str(self.t_to_exit // self.FPS + 1) + " s",
+                True,
+                self.WHITE,
+                self.BLACK
+            )
+            t_to_exit_text_rect = t_to_exit_text.get_rect()
+            t_to_exit_text_rect.center = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 + 50)
+            self.__screen.blit(t_to_exit_text, t_to_exit_text_rect)
+
+            self.t_to_exit -= 1
+            if self.t_to_exit == 0:
+                self.running = False
+
+
