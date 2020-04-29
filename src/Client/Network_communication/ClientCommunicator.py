@@ -3,7 +3,7 @@ import threading
 import json
 import logging
 
-from src.utils.domi_utils import dict_to_object, separate_jsons
+from src.utils.domi_utils import dict_to_object
 
 
 class ClientCommunicator(threading.Thread):
@@ -34,9 +34,6 @@ class ClientCommunicator(threading.Thread):
         while True:
             message = self.client_socket.recv(1024)
             message = message.decode()
-            mes_separated = separate_jsons(message)
-
-            for m in mes_separated:
-                deserialized = json.loads(m)
-                deserialized = dict_to_object(deserialized)
-                self.client.receive_message(deserialized)
+            deserialized = json.loads(message)
+            deserialized = dict_to_object(deserialized)
+            self.client.receive_message(deserialized)

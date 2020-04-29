@@ -1,0 +1,4 @@
+2020-04-29 19:53:49,822 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
+2020-04-29 19:53:49,823 - Imigyen szóla Domi.Client: - INFO - I got my id: 0
+2020-04-29 19:53:49,850 - Imigyen szóla Domi.Screen: - INFO - I am the host.
+2020-04-29 19:54:04,829 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
