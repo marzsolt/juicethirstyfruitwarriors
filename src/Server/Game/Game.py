@@ -20,7 +20,7 @@ class Game:
         self.logger = logging.getLogger('Domi.Game')
         self.__game_started = False
         self.__chose_host = False
-        self.__AI_number = 0
+        self.__AI_number = 3
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
         self.__player_logics = []
@@ -45,13 +45,16 @@ class Game:
                     print("Player with id ", i, " has died.")
                     mess = BaseMessage(sermess.MessageType.GAME_OVER, sermess.Target.SCREEN)
                     mess.player_id = i
+                    mess.lost = True
                     Server.get_instance().send_all(mess)
                     print("Client notified about the death.")
                     self.__player_logics = \
                         [player_logic for player_logic in self.__player_logics if player_logic._id != i]
                     print("Player logic killed.")
-                    print("Connection close requsted.")
-                    Server.get_instance().close_connection(i)
+
+                    # TODO: just for NOT AIs (connection closure)
+                    #print("Connection close requsted.")
+                    #Server.get_instance().close_connection(i)
 
                 pl_i.update()
 

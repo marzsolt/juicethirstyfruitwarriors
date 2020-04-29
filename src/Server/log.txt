@@ -1,2 +1,2 @@
-2020-04-29 19:53:27,143 - Imigyen szóla Domi.Server: - INFO - Server IP address: 192.168.1.175.
-2020-04-29 19:54:04,828 - Imigyen szóla Domi.Game: - INFO - Game started, terrain sent to everyone
+2020-04-29 19:53:27,143 - Imigyen sz?la Domi.Server: - INFO - Server IP address: 192.168.1.175.
+2020-04-29 19:54:04,828 - Imigyen sz?la Domi.Game: - INFO - Game started, terrain sent to everyone

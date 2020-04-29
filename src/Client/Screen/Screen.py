@@ -39,39 +39,45 @@ class Screen:
 
         self.__is_first_player = None
 
+        self.running = True
+
     def update(self, events, pressed_keys):
         self._draw_adequate_screen(events, pressed_keys)
 
         pg.display.flip()  # flip the display
 
-        return self._check_exit_criteria(events)
+        self._check_exit_criteria(events)
+        self._check_game_over()
+
+        return self.running
 
     def _game_screen(self, pressed_keys, events):
         self._draw_background_and_terrain()
         PlayerManager.get_instance().update(pressed_keys, events)
         PlayerManager.get_instance().draw_players(screen=self.__screen)
 
-    @staticmethod
-    def _check_exit_criteria(events):
-        running = True
-        for event in events:  # event handling - look at every event in the queue
-            if event.type == pg.KEYDOWN:  # did the user hit a key?
+    def _game_over_screen(self, pressed_keys, events, lost):
+        pass
 
-                if event.key == pg.K_ESCAPE:  # Was it the Escape key? If so, stop the loop.
-                    running = False
-
-            # Did the user click the window close button? If so, stop the loop. w/o. doesn't work
-            if event.type == pg.QUIT:
-                running = False
-
+    def _check_game_over(self):
         msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
         for msg in msgs:
             if msg.type == sermess.MessageType.GAME_OVER:
                 print("Death of player with id ", msg.player_id, " acknowledged.")
                 PlayerManager.get_instance().remove_player(msg.player_id)
                 print("Player removed from player manager.")
+                #self.__screenState = sstatecons.ScreenState.GAME_OVER
 
-        return running
+    def _check_exit_criteria(self, events):
+        for event in events:  # event handling - look at every event in the queue
+            if event.type == pg.KEYDOWN:  # did the user hit a key?
+
+                if event.key == pg.K_ESCAPE:  # Was it the Escape key? If so, stop the loop.
+                    self.running = False
+
+            # Did the user click the window close button? If so, stop the loop. w/o. doesn't work
+            if event.type == pg.QUIT:
+                self.running = False
 
     def _draw_adequate_screen(self, events, pressed_keys):
         # draw the adequate screen (according to the state)
@@ -81,6 +87,8 @@ class Screen:
             self.__connectionMenu.mainloop(events)
         elif self.__screenState == sstatecons.ScreenState.GAME:
             self._game_screen(pressed_keys, events)
+        elif self.__screenState == sstatecons.ScreenState.GAME_OVER:
+            self._game_over_screen(pressed_keys, events, lost)
 
     def _init_main_menu(self):  # first needs sub menus to be initialized!
         main_menu = pgM.Menu(
