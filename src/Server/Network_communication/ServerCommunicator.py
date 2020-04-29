@@ -1,7 +1,7 @@
 import threading
 import json
 
-from src.utils.domi_utils import dict_to_object
+from src.utils.domi_utils import dict_to_object, separate_jsons
 
 
 class ServerCommunicator(threading.Thread):
@@ -20,6 +20,10 @@ class ServerCommunicator(threading.Thread):
         while True:
             message = self.socket.recv(1024)
             message = message.decode()
-            deserialized = json.loads(message)
-            deserialized = dict_to_object(deserialized)
-            self.server.receive_message(deserialized, self.ID)
+
+            mes_separated = separate_jsons(message)
+
+            for m in mes_separated:
+                deserialized = json.loads(m)
+                deserialized = dict_to_object(deserialized)
+                self.server.receive_message(deserialized, self.ID)
