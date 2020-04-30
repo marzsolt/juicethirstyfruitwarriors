@@ -1,4 +1,4 @@
-2020-04-30 23:46:21,057 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
-2020-04-30 23:46:21,058 - Imigyen szóla Domi.Client: - INFO - I got my id: 1
-2020-04-30 23:46:21,085 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
-46:21,061 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
+2020-05-01 00:52:07,077 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
+2020-05-01 00:52:07,078 - Imigyen szóla Domi.Client: - INFO - I got my id: 0
+2020-05-01 00:52:07,104 - Imigyen szóla Domi.Screen: - INFO - I am the host.
+2020-05-01 00:52:08,125 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
