@@ -36,10 +36,16 @@ class Client:
         self.__communicator = ClientCommunicator(self, host, port)
         self.__communicator.start()
 
-    def close_conenction(self):
-        msg = BaseMessage(climess.MessageType.CONN_CLOSED, climess.Target.SERVER)
-        self.send_message(msg)
-        self.connection_alive = False
+    def close_connection(self):
+        if self.connection_alive:
+            msg = BaseMessage(climess.MessageType.CONN_RELATED_DEATH, climess.Target.GAME)
+            msg.player_id = self.id
+            self.send_message(msg)
+
+            msg = BaseMessage(climess.MessageType.CONN_CLOSED, climess.Target.SERVER)
+            self.send_message(msg)
+
+            self.__communicator.close()
 
     def receive_message(self, message):
         if message.target == sermess.Target.CLIENT:

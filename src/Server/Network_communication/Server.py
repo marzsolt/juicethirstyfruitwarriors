@@ -87,17 +87,20 @@ class Server(threading.Thread):
         self.send_message(message, newCom.ID)
 
     def __accept_clients(self):
-        new_client, addr = self.__serverSocket.accept()
-        self.__new_client(new_client)
+        try:
+            new_client, addr = self.__serverSocket.accept()
+        except OSError:  # if the socket was closed by interrupting it
+            self.running = False
+        else:
+            self.__new_client(new_client)
 
     def close_connection_by_ID(self, ID):
-        self.__get_communicator_from_id(ID).communicator_alive = False
+        self.__get_communicator_from_id(ID).close()
         self.__serverCommunicatorsList = [comm for comm in self.__serverCommunicatorsList if comm.ID != ID]
 
-    def close_all_connection(self):
-        for communicator in self.__serverCommunicatorsList:
-            self.close_connection_by_ID(communicator.ID)
-        self.running = False
+        if len(self.__serverCommunicatorsList) == 0:
+            self.__serverSocket.close()
+            print("Server socket closed.")
 
     def run(self):
         while self.running:

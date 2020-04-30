@@ -36,8 +36,12 @@ class ClientCommunicator(threading.Thread):
             self.client.connection_alive = True
             self.logger.info("Successful connection!")
 
-        while self.client.connection_alive:
-            message = self.client_socket.recv(1024)
+        while True:
+            try:
+                message = self.client_socket.recv(1024)
+            except OSError:  # if socket was shut down by interrupting recv()
+                break
+
             message = message.decode()
             mes_separated = separate_jsons(message)
 
@@ -45,6 +49,3 @@ class ClientCommunicator(threading.Thread):
                 deserialized = json.loads(m)
                 deserialized = dict_to_object(deserialized)
                 self.client.receive_message(deserialized)
-
-        # if connection is no longer alive, kill socket
-        self.close()

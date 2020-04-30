@@ -52,12 +52,11 @@ class Screen:
 
         pg.display.flip()  # flip the display
 
-        self._check_exit_criteria(events)
-        self._check_game_over()
-
+        self._check_exit_criteria(events)  # this should be the last, as closes connection on running = False
         return self.running
 
     def _game_screen(self, pressed_keys, events):
+        self._check_game_over()
         self._draw_background_and_terrain()
         PlayerManager.get_instance().update(pressed_keys, events)
         PlayerManager.get_instance().draw_players(screen=self.__screen)
@@ -65,7 +64,7 @@ class Screen:
     def _check_game_over(self):
         msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
         for msg in msgs:
-            if msg.type == sermess.MessageType.GAME_OVER:
+            if msg.type == sermess.MessageType.DIED:
                 print("ID: ", msg.player_id, " Death of player acknowledged.")
                 PlayerManager.get_instance().remove_player(msg.player_id)
                 print("ID: ", msg.player_id, " Player removed from player manager.")
@@ -74,6 +73,10 @@ class Screen:
                     print("It is our player that died!")
             elif msg.type == sermess.MessageType.NO_ALIVE_HUMAN:
                 self.game_over_state = sstatecons.GameOverState.ALL_HUMAN_DIED
+                self.t_to_exit = self.FPS * 10 - 1
+            elif msg.type == sermess.MessageType.WON:
+                if msg.player_id == Client.get_instance().id:
+                    self.game_over_state = sstatecons.GameOverState.WON
                 self.t_to_exit = self.FPS * 10 - 1
 
     def _check_exit_criteria(self, events):
@@ -87,8 +90,9 @@ class Screen:
             if event.type == pg.QUIT:
                 self.running = False
 
+        # close connection (if there is any - see fun implementation) on running = False
         if not self.running:
-            Client.get_instance().close_conenction()
+            Client.get_instance().close_connection()
 
     def _draw_adequate_screen(self, events, pressed_keys):
         # draw the adequate screen (according to the state)
@@ -186,7 +190,7 @@ class Screen:
             self.__w,
             self.__h,
             pgM.font.FONT_OPEN_SANS,
-            'Connecting Menu',
+            'Connection Menu',
             bgfun=self._connection_menu_bgfun,
             menu_color=self.BLACK,
             menu_color_title=self.BLACK,

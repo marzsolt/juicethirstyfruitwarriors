@@ -8,11 +8,11 @@ from src.utils.awesome_logging import setup_logger
 
 
 def main():
-    def update(running):
+    def update():
         Timer.update()
         running = game.update()
         if running:
-            s.enter(1.0/fps, 1, update, (running, ))  # call update again in 25 ms
+            s.enter(1.0/fps, 1, update, ())  # call update again in 25 ms
 
     # Logging
     setup_logger()
@@ -27,7 +27,7 @@ def main():
     # Setup regular update "loop"
     s = sched.scheduler(time.time, time.sleep)
     fps = 40.0
-    s.enter(1.0/fps, 1, update, (True, ))
+    s.enter(1.0/fps, 1, update, ())
     s.run()
 
 
