@@ -87,6 +87,9 @@ class Screen:
             if event.type == pg.QUIT:
                 self.running = False
 
+        if not self.running:
+            Client.get_instance().close_conenction()
+
     def _draw_adequate_screen(self, events, pressed_keys):
         # draw the adequate screen (according to the state)
         if self.__screenState == sstatecons.ScreenState.MAIN_MENU:

@@ -6,7 +6,7 @@ import logging
 from src.Server.Network_communication.ServerCommunicator import ServerCommunicator
 import src.Server.Network_communication.server_message_constants as sermess
 
-import src.Client.Network_communication.client_message_constants as client_constants
+import src.Client.Network_communication.client_message_constants as climess
 
 from src.utils.BaseMessage import BaseMessage
 
@@ -39,10 +39,12 @@ class Server(threading.Thread):
             self.__id_gen = id_generator()
             self.__serverCommunicatorsList = []
             self.server_message_dictionary = defaultdict(list)
+            self.running = True
 
     def receive_message(self, message, ID):
-        if message.target == client_constants.Target.SERVER:
-            pass
+        if message.target == climess.Target.SERVER:
+            if message.type == climess.MessageType.CONN_CLOSED:
+                self.close_connection_by_ID(ID)
         else:
             message.from_id = ID
             self.server_message_dictionary[message.target].append(message)
@@ -88,11 +90,15 @@ class Server(threading.Thread):
         new_client, addr = self.__serverSocket.accept()
         self.__new_client(new_client)
 
+    def close_connection_by_ID(self, ID):
+        self.__get_communicator_from_id(ID).communicator_alive = False
+        self.__serverCommunicatorsList = [comm for comm in self.__serverCommunicatorsList if comm.ID != ID]
+
     def close_all_connection(self):
         for communicator in self.__serverCommunicatorsList:
-            communicator.close()
-            communicator.join()
+            self.close_connection_by_ID(communicator.ID)
+        self.running = False
 
     def run(self):
-        while True:
+        while self.running:
             self.__accept_clients()

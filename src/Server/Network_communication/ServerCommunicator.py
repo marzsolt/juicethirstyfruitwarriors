@@ -10,6 +10,7 @@ class ServerCommunicator(threading.Thread):
         self.server = _server
         self.socket = _client
         self.ID = ID
+        self.communicator_alive = True
 
     def send_message(self, message):
         serialized = json.dumps(message, default=lambda o: getattr(o, '__dict__', str(o)))  # recursive
@@ -21,7 +22,7 @@ class ServerCommunicator(threading.Thread):
         print("Socket for player connection closed.")
 
     def run(self):
-        while True:
+        while self.communicator_alive:
             message = self.socket.recv(1024)
             message = message.decode()
 

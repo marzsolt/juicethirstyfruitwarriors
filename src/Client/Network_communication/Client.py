@@ -3,6 +3,8 @@ import logging
 
 from src.Client.Network_communication.ClientCommunicator import ClientCommunicator
 import src.Server.Network_communication.server_message_constants as sermess
+import src.Client.Network_communication.client_message_constants as climess
+from src.utils.BaseMessage import BaseMessage
 
 
 class Client:
@@ -33,6 +35,11 @@ class Client:
         port = 12145  # Random port number
         self.__communicator = ClientCommunicator(self, host, port)
         self.__communicator.start()
+
+    def close_conenction(self):
+        msg = BaseMessage(climess.MessageType.CONN_CLOSED, climess.Target.SERVER)
+        self.send_message(msg)
+        self.connection_alive = False
 
     def receive_message(self, message):
         if message.target == sermess.Target.CLIENT:

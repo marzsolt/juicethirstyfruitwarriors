@@ -20,6 +20,11 @@ class ClientCommunicator(threading.Thread):
         serialized = str.encode(serialized)
         self.client_socket.send(serialized)
 
+    def close(self):
+        self.client_socket.shutdown(socket.SHUT_RDWR)
+        self.client_socket.close()
+        print("Client socket closed.")
+
     def run(self):
         try:
             self.client_socket.connect((self.host, self.port))
@@ -31,7 +36,7 @@ class ClientCommunicator(threading.Thread):
             self.client.connection_alive = True
             self.logger.info("Successful connection!")
 
-        while True:
+        while self.client.connection_alive:
             message = self.client_socket.recv(1024)
             message = message.decode()
             mes_separated = separate_jsons(message)
@@ -40,3 +45,6 @@ class ClientCommunicator(threading.Thread):
                 deserialized = json.loads(m)
                 deserialized = dict_to_object(deserialized)
                 self.client.receive_message(deserialized)
+
+        # if connection is no longer alive, kill socket
+        self.close()
