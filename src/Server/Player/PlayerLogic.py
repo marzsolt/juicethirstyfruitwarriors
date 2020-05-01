@@ -31,7 +31,7 @@ class PlayerLogic:
         self._mobility = 0.3  # acceleration force, for max velocity check can_accelerate function
         self.mu = 0.1  # friction constant
         self._mass = 1  # effects how fast player can accelerate/decelerate (shouldn't be much different than 1)
-        self._pos = Vector2D(50+player_id*100, 300)
+        self.pos = Vector2D(50+player_id*100, 300)
         self._vel = Vector2D.zero()
         self._forces = []
         self._is_flying = True
@@ -87,7 +87,7 @@ class PlayerLogic:
     def _add_ground_directed_force(self, force_mag, direction):
         """ Adds force which is parallel with terrain, so that it's
         enough to set magnitude and direction: right/left  1/-1. """
-        ang = self._terrain.get_angle_rad(self._pos.x)
+        ang = self._terrain.get_angle_rad(self.pos.x)
         force = Vector2D.mag_ang_init(force_mag*direction.value, ang)
         self._add_force(force)
 
@@ -105,7 +105,7 @@ class PlayerLogic:
             return True
         BASE_MAX_VEL = 3.0  # can accelerate until this amount without angle
         ANGLE_DEPENDENCY = 3.0  # how much terrain's angle effects max velocity
-        angle_bonus = -direction * math.sin(self._terrain.get_angle_rad(self._pos.x)) * ANGLE_DEPENDENCY
+        angle_bonus = -direction * math.sin(self._terrain.get_angle_rad(self.pos.x)) * ANGLE_DEPENDENCY
         return self._vel.mag() < BASE_MAX_VEL + angle_bonus
 
     def _move_left(self):
@@ -121,11 +121,11 @@ class PlayerLogic:
 
     def _put_to_ground_level(self):
         """ Sets y position so that the player will be on ground. """
-        self._pos.y = self._terrain.get_level(self._pos.x)+self.RADIUS
+        self.pos.y = self._terrain.get_level(self.pos.x)+self.RADIUS
 
     def _get_y_to_ground_level(self):
         """ Difference of y position and ground level."""
-        return self._pos.y - (self._terrain.get_level(self._pos.x)+self.RADIUS)
+        return self.pos.y - (self._terrain.get_level(self.pos.x)+self.RADIUS)
 
     def _impact(self):
         """ Called when player hits ground after flying. """
