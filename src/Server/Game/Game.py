@@ -31,51 +31,55 @@ class Game:
 
     def update(self):
         self.__read_messages()
+
         if not self.__game_started:
             self.__collect_players()
         else:
-            # TODO move this part into a separate function
-            # Check if all human player is dead:
-            is_there_human = False
-            for pl in self.__player_logics:
-                if not isinstance(pl, PlayerAILogic):
-                    is_there_human = True
-            if not is_there_human:
-                mess = BaseMessage(sermess.MessageType.NO_ALIVE_HUMAN, sermess.Target.SCREEN)
-                Server.get_instance().send_all(mess)
-                print("Game killed as no human players left.")
-                Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
-
-            else:
-                for i, pl_i in enumerate(self.__player_logics):
-                    # HP update for each player:
-                    for pl_j in self.__player_logics[i + 1:]:
-                        if (abs(pl_i.pos.x - pl_j.pos.x) <= 2 * PlayerLogic.RADIUS and
-                                abs(pl_i.pos.y - pl_j.pos.y) <= 2 * PlayerLogic.RADIUS):
-                            pl_i.hp -= 1 if pl_i.hp != 0 else 0
-                            pl_j.hp -= 1 if pl_j.hp != 0 else 0
-                    pl_i.update()
-
-                # Check for deaths:
-                for pl in self.__player_logics:
-                    if pl.hp == 0:
-                        print("ID: ", pl._id, " Player has just died.")
-                        mess = BaseMessage(sermess.MessageType.DIED, sermess.Target.SCREEN)
-                        mess.player_id = pl._id
-                        Server.get_instance().send_all(mess)
-                        print("ID: ", pl._id, " All clients has been notified about the recent tragic death.")
-                        self.__player_logics = \
-                            [player_logic for player_logic in self.__player_logics if player_logic._id != pl._id]
-                        print("ID: ", pl._id, " Player logic killed.")
-
-            # Check if there's a winner (last alive)
-            if len(self.__player_logics) == 1 and is_there_human:
-                mess = BaseMessage(sermess.MessageType.WON, sermess.Target.SCREEN)
-                mess.player_id = self.__player_logics[0]._id
-                Server.get_instance().send_all(mess)
-                Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
+            self.__game_state()
 
         return self.running
+
+    def __game_state(self):
+        # Check if all human player is dead:
+        is_there_human = False
+        for pl in self.__player_logics:
+            if not isinstance(pl, PlayerAILogic):
+                is_there_human = True
+        if not is_there_human:
+            mess = BaseMessage(sermess.MessageType.NO_ALIVE_HUMAN, sermess.Target.SCREEN)
+            Server.get_instance().send_all(mess)
+            print("Game killed as no human players left.")
+            Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
+
+        else:
+            # Update hp (collision)
+            for i, pl_i in enumerate(self.__player_logics):
+                # HP update for each player:
+                for pl_j in self.__player_logics[i + 1:]:
+                    if (abs(pl_i.pos.x - pl_j.pos.x) <= 2 * PlayerLogic.RADIUS and
+                            abs(pl_i.pos.y - pl_j.pos.y) <= 2 * PlayerLogic.RADIUS):
+                        pl_i.hp -= 1 if pl_i.hp != 0 else 0
+                        pl_j.hp -= 1 if pl_j.hp != 0 else 0
+                pl_i.update()
+
+            # Check for deaths:
+            for pl in self.__player_logics:
+                if pl.hp == 0:
+                    print("ID: ", pl._id, " Player has just died.")
+                    mess = BaseMessage(sermess.MessageType.DIED, sermess.Target.SCREEN)
+                    mess.player_id = pl._id
+                    Server.get_instance().send_all(mess)
+                    print("ID: ", pl._id, " All clients has been notified about the recent tragic death.")
+                    self.__player_logics = \
+                        [player_logic for player_logic in self.__player_logics if player_logic._id != pl._id]
+                    print("ID: ", pl._id, " Player logic killed.")
+
+        # Check if there's a winner (last alive)
+        if len(self.__player_logics) == 1 and is_there_human:
+            mess = BaseMessage(sermess.MessageType.WON, sermess.Target.SCREEN)
+            mess.player_id = self.__player_logics[0]._id
+            Server.get_instance().send_all(mess)
+            Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
     def stop_running(self):
         self.running = False
