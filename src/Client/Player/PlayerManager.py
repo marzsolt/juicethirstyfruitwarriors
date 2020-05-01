@@ -50,6 +50,7 @@ class PlayerManager:
             screen.blit(p.surf, p.rect)
 
     def remove_player(self, player_id):
+        """" Removes player if it has dead. """
         self.players = [player for player in self.players if player._id != player_id]
 
 

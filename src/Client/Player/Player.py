@@ -58,8 +58,10 @@ class Player(pg.sprite.Sprite):
                 self.rect.center = (mess.x, self.SCREEN_HEIGHT - mess.y)  # graphical y axis is weird
                 self.dir = mess.dir
 
-                if self.hp != mess.hp:
+                if self.hp != mess.hp:  # update HP if it's changed
                     self.hp = mess.hp
+
+                    # Show HP bar:
                     # draw a white rect which is 1-1 pixel thicker in every direction to form border
                     pg.draw.rect(self.surf, self.WHITE, (14, 0, 32, 7))
                     # draw green/red health bar for own/enemy player respectively

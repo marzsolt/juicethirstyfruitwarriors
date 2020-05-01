@@ -37,6 +37,10 @@ class Client:
         self.__communicator.start()
 
     def close_connection(self):
+        """ If the connection was alive, then it closes down, i.e.:
+            - notify Game, so that it can be killed if isn't already;
+            - notify Server, so that it can kill its communicator.
+            - finally, closing communicator. """
         if self.connection_alive:
             msg = BaseMessage(climess.MessageType.CONN_RELATED_DEATH, climess.Target.GAME)
             msg.player_id = self.id

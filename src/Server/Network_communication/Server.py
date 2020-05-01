@@ -94,13 +94,14 @@ class Server(threading.Thread):
             self.__new_client(new_client)
 
     def close_connection_by_ID(self, ID):
+        """" Responsible for closing connection by client ID. """
         self.__get_communicator_from_id(ID).close()
         self.__serverCommunicatorsList = [comm for comm in self.__serverCommunicatorsList if comm.ID != ID]
 
-        if len(self.__serverCommunicatorsList) == 0:
+        if len(self.__serverCommunicatorsList) == 0:  # if no more connection with player, shut down server socket.
             self.__serverSocket.close()
             print("Server socket closed.")
 
     def run(self):
         while self.running:
-            self.__accept_clients()
+            self.__accept_clients()  # TODO: maybe after game start it shouldn't wayt any longer for clients :D ?

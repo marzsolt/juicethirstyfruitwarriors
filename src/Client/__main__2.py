@@ -5,14 +5,15 @@ from src.utils.awesome_logging import setup_logger
 
 
 def main():
-    pg.init()
+    """" The main function of the game. """
+    pg.init() # initializes pyGame
 
     # Logging
-    setup_logger()
+    setup_logger() # initializes the logger
 
     screen = Screen()  # set up the screen
 
-    # Setup the clock for a decent framerate
+    # Setup the clock for a decent frame rate
     clock = pg.time.Clock()
 
     running = True  # variable to keep the main loop running

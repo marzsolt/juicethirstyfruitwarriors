@@ -21,6 +21,7 @@ class ClientCommunicator(threading.Thread):
         self.client_socket.send(serialized)
 
     def close(self):
+        """ Closing down client socket. """
         self.client_socket.shutdown(socket.SHUT_RDWR)
         self.client_socket.close()
         print("Client socket closed.")

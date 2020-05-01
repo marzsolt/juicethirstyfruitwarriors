@@ -35,23 +35,23 @@ class Game:
         if not self.__game_started:
             self.__collect_players()
         else:
-            self.__game_state()
+            self.__game_state()  # if game is started, manages the game states
 
         return self.running
 
     def __game_state(self):
-        # Check if all human player is dead:
+        # Check if all human player is dead (Domi didn't want to see AI's epic game :( ):
         is_there_human = False
         for pl in self.__player_logics:
             if not isinstance(pl, PlayerAILogic):
                 is_there_human = True
-        if not is_there_human:
+        if not is_there_human:  # if so, notify Screen and trigger shut down.
             mess = BaseMessage(sermess.MessageType.NO_ALIVE_HUMAN, sermess.Target.SCREEN)
             Server.get_instance().send_all(mess)
             print("Game killed as no human players left.")
             Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
-        else:
+        else:  # if there is human alive :>
             # Update hp (collision)
             for i, pl_i in enumerate(self.__player_logics):
                 # HP update for each player:
@@ -82,6 +82,7 @@ class Game:
             Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
     def stop_running(self):
+        """" Function to trigger shut down - mostly for delayed trigger. """
         self.running = False
 
     def get_players(self):
@@ -98,6 +99,7 @@ class Game:
             self.__start_game()
 
     def __start_game(self):
+        """" Function responsible for managing game start related tasks. """
         self.logger.info("Game started, terrain sent to everyone")
         self.__game_started = True
 

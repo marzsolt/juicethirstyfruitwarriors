@@ -22,6 +22,7 @@ class ServerCommunicator(threading.Thread):
             pass
 
     def close(self):
+        """" Responsible for closing down communicator with client on request. """
         self.socket.shutdown(socket.SHUT_RDWR)
         self.socket.close()
         print("ID: ", self.ID, " Player socket closed.")
