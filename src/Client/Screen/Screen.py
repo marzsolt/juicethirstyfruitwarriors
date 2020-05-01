@@ -1,6 +1,7 @@
 import pygame as pg
 import pygameMenu as pgM
 import logging
+import functools
 
 import src.Client.Screen.screen_state_constants as sstatecons
 
@@ -49,9 +50,7 @@ class Screen:
 
     def update(self, events, pressed_keys):
         self._draw_adequate_screen(events, pressed_keys)
-
         pg.display.flip()  # flip the display
-
         self._check_exit_criteria(events)  # this should be the last, as closes connection on running = False
         return self.running
 
@@ -297,8 +296,17 @@ class Screen:
         msg = BaseMessage(mess_type=climess.MessageType.START_GAME_MANUALLY, target=climess.Target.GAME)
         Client.get_instance().send_message(msg)
 
+    def bck_bg_decorator(fun):
+        @functools.wraps(fun)
+        def wrapper(self):
+            self.__screen.fill(self.BLACK)  # black bg
+            # before fun ^^^
+            fun(self)  # PyCharm - liar
+
+        return wrapper
+
+    @bck_bg_decorator  # PyCharm - liar
     def _draw_background_and_terrain(self):
-        self.__screen.fill(self.BLACK)  # black bg
         for i in range(1, len(self.__terrain_points)):
             pg.draw.line(
                 self.__screen,

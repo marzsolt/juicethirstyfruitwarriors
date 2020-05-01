@@ -4,7 +4,7 @@ class Timer:
     @staticmethod
     def sch_fun(delay, fun, arg):
         Timer.sch_list.append((delay, fun, arg))
-        
+
     @staticmethod
     def update():
         expired = []
