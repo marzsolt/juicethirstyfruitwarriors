@@ -10,27 +10,38 @@ from src.utils.Timer import Timer
 
 
 class OrangeLogic(PlayerLogic):
-    def __init__(self, player_id, terrain):
-        super(OrangeLogic, self).__init__(player_id, terrain)
+    def __init__(self, player_id, terrain, game):
+        super(OrangeLogic, self).__init__(player_id, terrain, game)
 
-        self._is_attacking = False
-        self._attack_strength = 5
+        self._attack_strength = 10
+        self._attack_damage = 3
+
+    def update(self):
+        super().update()
+        if self._is_attacking:
+            self._game.player_damage(self, self._attack_damage)
 
     def _process_requests(self, network_messages):
         super()._process_requests(network_messages)
         for mess in network_messages:
-            if mess.type == climess.MessageType.ORANGE_ATTACK and self._can_attack and self._vel != Vector2D.zero():
+            if mess.type == climess.MessageType.ORANGE_ATTACK and self._can_attack and self.is_moving():
                 self._attack()
-                #  ACK valid attack -> actually for rolling purposes
-                mes = BaseMessage(sermess.MessageType.ORANGE_ROLL, sermess.Target.ORANGE_PLAYER + str(self._id))
-                Server.get_instance().send_all(mes)
+                # self.logger.debug(f"velocity: {self._vel} ")
+
+    def _finish_attack(self):
+        super()._finish_attack()
+        self._is_attacking = False
 
     def _attack(self):
         if self._can_attack and not self._is_flying:
             super()._attack()
-            self._is_attacking = True
             self._add_ground_directed_force(self._attack_strength, self.my_dir())
-            self._impact()   # TODO LIAR!
+            mes = BaseMessage(sermess.MessageType.ORANGE_ROLL, sermess.Target.ORANGE_PLAYER + str(self._id))
+            Server.get_instance().send_all(mes)
+            Timer.sch_fun(12, self._finish_attack, ())  #disgusting, I know,
+
+
+
 
 
 

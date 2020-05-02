@@ -8,12 +8,12 @@ from src.utils.Timer import Timer
 
 
 class AppleLogic(PlayerLogic):
-    def __init__(self, player_id, terrain):
-        super(AppleLogic, self).__init__(player_id, terrain)
+    def __init__(self, player_id, terrain, game):
+        super(AppleLogic, self).__init__(player_id, terrain, game)
 
-        self._is_attacking = False
-        self._min_attack_angle = 0.15
-        self._normal_attack_strength = 7
+        self._min_attack_angle = 0.55
+        self._normal_attack_strength = 12
+        self._attack_damage = 8
 
         self._min_attack_x, self._min_attack_y = self._attack_constants()
 
@@ -21,9 +21,8 @@ class AppleLogic(PlayerLogic):
         super()._process_requests(network_messages)
         for mess in network_messages:
             if mess.type == climess.MessageType.APPLE_ATTACK:
-                x, y = self._calculate_attack_force(mess.x, mess.y)
+                force_of_jump = self._calculate_attack_force(mess.x, mess.y)
 
-                force_of_jump = Vector2D(x, y)
                 self._attack(force_of_jump)
 
     def _attack_constants(self):
@@ -46,18 +45,23 @@ class AppleLogic(PlayerLogic):
                 attack_x = -1 * self._min_attack_x
             attack_y = self._min_attack_y
 
-        return attack_x, attack_y
+        force = Vector2D(attack_x, attack_y)
+        return force
 
     def _attack(self, force):
         if self._can_attack and not self._is_flying:
             super()._attack()
-            self._is_attacking = True
             self._add_force(force)
-            self._impact()
+
+    def _finish_attack(self):
+        super()._finish_attack()
+        self._game.player_damage(self, self._attack_damage)
 
     def _impact(self):
         if self._is_attacking:
             print("bumm apple bumm")  # TODO remove...
             self._is_attacking = False
+            self._finish_attack()
+
 
 

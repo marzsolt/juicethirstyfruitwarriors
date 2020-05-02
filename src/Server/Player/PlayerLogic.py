@@ -1,4 +1,5 @@
 import math
+import logging
 from enum import Enum
 
 from src.Server.Network_communication.Server import Server
@@ -24,9 +25,11 @@ class PlayerLogic:
     G = -1
     C_AIR = 0.3
 
-    def __init__(self, player_id, terrain):
+    def __init__(self, player_id, terrain, game):
+        self.logger = logging.getLogger('PlayerLogic')
         self._id = player_id
         self._terrain = terrain
+        self._game = game
         self._mobility = 0.3  # acceleration force, for max velocity check can_accelerate function
         self.mu = 0.1  # friction constant
         self._mass = 1
@@ -35,7 +38,10 @@ class PlayerLogic:
         self._forces = []
         self._is_flying = True
         self._can_attack = True
+        self._is_attacking = False
         self.hp = 100
+
+        self.can_hurt = False
 
     def update(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC+str(self._id))
@@ -74,8 +80,12 @@ class PlayerLogic:
 
     def _attack(self):
         #if self._can_attack:
+        self._is_attacking = True
         self._can_attack = False
         Timer.sch_fun(100, self.restore_attackaibility, ())
+
+    def _finish_attack(self):
+        self._stop()
 
     def restore_attackaibility(self):
         self._can_attack = True
@@ -109,7 +119,7 @@ class PlayerLogic:
         if self.can_accelerate(1):
             self._add_ground_directed_force(self._mobility, Direction.RIGHT)
 
-    def _stop(self): # TODO: this seems to benevr used
+    def _stop(self):
         self._vel = Vector2D.zero()
 
     def _put_to_ground_level(self):
@@ -151,8 +161,8 @@ class PlayerLogic:
         pos_diff = self._get_y_to_ground_level()
         if (vel_angle_diff > threshold_ang and pos_diff > threshold_pos)\
                 or pos_diff > threshold_big_pos:
-            if not self._is_flying:
-                self._add_force(Vector2D(0, 10))  # a little jump for fun :)
+            #if not self._is_flying:
+            #    self._add_force(Vector2D(0, 10))  # a little jump for fun :)
             self._is_flying = True
 
         # Check if it's under ground, make corrections
@@ -174,3 +184,6 @@ class PlayerLogic:
         elif self.pos.x > self.X_MAX:
             self.pos.x = self.X_MAX
             self._vel.x = -self._vel.x
+
+    def is_moving(self):
+        return abs(self._vel.x) > 0.001 and abs(self._vel.y) > 0.001
