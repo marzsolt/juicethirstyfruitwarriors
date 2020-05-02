@@ -35,47 +35,57 @@ class Game:
         if not self.__game_started:
             self.__collect_players()
         else:
-            self.__game_state()
+            is_there_human = self.__check_for_human()
+            if not is_there_human:
+                self.__handle_no_human()
+            else:
+                self.__handle_collision()
+                self.__check_and_handle_deaths()
+                self.__check_and_handle_winner()
 
         return self.running
 
-    def __game_state(self):
+    def __check_for_human(self):
         # Check if all human player is dead:
         is_there_human = False
         for pl in self.__player_logics:
             if not isinstance(pl, PlayerAILogic):
                 is_there_human = True
-        if not is_there_human:
-            mess = BaseMessage(sermess.MessageType.NO_ALIVE_HUMAN, sermess.Target.SCREEN)
-            Server.get_instance().send_all(mess)
-            print("Game killed as no human players left.")
-            Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
+        return is_there_human
 
-        else:
-            # Update hp (collision)
-            for i, pl_i in enumerate(self.__player_logics):
-                # HP update for each player:
-                for pl_j in self.__player_logics[i + 1:]:
-                    if (abs(pl_i.pos.x - pl_j.pos.x) <= 2 * PlayerLogic.RADIUS and
-                            abs(pl_i.pos.y - pl_j.pos.y) <= 2 * PlayerLogic.RADIUS):
-                        pl_i.hp -= 1 if pl_i.hp != 0 else 0
-                        pl_j.hp -= 1 if pl_j.hp != 0 else 0
-                pl_i.update()
+    def __handle_no_human(self):
+        mess = BaseMessage(sermess.MessageType.NO_ALIVE_HUMAN, sermess.Target.SCREEN)
+        Server.get_instance().send_all(mess)
+        self.logger.info("Game killed as no human players left.")
+        Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
-            # Check for deaths:
-            for pl in self.__player_logics:
-                if pl.hp == 0:
-                    print("ID: ", pl._id, " Player has just died.")
-                    mess = BaseMessage(sermess.MessageType.DIED, sermess.Target.SCREEN)
-                    mess.player_id = pl._id
-                    Server.get_instance().send_all(mess)
-                    print("ID: ", pl._id, " All clients has been notified about the recent tragic death.")
-                    self.__player_logics = \
-                        [player_logic for player_logic in self.__player_logics if player_logic._id != pl._id]
-                    print("ID: ", pl._id, " Player logic killed.")
+    def __handle_collision(self):
+        # Update hp (collision)
+        for i, pl_i in enumerate(self.__player_logics):
+            # HP update for each player:
+            for pl_j in self.__player_logics[i + 1:]:
+                if (abs(pl_i.pos.x - pl_j.pos.x) ** 2 + abs(pl_i.pos.y - pl_j.pos.y) ** 2) \
+                        <= (2 * PlayerLogic.RADIUS) ** 2:
+                    pl_i.hp -= 1 if pl_i.hp != 0 else 0
+                    pl_j.hp -= 1 if pl_j.hp != 0 else 0
+            pl_i.update()
 
+    def __check_and_handle_deaths(self):
+        # Check for deaths:
+        for pl in self.__player_logics:
+            if pl.hp == 0:
+                self.logger.info(f"ID: {pl._id} Player has just died.")
+                mess = BaseMessage(sermess.MessageType.DIED, sermess.Target.SCREEN)
+                mess.player_id = pl._id
+                Server.get_instance().send_all(mess)
+                self.logger.info(f"ID: {pl._id} All clients has been notified about the recent tragic death.")
+                self.__player_logics = \
+                    [player_logic for player_logic in self.__player_logics if player_logic._id != pl._id]
+                self.logger.info(f"ID: {pl._id} Player logic killed.")
+
+    def __check_and_handle_winner(self):
         # Check if there's a winner (last alive)
-        if len(self.__player_logics) == 1 and is_there_human:
+        if len(self.__player_logics) == 1:
             mess = BaseMessage(sermess.MessageType.WON, sermess.Target.SCREEN)
             mess.player_id = self.__player_logics[0]._id
             Server.get_instance().send_all(mess)
@@ -147,5 +157,5 @@ class Game:
             elif mess.type == climess.MessageType.CONN_RELATED_DEATH:
                 for pl in self.__player_logics:
                     if pl._id == mess.player_id:
-                        print("ID: ", mess.player_id, " Connection related death.")
+                        self.logger.info(f"ID: {mess.player_id} Connection related death.")
                         pl.hp = 0

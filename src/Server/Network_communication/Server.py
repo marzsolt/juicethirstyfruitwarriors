@@ -100,7 +100,7 @@ class Server(threading.Thread):
 
         if len(self.__serverCommunicatorsList) == 0:
             self.__serverSocket.close()
-            print("Server socket closed.")
+            self.logger.info("Server socket closed.")
 
     def run(self):
         while self.running:

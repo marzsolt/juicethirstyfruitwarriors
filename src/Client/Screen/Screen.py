@@ -44,15 +44,15 @@ class Screen:
 
         self.__is_first_player = None
 
-        self.running = True
-        self.game_over_state = None
-        self.t_to_exit = None
+        self.__running = True
+        self.__game_over_state = None
+        self.__t_to_exit = None
 
     def update(self, events, pressed_keys):
         self._draw_adequate_screen(events, pressed_keys)
         pg.display.flip()  # flip the display
         self._check_exit_criteria(events)  # this should be the last, as closes connection on running = False
-        return self.running
+        return self.__running
 
     def _game_screen(self, pressed_keys, events):
         self._check_game_over()
@@ -64,33 +64,33 @@ class Screen:
         msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
         for msg in msgs:
             if msg.type == sermess.MessageType.DIED:
-                print("ID: ", msg.player_id, " Death of player acknowledged.")
+                self.logger.info(f"ID: {msg.player_id} Death of player acknowledged.")
                 PlayerManager.get_instance().remove_player(msg.player_id)
-                print("ID: ", msg.player_id, " Player removed from player manager.")
+                self.logger.info(f"ID: {msg.player_id} Player removed from player manager.")
                 if Client.get_instance().id == msg.player_id:
-                    self.game_over_state = sstatecons.GameOverState.LOST
-                    print("It is our player that died!")
+                    self.__game_over_state = sstatecons.GameOverState.LOST
+                    self.logger.info("It is our player that died!")
             elif msg.type == sermess.MessageType.NO_ALIVE_HUMAN:
-                self.game_over_state = sstatecons.GameOverState.ALL_HUMAN_DIED
-                self.t_to_exit = self.FPS * 10 - 1
+                self.__game_over_state = sstatecons.GameOverState.ALL_HUMAN_DIED
+                self.__t_to_exit = self.FPS * 10 - 1
             elif msg.type == sermess.MessageType.WON:
                 if msg.player_id == Client.get_instance().id:
-                    self.game_over_state = sstatecons.GameOverState.WON
-                self.t_to_exit = self.FPS * 10 - 1
+                    self.__game_over_state = sstatecons.GameOverState.WON
+                self.__t_to_exit = self.FPS * 10 - 1
 
     def _check_exit_criteria(self, events):
         for event in events:  # event handling - look at every event in the queue
             if event.type == pg.KEYDOWN:  # did the user hit a key?
 
                 if event.key == pg.K_ESCAPE:  # Was it the Escape key? If so, stop the loop.
-                    self.running = False
+                    self.__running = False
 
             # Did the user click the window close button? If so, stop the loop. w/o. doesn't work
             if event.type == pg.QUIT:
-                self.running = False
+                self.__running = False
 
         # close connection (if there is any - see fun implementation) on running = False
-        if not self.running:
+        if not self.__running:
             Client.get_instance().close_connection()
 
     def _draw_adequate_screen(self, events, pressed_keys):
@@ -307,6 +307,18 @@ class Screen:
 
     @bck_bg_decorator  # PyCharm - liar
     def _draw_background_and_terrain(self):
+        self.__draw_terrain()
+
+        # draw game over text
+        if self.__game_over_state is not None:
+            self.__draw_game_over_text()
+
+        # draw t to exit below game over text
+        if self.__t_to_exit is not None:
+            self.__draw_t_to_exit_text()
+
+    def __draw_terrain(self):
+        """" Responsible for drawing terrain. """
         for i in range(1, len(self.__terrain_points)):
             pg.draw.line(
                 self.__screen,
@@ -315,37 +327,35 @@ class Screen:
                 (self.__terrain_points[i], self.__h - self.__terrain_points_levels[i])
             )
 
-        # draw game over text
-        if self.game_over_state is not None:
-            font = pg.font.Font('freesansbold.ttf', 32)
+    def __draw_game_over_text(self):
+        """" Responsible for drawing game over text corresponding to game over state. """
+        font = pg.font.Font('freesansbold.ttf', 32)
 
-            game_over_text = None
-            if self.game_over_state == sstatecons.GameOverState.LOST:
-                game_over_text = font.render("You've LOST", True, self.RED, self.BLACK)
-            elif self.game_over_state == sstatecons.GameOverState.WON:
-                game_over_text = font.render("You've WON", True, self.GREEN, self.BLACK)
-            elif self.game_over_state == sstatecons.GameOverState.ALL_HUMAN_DIED:
-                game_over_text = font.render("All human players've died and you've LOST", True, self.RED, self.BLACK)
+        game_over_text = None
+        if self.__game_over_state == sstatecons.GameOverState.LOST:
+            game_over_text = font.render("You've LOST", True, self.RED, self.BLACK)
+        elif self.__game_over_state == sstatecons.GameOverState.WON:
+            game_over_text = font.render("You've WON", True, self.GREEN, self.BLACK)
+        elif self.__game_over_state == sstatecons.GameOverState.ALL_HUMAN_DIED:
+            game_over_text = font.render("All human players've died and you've LOST", True, self.RED, self.BLACK)
 
-            game_over_text_rect = game_over_text.get_rect()
-            game_over_text_rect.center = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2)
-            self.__screen.blit(game_over_text, game_over_text_rect)
+        game_over_text_rect = game_over_text.get_rect()
+        game_over_text_rect.center = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2)
+        self.__screen.blit(game_over_text, game_over_text_rect)
 
-        # draw t to exit below game over text
-        if self.t_to_exit is not None:
-            font = pg.font.Font('freesansbold.ttf', 32)
-            t_to_exit_text = font.render(
-                "Exit in " + str(self.t_to_exit // self.FPS + 1) + " s",
-                True,
-                self.WHITE,
-                self.BLACK
-            )
-            t_to_exit_text_rect = t_to_exit_text.get_rect()
-            t_to_exit_text_rect.center = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 + 50)
-            self.__screen.blit(t_to_exit_text, t_to_exit_text_rect)
+    def __draw_t_to_exit_text(self):
+        """" Responsible for drawing time to exit text when triggered and signaling Screen kill. """
+        font = pg.font.Font('freesansbold.ttf', 32)
+        t_to_exit_text = font.render(
+            "Exit in " + str(self.__t_to_exit // self.FPS + 1) + " s",
+            True,
+            self.WHITE,
+            self.BLACK
+        )
+        t_to_exit_text_rect = t_to_exit_text.get_rect()
+        t_to_exit_text_rect.center = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 + 50)
+        self.__screen.blit(t_to_exit_text, t_to_exit_text_rect)
 
-            self.t_to_exit -= 1
-            if self.t_to_exit == 0:
-                self.running = False
-
-
+        self.__t_to_exit -= 1
+        if self.__t_to_exit == 0:
+            self.__running = False

@@ -23,7 +23,7 @@ class ClientCommunicator(threading.Thread):
     def close(self):
         self.client_socket.shutdown(socket.SHUT_RDWR)
         self.client_socket.close()
-        print("Client socket closed.")
+        self.logger.info("Client socket closed.")
 
     def run(self):
         try:

@@ -1,3 +1,11 @@
-2020-05-01 15:34:53,230 - Imigyen szóla Domi.Server: - INFO - Server IP address: 192.168.1.175.
-2020-05-01 15:34:57,016 - Imigyen szóla Domi.Game: - INFO - Received manual game start signal.
-2020-05-01 15:34:57,016 - Imigyen szóla Domi.Game: - INFO - Game started, terrain sent to everyone
+2020-05-02 12:34:41,197 - Imigyen szóla Domi.Server: - INFO - Server IP address: 192.168.1.175.
+2020-05-02 12:34:44,791 - Imigyen szóla Domi.Game: - INFO - Received manual game start signal.
+2020-05-02 12:34:44,791 - Imigyen szóla Domi.Game: - INFO - Game started, terrain sent to everyone
+2020-05-02 12:34:56,130 - Imigyen szóla Domi.Game: - INFO - ID: 1 Player has just died.
+2020-05-02 12:34:56,131 - Imigyen szóla Domi.Game: - INFO - ID: 1 All clients has been notified about the recent tragic death.
+2020-05-02 12:34:56,131 - Imigyen szóla Domi.Game: - INFO - ID: 1 Player logic killed.
+2020-05-02 12:34:58,719 - Imigyen szóla Domi.Game: - INFO - ID: 2 Player has just died.
+2020-05-02 12:34:58,720 - Imigyen szóla Domi.Game: - INFO - ID: 2 All clients has been notified about the recent tragic death.
+2020-05-02 12:34:58,720 - Imigyen szóla Domi.Game: - INFO - ID: 2 Player logic killed.
+2020-05-02 12:35:00,820 - Imigyen szóla Domi.ServerCommunicator: - INFO - ID: 0 Player socket closed.
+2020-05-02 12:35:00,821 - Imigyen szóla Domi.Server: - INFO - Server socket closed.
