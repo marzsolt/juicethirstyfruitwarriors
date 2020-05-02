@@ -20,6 +20,11 @@ class ClientCommunicator(threading.Thread):
         serialized = str.encode(serialized)
         self.client_socket.send(serialized)
 
+    def close(self):
+        self.client_socket.shutdown(socket.SHUT_RDWR)
+        self.client_socket.close()
+        self.logger.info("Client socket closed.")
+
     def run(self):
         try:
             self.client_socket.connect((self.host, self.port))
@@ -32,7 +37,11 @@ class ClientCommunicator(threading.Thread):
             self.logger.info("Successful connection!")
 
         while True:
-            message = self.client_socket.recv(1024)
+            try:
+                message = self.client_socket.recv(1024)
+            except OSError:  # if socket was shut down by interrupting recv()
+                break
+
             message = message.decode()
             mes_separated = separate_jsons(message)
 

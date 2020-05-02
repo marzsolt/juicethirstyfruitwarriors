@@ -26,9 +26,10 @@ class Terrain:
     def generate_terrain(self):
         # generating the points for the piecewise linear terrain
         for _ in range(int(self.SCREEN_WIDTH/100)):  # how many middle points shall be generated
-            # always insert a random point into the longest interval
+            # always insert a random point into the longest interval - NOPE
             [a, b] = self.__get_longest_interval_of_points()
-            self.__points.append(ra.randint(a+1, b-1))
+            # self.__points.append(ra.randint(a+1, b-1))
+            self.__points.append(int((a + b) / 2))
             self.__points.sort()
 
         #  generating the angle values for the piecewise linear sections and the levels at points (section ends)
@@ -42,6 +43,8 @@ class Terrain:
                 mat.tan(angle_in_radians) * (point - prev_point) + y_prev_point,
                 self.MIN_LEVEL
             )
+            if y_point == self.MIN_LEVEL:  # recalculate angle as it's altered
+                self.__angles[-1] = mat.atan(mat.degrees((y_point - y_prev_point) / (point - prev_point)))
 
             br_line = list(br.bresenham(prev_point, self.__levels[prev_point], point, y_point))  # list of tuples (x, y)
             br_line = [p[1] for p in br_line]

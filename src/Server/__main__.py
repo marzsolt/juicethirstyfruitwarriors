@@ -7,11 +7,12 @@ from src.utils.Timer import Timer
 from src.utils.awesome_logging import setup_logger
 
 
-def main():            
+def main():
     def update():
-        s.enter(1.0/fps, 1, update, ())  # call update again in 25 ms
         Timer.update()
-        game.update()
+        running = game.update()
+        if running:
+            s.enter(1.0/fps, 1, update, ())  # call update again in 25 ms
 
     # Logging
     setup_logger()

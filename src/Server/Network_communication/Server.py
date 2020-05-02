@@ -6,7 +6,7 @@ import logging
 from src.Server.Network_communication.ServerCommunicator import ServerCommunicator
 import src.Server.Network_communication.server_message_constants as sermess
 
-import src.Client.Network_communication.client_message_constants as client_constants
+import src.Client.Network_communication.client_message_constants as climess
 
 from src.utils.BaseMessage import BaseMessage
 
@@ -39,10 +39,12 @@ class Server(threading.Thread):
             self.__id_gen = id_generator()
             self.__serverCommunicatorsList = []
             self.server_message_dictionary = defaultdict(list)
+            self.running = True
 
     def receive_message(self, message, ID):
-        if message.target == client_constants.Target.SERVER:
-            pass
+        if message.target == climess.Target.SERVER:
+            if message.type == climess.MessageType.CONN_CLOSED:
+                self.close_connection_by_ID(ID)
         else:
             message.from_id = ID
             self.server_message_dictionary[message.target].append(message)
@@ -85,9 +87,21 @@ class Server(threading.Thread):
         self.send_message(message, newCom.ID)
 
     def __accept_clients(self):
-        new_client, addr = self.__serverSocket.accept()
-        self.__new_client(new_client)
+        try:
+            new_client, addr = self.__serverSocket.accept()
+        except OSError:  # if the socket was closed by interrupting it
+            self.running = False
+        else:
+            self.__new_client(new_client)
+
+    def close_connection_by_ID(self, ID):
+        self.__get_communicator_from_id(ID).close()
+        self.__serverCommunicatorsList = [comm for comm in self.__serverCommunicatorsList if comm.ID != ID]
+
+        if len(self.__serverCommunicatorsList) == 0:
+            self.__serverSocket.close()
+            self.logger.info("Server socket closed.")
 
     def run(self):
-        while True:
+        while self.running:
             self.__accept_clients()

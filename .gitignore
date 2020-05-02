@@ -123,3 +123,6 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+*.txt
+src/Client/log.txt
+src/Server/log.txt
