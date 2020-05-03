@@ -14,23 +14,19 @@ class OrangeLogic(PlayerLogic):
         super(OrangeLogic, self).__init__(player_id, terrain, game)
 
         self._attack_strength = 10
-        self._attack_damage = 3
+        self._attack_damage = 4
+        self._attack_length = 12  # number of frames, same as length of rolling which is 360/30
 
     def update(self):
         super().update()
         if self._is_attacking:
-            self._game.player_damage(self, self._attack_damage)
+            self._game.player_damage(self, self._attack_damage, PlayerLogic.RADIUS)
 
     def _process_requests(self, network_messages):
         super()._process_requests(network_messages)
         for mess in network_messages:
             if mess.type == climess.MessageType.ORANGE_ATTACK and self._can_attack and self.is_moving():
                 self._attack()
-                # self.logger.debug(f"velocity: {self._vel} ")
-
-    def _finish_attack(self):
-        super()._finish_attack()
-        self._is_attacking = False
 
     def _attack(self):
         if self._can_attack and not self._is_flying:
@@ -38,14 +34,4 @@ class OrangeLogic(PlayerLogic):
             self._add_ground_directed_force(self._attack_strength, self.my_dir())
             mes = BaseMessage(sermess.MessageType.ORANGE_ROLL, sermess.Target.ORANGE_PLAYER + str(self._id))
             Server.get_instance().send_all(mes)
-            Timer.sch_fun(12, self._finish_attack, ())  #disgusting, I know,
-
-
-
-
-
-
-    def _impact(self):
-        if self._is_attacking:
-            print("roll orange roll")
-            self._is_attacking = False
+            Timer.sch_fun(self._attack_length, self._finish_attack, ())

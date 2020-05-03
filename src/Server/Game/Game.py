@@ -39,7 +39,6 @@ class Game:
             if not is_there_human:
                 self.__handle_no_human()
             else:
-                #self.__handle_collision()
                 for pl_i in self.__player_logics:
                     pl_i.update()
 
@@ -62,33 +61,21 @@ class Game:
         self.logger.info("Game killed as no human players left.")
         Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
-    def __handle_collision(self):
-        # Update hp (collision)
-        attacking_player = list(filter(lambda x: x._is_attacking == True, self.__player_logics))
-        print(attacking_player)
-        for pl_i in self.__player_logics:
-            # HP update for each player:
-            for pl_j in self.__player_logics:
-                if pl_i != pl_j:
-                    if (abs(pl_i.pos.x - pl_j.pos.x) ** 2 + abs(pl_i.pos.y - pl_j.pos.y) ** 2) \
-                            <= (2 * PlayerLogic.RADIUS) ** 2:
-                        #pl_i.hp -= 1 if pl_i.hp != 0 else 0
-                        pl_j.hp -= 10 if pl_j.hp != 0 else 0
-            pl_i.can_hurt = False
-        for pl_i in self.__player_logics:
-            pl_i.update()
-
-    def player_damage(self, a_pl, strength):
+    def player_damage(self, player, strength, radius):
         for pl_j in self.__player_logics:
-            if a_pl != pl_j:
-                if (abs(a_pl.pos.x - pl_j.pos.x) ** 2 + abs(a_pl.pos.y - pl_j.pos.y) ** 2) \
-                        <= (2 * PlayerLogic.RADIUS) ** 2:
-                    # pl_i.hp -= 1 if pl_i.hp != 0 else 0
-                    # pl_j.hp -= strength if pl_j.hp-strength > 0 else 0
+            if player != pl_j:
+                if (abs(player.pos.x - pl_j.pos.x) ** 2 + abs(player.pos.y - pl_j.pos.y) ** 2) \
+                        <= (2 * radius) ** 2:
+
                     if pl_j.hp-strength > 0:
                         pl_j.hp -= strength
                     else:
                         pl_j.hp = 0
+
+                    if player.hp+strength/2 <= 100:
+                        player.hp += strength/2
+                    else:
+                        player.hp = 100
 
     def __check_and_handle_deaths(self):
         # Check for deaths:

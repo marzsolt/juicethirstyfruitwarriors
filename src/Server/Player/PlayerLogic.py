@@ -85,6 +85,7 @@ class PlayerLogic:
         Timer.sch_fun(100, self.restore_attackaibility, ())
 
     def _finish_attack(self):
+        self._is_attacking = False
         self._stop()
 
     def restore_attackaibility(self):

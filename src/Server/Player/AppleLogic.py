@@ -12,8 +12,8 @@ class AppleLogic(PlayerLogic):
         super(AppleLogic, self).__init__(player_id, terrain, game)
 
         self._min_attack_angle = 0.55
-        self._normal_attack_strength = 12
-        self._attack_damage = 8
+        self._normal_attack_strength = 10
+        self._attack_damage = 10
 
         self._min_attack_x, self._min_attack_y = self._attack_constants()
 
@@ -55,13 +55,8 @@ class AppleLogic(PlayerLogic):
 
     def _finish_attack(self):
         super()._finish_attack()
-        self._game.player_damage(self, self._attack_damage)
+        self._game.player_damage(self, self._attack_damage, 2*PlayerLogic.RADIUS)
 
     def _impact(self):
         if self._is_attacking:
-            print("bumm apple bumm")  # TODO remove...
-            self._is_attacking = False
             self._finish_attack()
-
-
-
