@@ -11,8 +11,8 @@ class AppleLogic(PlayerLogic):
     def __init__(self, player_id, terrain, game):
         super(AppleLogic, self).__init__(player_id, terrain, game)
 
-        self._min_attack_angle = 0.55
-        self._normal_attack_strength = 10
+        self._min_attack_angle = 0.55  # it is around 30 deg
+        self._normal_attack_strength = 25
         self._attack_damage = 10
 
         self._min_attack_x, self._min_attack_y = self._attack_constants()
@@ -45,8 +45,7 @@ class AppleLogic(PlayerLogic):
                 attack_x = -1 * self._min_attack_x
             attack_y = self._min_attack_y
 
-        force = Vector2D(attack_x, attack_y)
-        return force
+        return Vector2D(attack_x, attack_y)
 
     def _attack(self, force):
         if self._can_attack and not self._is_flying:

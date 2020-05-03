@@ -26,7 +26,7 @@ class PlayerLogic:
     C_AIR = 0.3
 
     def __init__(self, player_id, terrain, game):
-        self.logger = logging.getLogger('PlayerLogic')
+        self.logger = logging.getLogger('Domi.PlayerLogic')
         self._id = player_id
         self._terrain = terrain
         self._game = game
@@ -39,9 +39,8 @@ class PlayerLogic:
         self._is_flying = True
         self._can_attack = True
         self._is_attacking = False
+        self.can_get_hurt = True
         self.hp = 100
-
-        self.can_hurt = False
 
     def update(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC+str(self._id))
@@ -82,10 +81,12 @@ class PlayerLogic:
         #if self._can_attack:
         self._is_attacking = True
         self._can_attack = False
+        self.can_get_hurt = False
         Timer.sch_fun(100, self.restore_attackaibility, ())
 
     def _finish_attack(self):
         self._is_attacking = False
+        self.can_get_hurt = True
         self._stop()
 
     def restore_attackaibility(self):
@@ -187,4 +188,4 @@ class PlayerLogic:
             self._vel.x = -self._vel.x
 
     def is_moving(self):
-        return abs(self._vel.x) > 0.001 and abs(self._vel.y) > 0.001
+        return self._vel.mag() > 0.001
