@@ -60,6 +60,7 @@ class Client:
             self.client_message_dictionary[message.target].append(message)
 
     def get_targets_messages(self, target):
+        """The different targets (players, game, server) query their messages from client through this function"""
         messages = self.client_message_dictionary.get(target) or []
         if messages is not []:
             self.client_message_dictionary[target] = []
