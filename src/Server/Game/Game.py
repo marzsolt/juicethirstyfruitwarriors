@@ -95,6 +95,7 @@ class Game:
             Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
     def stop_running(self):
+        """" Function to trigger shut down - mostly for delayed trigger. """
         self.running = False
 
     def get_players(self):
@@ -111,6 +112,7 @@ class Game:
             self.__start_game()
 
     def __start_game(self):
+        """" Function responsible for managing game start related tasks. """
         self.logger.info("Game started, terrain sent to everyone")
         self.__game_started = True
 

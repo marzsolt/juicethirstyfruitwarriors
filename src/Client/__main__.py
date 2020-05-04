@@ -5,10 +5,11 @@ from src.utils.awesome_logging import setup_logger
 
 
 def main():
-    pg.init()
+    """" The main function of the game. """
+    pg.init()  # initializes pyGame
 
     # Logging
-    setup_logger()
+    setup_logger()  # initializes the logger
 
     screen = Screen()  # set up the screen
 

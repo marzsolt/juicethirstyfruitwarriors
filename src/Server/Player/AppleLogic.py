@@ -17,7 +17,7 @@ class AppleLogic(PlayerLogic):
 
         self._min_attack_x, self._min_attack_y = self._attack_constants()
 
-    def _process_requests(self, network_messages):
+    def _process_requests(self, network_messages):  # processes if wants to attack
         super()._process_requests(network_messages)
         for mess in network_messages:
             if mess.type == climess.MessageType.APPLE_ATTACK:
@@ -25,12 +25,12 @@ class AppleLogic(PlayerLogic):
 
                 self._attack(force_of_jump)
 
-    def _attack_constants(self):
+    def _attack_constants(self):  # when the angle of the attack is below the minimal a constant force is used
         x = -1 * self._normal_attack_strength * math.cos(self._min_attack_angle)
         y = self._normal_attack_strength * math.sin(self._min_attack_angle)
         return x, y
 
-    def _calculate_attack_force(self, x, y):
+    def _calculate_attack_force(self, x, y):  # from the coordinates of the player and the click
         dist = math.sqrt((x - self.pos.x) ** 2 + (y - self.pos.y) ** 2)
         angle = math.asin((y - self.pos.y) / dist)
 
@@ -48,6 +48,7 @@ class AppleLogic(PlayerLogic):
         return Vector2D(attack_x, attack_y)
 
     def _attack(self, force):
+        """Apple related attack managing"""
         if self._can_attack and not self._is_flying:
             super()._attack()
             self._add_force(force)
@@ -57,5 +58,6 @@ class AppleLogic(PlayerLogic):
         self._game.player_damage(self, self._attack_damage, 2*PlayerLogic.RADIUS)
 
     def _impact(self):
+        """Apple related impact"""
         if self._is_attacking:
             self._finish_attack()

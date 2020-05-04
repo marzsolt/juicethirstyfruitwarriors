@@ -2,8 +2,9 @@ import socket
 import threading
 import json
 import logging
-
 from src.utils.domi_utils import dict_to_object, separate_jsons
+
+# This class is responsible for the  communication of the client as it sends and receives message through sockets.
 
 
 class ClientCommunicator(threading.Thread):
@@ -21,6 +22,7 @@ class ClientCommunicator(threading.Thread):
         self.client_socket.send(serialized)
 
     def close(self):
+        """ Closing down client socket. """
         self.client_socket.shutdown(socket.SHUT_RDWR)
         self.client_socket.close()
         self.logger.info("Client socket closed.")
@@ -43,7 +45,7 @@ class ClientCommunicator(threading.Thread):
                 break
 
             message = message.decode()
-            mes_separated = separate_jsons(message)
+            mes_separated = separate_jsons(message)  # it prevents extra data error at loading jsons
 
             for m in mes_separated:
                 deserialized = json.loads(m)

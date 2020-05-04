@@ -6,6 +6,7 @@ from src.Client.Player.OrangePlayer import OrangePlayer
 
 
 class PlayerManager:
+    """ Handles players on client side. Singleton."""
     __instance = None
 
     @staticmethod
@@ -23,6 +24,7 @@ class PlayerManager:
             self.players = []
 
     def create_players(self, apple_human_ids, orange_human_ids, apple_ai_ids, orange_ai_ids):
+        """ Create players when game starts. """
         for player_id in apple_human_ids:
             self.players.append(ApplePlayer(player_id))
         for player_id in orange_human_ids:
@@ -33,6 +35,7 @@ class PlayerManager:
             self.players.append(PlayerAI(player_id, PicFile.ORANGE))
 
     def update(self, pressed_keys, events):
+        """ Call every player's update. Delegate events to own player."""
         for player in self.players:
             if player._id == Client.get_instance().id:
                 player_keys = pressed_keys
@@ -47,6 +50,7 @@ class PlayerManager:
             screen.blit(p.surf, p.rect)
 
     def remove_player(self, player_id):
+        """" Removes player if it has dead. """
         self.players = [player for player in self.players if player._id != player_id]
 
 

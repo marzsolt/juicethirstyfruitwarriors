@@ -15,6 +15,7 @@ class ApplePlayer(Player):
     def update(self, pressed_keys, events):
         super().update(pressed_keys, events)
         for event in events:
+            # Request attack if mouse clicked.
             if event.type == pg.MOUSEBUTTONUP:
                 x, y = pg.mouse.get_pos()
                 

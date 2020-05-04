@@ -5,6 +5,9 @@ import logging
 
 from src.utils.domi_utils import dict_to_object, separate_jsons
 
+# This class is responsible for the communication on the server side.
+# It receives and sends messages from/to the client.
+
 
 class ServerCommunicator(threading.Thread):
     def __init__(self, _server, _client, ID):
@@ -24,6 +27,7 @@ class ServerCommunicator(threading.Thread):
             pass
 
     def close(self):
+        """" Responsible for closing down communicator with client on request. """
         self.socket.shutdown(socket.SHUT_RDWR)
         self.socket.close()
         self.logger.info(f"ID: {self.ID} Player socket closed.")
@@ -37,7 +41,7 @@ class ServerCommunicator(threading.Thread):
 
             message = message.decode()
 
-            mes_separated = separate_jsons(message)
+            mes_separated = separate_jsons(message)  # prevents extra data errors from multiple jsons
 
             for m in mes_separated:
                 deserialized = json.loads(m)
