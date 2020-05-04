@@ -1,0 +1,2 @@
+2020-04-27 20:29:14,277 - Imigyen szóla Domi.hihi: - WARNING - This is a warning
+2020-04-27 20:29:14,277 - Imigyen szóla Domi.hihi: - ERROR - This is an error
