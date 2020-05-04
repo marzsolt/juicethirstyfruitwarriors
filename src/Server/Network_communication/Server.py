@@ -38,18 +38,19 @@ class Server(threading.Thread):
             self.__serverSocket.listen(5)
             self.__id_gen = id_generator()
             self.__serverCommunicatorsList = []
-            self.server_message_dictionary = defaultdict(list)
+            self.server_message_dictionary = defaultdict(list)  # stores the received messages grouped by the target
             self.running = True
 
     def receive_message(self, message, ID):
-        if message.target == climess.Target.SERVER:
+        if message.target == climess.Target.SERVER:  # processes own messages
             if message.type == climess.MessageType.CONN_CLOSED:
                 self.close_connection_by_ID(ID)
         else:
             message.from_id = ID
-            self.server_message_dictionary[message.target].append(message)
+            self.server_message_dictionary[message.target].append(message)  # stores messages for the other targets
 
     def get_targets_messages(self, target):
+        """The targets can query their messages from here"""
         messages = self.server_message_dictionary.get(target) or []
         if messages is not []:
             self.server_message_dictionary[target] = []
@@ -76,6 +77,7 @@ class Server(threading.Thread):
         return next(self.__id_gen)
 
     def __new_client(self, _new_client):
+        """When a client connects it gets a new servercommunicator and sends to the client its ID"""
         newCom = ServerCommunicator(_server=self, _client=_new_client, ID=next(self.__id_gen))
         newCom.start()
         self.__serverCommunicatorsList.append(newCom)
