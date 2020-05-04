@@ -9,8 +9,7 @@ class AppleAI(PlayerAILogic, AppleLogic):
         self._attack_range = 150  # TODO compute it normally
 
     def _attack(self):
-        x, y = self._calculate_attack_force(self.pos.x, self.pos.y + 100) # TODO egyelőre csak felfele ugrik egyet
-        force_of_jump = Vector2D(x, y)
+        force_of_jump = self._calculate_attack_force(self.pos.x, self.pos.y + 100) # TODO egyelőre csak felfele ugrik egyet
         if super()._attack(force_of_jump):
             pass  # TODO find appropriate
         return False

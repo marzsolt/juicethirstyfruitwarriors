@@ -13,8 +13,7 @@ class Movement(Enum):
 
 class PlayerAILogic(PlayerLogic):
     def __init__(self, player_id, __terrain, game):
-        super(PlayerAILogic, self).__init__(player_id, __terrain)
-        self._game = game
+        super(PlayerAILogic, self).__init__(player_id, __terrain, game)
         self._dir = Movement.RIGHT
         # Attacks if the closest enemy is within this distance, derived classes shall overwrite!
         self._attack_range = 100

@@ -39,7 +39,9 @@ class Game:
             if not is_there_human:
                 self.__handle_no_human()
             else:
-                self.__handle_collision()
+                for pl_i in self.__player_logics:
+                    pl_i.update()
+
                 self.__check_and_handle_deaths()
                 self.__check_and_handle_winner()
 
@@ -59,16 +61,17 @@ class Game:
         self.logger.info("Game killed as no human players left.")
         Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
-    def __handle_collision(self):
-        # Update hp (collision)
-        for i, pl_i in enumerate(self.__player_logics):
-            # HP update for each player:
-            for pl_j in self.__player_logics[i + 1:]:
-                if (abs(pl_i.pos.x - pl_j.pos.x) ** 2 + abs(pl_i.pos.y - pl_j.pos.y) ** 2) \
-                        <= (2 * PlayerLogic.RADIUS) ** 2:
-                    pl_i.hp -= 1 if pl_i.hp != 0 else 0
-                    pl_j.hp -= 1 if pl_j.hp != 0 else 0
-            pl_i.update()
+    def player_damage(self, player, damage, radius):
+        for pl_j in self.__player_logics:
+            if player != pl_j:
+                if (abs(player.pos.x - pl_j.pos.x) ** 2 + abs(player.pos.y - pl_j.pos.y) ** 2) \
+                        <= (PlayerLogic.RADIUS + radius) ** 2 and pl_j.can_get_hurt:
+
+                    pl_j.hp -= damage
+                    pl_j.hp = max(pl_j.hp, 0)
+
+                    player.hp += damage/2
+                    player.hp = min(player.hp, 100)
 
     def __check_and_handle_deaths(self):
         # Check for deaths:
@@ -118,10 +121,10 @@ class Game:
         apple_ai_ids = []
         for player_id in human_ids:  # create server side players for humans
             if player_id % 2 != 0:  # TODO this distribution is only for testing!
-                new_player_logic = AppleLogic(player_id, self.__terrain)
+                new_player_logic = AppleLogic(player_id, self.__terrain, self)
                 apple_human_ids.append(player_id)
             else:
-                new_player_logic = OrangeLogic(player_id, self.__terrain)
+                new_player_logic = OrangeLogic(player_id, self.__terrain, self)
                 orange_human_ids.append(player_id)
             self.__player_logics.append(new_player_logic)
         for i in range(self.__AI_number):  # create server side players for AIs
