@@ -1,7 +1,7 @@
-"# src" 
+"# juicethirstyfruitwarriors"
+
 # Short description
 My team would like to create a real-time platformer arena game (with multiplayer and AI players options). We plan to create different player-types, with different attacking abilities (e.g. one could become a deadly ball for a short time; another could throw himself into a direction with force set by the mouse, causing damage at impact...). Who survives the others, wins.
-
 
 # Architecture sketch
 There are two main components: server and client side. Only one server should run to which all clients connect.
