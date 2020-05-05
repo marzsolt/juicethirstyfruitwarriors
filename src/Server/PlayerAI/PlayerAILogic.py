@@ -20,7 +20,7 @@ class PlayerAILogic(PlayerLogic):
 
     def update(self):
         if self.__enemy_in_range():
-            self._attack()
+            self._attack_if_can()
         else:
             self._movement()
         super().update()
@@ -40,6 +40,10 @@ class PlayerAILogic(PlayerLogic):
             self._dir = Movement.LEFT
         else:
             self._dir = Movement.RIGHT
+
+    def _attack_if_can(self):
+        if self.can_attack():
+            self._attack()
 
     def __random_movement(self):
         if random.random() < 0.03:  # so that it won't shake too much

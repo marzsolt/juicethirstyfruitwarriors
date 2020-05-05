@@ -1,6 +1,7 @@
 import math
 import logging
 from enum import Enum
+import abc
 
 from src.Server.Network_communication.Server import Server
 from src.utils.Vector2D import Vector2D
@@ -17,7 +18,7 @@ class Direction(Enum):
     RIGHT = 1
 
 
-class PlayerLogic:
+class PlayerLogic(abc.ABC):
     """ Server side player. Processes movement/attack/... request, handles physics and more! :) """
     SCREEN_WIDTH = 800  # TODO use general constant
     RADIUS = 25
@@ -38,7 +39,7 @@ class PlayerLogic:
         self._vel = Vector2D.zero()
         self._forces = []
         self._is_flying = True
-        self._can_attack = True
+        self._attack_on_cooldown = False
         self._is_attacking = False
         self.can_get_hurt = True
         self.hp = 100
@@ -80,24 +81,25 @@ class PlayerLogic:
         msg.hp = self.hp
         Server.get_instance().send_all(msg)  # all clients shall know the data of all players
 
+    @abc.abstractmethod
+    def can_attack(self, **kwargs):
+        """ Returns whether the payer can attack now, based on cooldown.
+        Derivations may add extra conditions."""
+        return not self._attack_on_cooldown
+
     def _attack(self):
-        #if self._can_attack:
         self._is_attacking = True
-        self._can_attack = False
+        self._attack_on_cooldown = True
         self.can_get_hurt = False
-        Timer.sch_fun(100, self.restore_attackaibility, ())
+        Timer.sch_fun(100, self.restore_attack_ability, ())  # TODO use constant/var!
 
     def _finish_attack(self):
         self._is_attacking = False
         self.can_get_hurt = True
         self._stop()
 
-    def restore_attackaibility(self):
-        self._can_attack = True
-        """ Returns whether the payer can attack now, based on cooldown.
-        Derivations may add extra conditions."""
-        # return True  # TODO cooldown?
-
+    def restore_attack_ability(self):
+        self._attack_on_cooldown = False
 
     def _add_force(self, force2d):
         """ Base of physics. By adding a force, you accelerate the player a little bit. """
@@ -182,7 +184,7 @@ class PlayerLogic:
         pos_diff = self._get_y_to_ground_level()
         if (vel_angle_diff > threshold_ang and pos_diff > threshold_pos)\
                 or pos_diff > threshold_big_pos:
-            #if not self._is_flying:
+            # if not self._is_flying:
             #    self._add_force(Vector2D(0, 10))  # a little jump for fun :)
             self._is_flying = True
 
