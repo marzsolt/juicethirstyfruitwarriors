@@ -10,7 +10,9 @@ class AppleAI(PlayerAILogic, AppleLogic):
         self._attack_range = 150  # TODO compute it normally
 
     def _attack(self):
-        force_of_jump = self._calculate_attack_force(self.pos.x, self.pos.y + 100) # TODO egyelőre csak felfele ugrik egyet
+        cp = self._get_closest_enemy()
+        dx = cp.pos.x - self.pos.x
+        force_of_jump = self._calculate_attack_force(self.pos.x + dx*3/4, self.pos.y + 300)
         super()._attack(force=force_of_jump)
 
     def _update_go_towards_enemy(self):

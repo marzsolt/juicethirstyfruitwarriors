@@ -25,7 +25,7 @@ class PlayerAILogic(PlayerLogic, abc.ABC):
         self._update_fear_level()
         if random.random() < 0.05:  # don't change mind all the time
             self._update_go_towards_enemy()
-        if self.__enemy_in_range():
+        if self.__enemy_in_range() and random.random() < 0.75:  # some unpredictability to attack
             self._attack_if_can()
         else:
             self._movement()
