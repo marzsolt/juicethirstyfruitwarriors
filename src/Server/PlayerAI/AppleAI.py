@@ -11,9 +11,7 @@ class AppleAI(PlayerAILogic, AppleLogic):
 
     def _attack(self):
         force_of_jump = self._calculate_attack_force(self.pos.x, self.pos.y + 100) # TODO egyelőre csak felfele ugrik egyet
-        if super()._attack(force=force_of_jump):  # TODO remove if, return False
-            pass  # TODO find appropriate
-        return False
+        super()._attack(force=force_of_jump)
 
     def _update_go_towards_enemy(self):
         """ Apple AIs tend to be more and more fearful as their hp decreases. """
