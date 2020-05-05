@@ -2,7 +2,9 @@ import socket
 import threading
 import json
 import logging
-from src.utils.domi_utils import dict_to_object, separate_jsons
+
+from src.utils.domi_utils import dict_to_object, separate_jsons, id_generator
+
 
 # This class is responsible for the  communication of the client as it sends and receives message through sockets.
 
@@ -15,6 +17,24 @@ class ClientCommunicator(threading.Thread):
         self.host = _host
         self.port = _port
         self.logger = logging.getLogger('Domi.ClientCommunicator')
+        self.fidg = id_generator()
+
+    def log_mess_to_file(self, mess):
+        """
+        :param mess: the message to be logged
+        :return: nothing
+        Logs every message into a new (binary) file. """
+        def new_file_name():
+            fid = next(self.fidg)
+            return dir_name + file_name_base + str(fid) + ext
+
+        dir_name = "network_messages/"
+        file_name_base = "mess"
+        ext = ".bin"
+
+        f = open(new_file_name(), "wb")
+        f.write(str.encode(mess))
+        f.close()
 
     def send_message(self, message):
         serialized = json.dumps(message, default=lambda o: getattr(o, '__dict__', str(o)))  # recursive
