@@ -10,7 +10,7 @@ class AppleAI(PlayerAILogic, AppleLogic):
 
     def _attack(self):
         force_of_jump = self._calculate_attack_force(self.pos.x, self.pos.y + 100) # TODO egyelőre csak felfele ugrik egyet
-        if super()._attack(force_of_jump):
+        if super()._attack(force=force_of_jump):
             pass  # TODO find appropriate
         return False
 
