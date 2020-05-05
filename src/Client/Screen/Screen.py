@@ -45,9 +45,9 @@ class Screen:
 
         self.__is_first_player = None  # so that the first can modify in connectionMenu the player count
 
-        self.running = True  # so that a member function can trigger exiting
-        self.game_over_state = None  # trace game over status
-        self.t_to_exit = None  # on game over, trace time before automated exiting
+        self.__running = True  # so that a member function can trigger exiting
+        self.__game_over_state = None  # trace game over status
+        self.__t_to_exit = None  # on game over, trace time before automated exiting
 
     def update(self, events, pressed_keys):
         """" Responsible for updating the screen, and returning its running state to the main function. """
