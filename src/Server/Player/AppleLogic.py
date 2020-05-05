@@ -13,7 +13,7 @@ class AppleLogic(PlayerLogic):
 
         self._min_attack_angle = 0.55  # it is around 30 deg
         self._normal_attack_strength = 18
-        self._attack_damage = 10
+        self._attack_damage = 20
 
         self._min_attack_x, self._min_attack_y = self._attack_constants()
 
