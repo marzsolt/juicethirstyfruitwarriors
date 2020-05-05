@@ -1,5 +1,6 @@
 from enum import Enum
 import random
+import abc
 
 from src.Server.Player.PlayerLogic import PlayerLogic
 from src.utils.Vector2D import Vector2D
@@ -11,19 +12,32 @@ class Movement(Enum):
     IDLE = "IDLE"
 
 
-class PlayerAILogic(PlayerLogic):
+class PlayerAILogic(PlayerLogic, abc.ABC):
     def __init__(self, player_id, __terrain, game):
         super(PlayerAILogic, self).__init__(player_id, __terrain, game)
         self._dir = Movement.RIGHT
+        self._fear_level = random.random()
+        self._go_towards_enemy = True
         # Attacks if the closest enemy is within this distance, derived classes shall overwrite!
         self._attack_range = 100
 
     def update(self):
+        self._update_fear_level()
+        if random.random() < 0.05:  # don't change mind all the time
+            self._update_go_towards_enemy()
         if self.__enemy_in_range():
             self._attack_if_can()
         else:
             self._movement()
         super().update()
+
+    def _update_fear_level(self):
+        self._fear_level += random.random() * 0.01 - 0.005
+        self._fear_level = max(0, self._fear_level)
+        self._fear_level = min(1, self._fear_level)
+
+    def _update_go_towards_enemy(self):
+        self._go_towards_enemy = (random.random() > self._fear_level)
 
     def _movement(self):
         """ Moves the AI. """
@@ -36,10 +50,11 @@ class PlayerAILogic(PlayerLogic):
     def _decide_direction(self):
         """ Sets dir so that it will move towards the nearest other player. """
         cp = self._get_closest_enemy()
-        if cp.pos.x < self.pos.x:
-            self._dir = Movement.LEFT
-        else:
+        enemy_to_right = (cp.pos.x > self.pos.x)
+        if enemy_to_right == self._go_towards_enemy:
             self._dir = Movement.RIGHT
+        else:
+            self._dir = Movement.LEFT
 
     def _attack_if_can(self):
         if self.can_attack():

@@ -42,7 +42,8 @@ class PlayerLogic(abc.ABC):
         self._attack_on_cooldown = False
         self._is_attacking = False
         self.can_get_hurt = True
-        self.hp = 100
+        self.max_hp = 100
+        self.hp = self.max_hp
 
     def update(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC+str(self._id))
