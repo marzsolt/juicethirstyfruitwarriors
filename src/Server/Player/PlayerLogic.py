@@ -26,6 +26,7 @@ class PlayerLogic(abc.ABC):
     X_MAX = SCREEN_WIDTH-RADIUS
     G = -1
     C_AIR = 0.3
+    ATTACK_COOLDOWN = 100  # in ticks
 
     def __init__(self, player_id, terrain, game):
         self.logger = logging.getLogger('Domi.PlayerLogic')
@@ -91,7 +92,7 @@ class PlayerLogic(abc.ABC):
         self._is_attacking = True
         self._attack_on_cooldown = True
         self.can_get_hurt = False
-        Timer.sch_fun(100, self.restore_attack_ability, ())  # TODO use constant/var!
+        Timer.sch_fun(self.ATTACK_COOLDOWN, self.restore_attack_ability, ())
 
     def _finish_attack(self):
         self._is_attacking = False
