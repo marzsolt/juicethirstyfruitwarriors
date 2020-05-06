@@ -29,7 +29,7 @@ class PlayerLogic(abc.ABC):
 
     def __init__(self, player_id, terrain, game):
         self.logger = logging.getLogger('Domi.PlayerLogic')
-        self._id = player_id
+        self.id = player_id
         self._terrain = terrain
         self._game = game
         self._mobility = 0.3  # acceleration force, for max velocity check can_accelerate function
@@ -45,13 +45,13 @@ class PlayerLogic(abc.ABC):
         self.hp = 100
 
     def update(self):
-        messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC+str(self._id))
+        messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC + str(self.id))
         self._process_requests(messages)
         self._do_physics()  # main physic computations
         self._send_updated_pos_hp()
 
     def get_id(self):
-        return self._id
+        return self.id
 
     def _process_movement_messages(self, pos_mess):
         for m in pos_mess:
@@ -73,8 +73,8 @@ class PlayerLogic(abc.ABC):
 
     def _send_updated_pos_hp(self):
         """ Sends player's updated data to all clients. """
-        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POS_HP, target=sermess.Target.PLAYER + str(self._id))
-        msg.player_id = self._id
+        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POS_HP, target=sermess.Target.PLAYER + str(self.id))
+        msg.player_id = self.id
         msg.x = self.pos.x
         msg.y = self.pos.y
         msg.dir = self.my_dir().value
