@@ -148,6 +148,7 @@ class Game:
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
         Server.get_instance().send_all(mess)
+        Server.get_instance().stop_accepting_clients()
 
     def __read_messages(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.GAME)
