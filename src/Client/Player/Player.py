@@ -9,6 +9,8 @@ import src.Server.Network_communication.server_message_constants as sermess
 
 from src.utils.BaseMessage import BaseMessage
 
+from src.utils.general_constants import SCREEN_HEIGHT
+
 
 class PicFile(Enum):
     ORANGE = "img/orange_test_image.png"
@@ -16,7 +18,6 @@ class PicFile(Enum):
 
 
 class Player(pg.sprite.Sprite):
-    SCREEN_HEIGHT = 600  # TODO use general constant
     GREEN = (0, 255, 0)
     RED = (255, 0, 0)
     WHITE = (255, 255, 255)
@@ -55,7 +56,7 @@ class Player(pg.sprite.Sprite):
         messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER+str(self._id))
         for mess in messages:
             if mess.type == sermess.MessageType.PLAYER_POS_HP:
-                self.rect.center = (mess.x, self.SCREEN_HEIGHT - mess.y)  # graphical y axis is weird
+                self.rect.center = (mess.x, SCREEN_HEIGHT - mess.y)  # graphical y axis is weird
                 self.dir = mess.dir
 
                 if self.hp != mess.hp:  # update HP if it's changed

@@ -16,13 +16,13 @@ import src.Client.Network_communication.client_message_constants as climess
 import src.Server.Network_communication.server_message_constants as sermess
 from src.utils.BaseMessage import BaseMessage
 
+# constants
+from src.utils.general_constants import SCREEN_WIDTH, SCREEN_HEIGHT
+
 
 class Screen:
     """ Screen - responsible for the main tasks on client side, such as drawing to display, etc. """
     # Definition of some constants
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
-
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
     GREEN = (0, 255, 0)
@@ -249,12 +249,12 @@ class Screen:
 
             self.__connectionMenu.add_line('')
 
-            if Client.get_instance().connection_alive: # if connection got alive
+            if Client.get_instance().connection_alive:  # if connection got alive
                 self.__connectionMenu.disable()
                 self.__connectionMenu, _ = self._init_connection_menu()
                 self.__connectionMenu.enable()
                 self.__connectionMenu.add_line('Successfully connected.')
-            else: # else
+            else:  # else
                 self.__connectionMenu.add_line('Connection error, please try again!')
 
             # change state to show connection status message
@@ -361,7 +361,7 @@ class Screen:
             game_over_text = font.render("All human players've died and you've LOST", True, self.RED, self.BLACK)
 
         game_over_text_rect = game_over_text.get_rect()
-        game_over_text_rect.center = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2)
+        game_over_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.__screen.blit(game_over_text, game_over_text_rect)
 
     def __draw_t_to_exit_text(self):
@@ -374,9 +374,8 @@ class Screen:
             self.BLACK
         )
         t_to_exit_text_rect = t_to_exit_text.get_rect()
-        t_to_exit_text_rect.center = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 + 50)
+        t_to_exit_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
         self.__screen.blit(t_to_exit_text, t_to_exit_text_rect)
-
 
         self.__t_to_exit -= 1  # decrease every frame by 1
         if self.__t_to_exit == 0:

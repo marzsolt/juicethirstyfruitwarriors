@@ -11,6 +11,7 @@ import src.Client.Network_communication.client_message_constants as climess
 
 from src.utils.BaseMessage import BaseMessage
 from src.utils.Timer import Timer
+from src.utils.general_constants import SCREEN_WIDTH
 
 
 class Direction(Enum):
@@ -20,10 +21,9 @@ class Direction(Enum):
 
 class PlayerLogic(abc.ABC):
     """ Server side player. Processes movement/attack/... request, handles physics and more! :) """
-    SCREEN_WIDTH = 800  # TODO use general constant
     RADIUS = 25
     X_MIN = RADIUS
-    X_MAX = SCREEN_WIDTH-RADIUS  # TODO use screen sizes
+    X_MAX = SCREEN_WIDTH-RADIUS
     G = -1
     C_AIR = 0.3
 
