@@ -11,6 +11,7 @@ import src.Client.Network_communication.client_message_constants as climess
 
 from src.utils.BaseMessage import BaseMessage
 from src.utils.Timer import Timer
+from src.utils.general_constants import SCREEN_WIDTH
 
 
 class Direction(Enum):
@@ -20,22 +21,22 @@ class Direction(Enum):
 
 class PlayerLogic(abc.ABC):
     """ Server side player. Processes movement/attack/... request, handles physics and more! :) """
-    SCREEN_WIDTH = 800  # TODO use general constant
     RADIUS = 25
     X_MIN = RADIUS
-    X_MAX = SCREEN_WIDTH-RADIUS  # TODO use screen sizes
+    X_MAX = SCREEN_WIDTH-RADIUS
     G = -1
     C_AIR = 0.3
+    ATTACK_COOLDOWN = 100  # in ticks
 
     def __init__(self, player_id, terrain, game):
         self.logger = logging.getLogger('Domi.PlayerLogic')
-        self._id = player_id
+        self.id = player_id
         self._terrain = terrain
         self._game = game
         self._mobility = 0.3  # acceleration force, for max velocity check can_accelerate function
         self.mu = 0.1  # friction constant
         self._mass = 1  # effects how fast player can accelerate/decelerate (shouldn't be much different than 1)
-        self.pos = Vector2D(50+player_id*100, 300)
+        self.pos = Vector2D(50+player_id*100, 500)
         self._vel = Vector2D.zero()
         self._forces = []
         self._is_flying = True
@@ -46,13 +47,13 @@ class PlayerLogic(abc.ABC):
         self.hp = self.max_hp
 
     def update(self):
-        messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC+str(self._id))
+        messages = Server.get_instance().get_targets_messages(climess.Target.PLAYER_LOGIC + str(self.id))
         self._process_requests(messages)
         self._do_physics()  # main physic computations
         self._send_updated_pos_hp()
 
     def get_id(self):
-        return self._id
+        return self.id
 
     def _process_movement_messages(self, pos_mess):
         for m in pos_mess:
@@ -74,8 +75,8 @@ class PlayerLogic(abc.ABC):
 
     def _send_updated_pos_hp(self):
         """ Sends player's updated data to all clients. """
-        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POS_HP, target=sermess.Target.PLAYER + str(self._id))
-        msg.player_id = self._id
+        msg = BaseMessage(mess_type=sermess.MessageType.PLAYER_POS_HP, target=sermess.Target.PLAYER + str(self.id))
+        msg.player_id = self.id
         msg.x = self.pos.x
         msg.y = self.pos.y
         msg.dir = self.my_dir().value
@@ -92,7 +93,7 @@ class PlayerLogic(abc.ABC):
         self._is_attacking = True
         self._attack_on_cooldown = True
         self.can_get_hurt = False
-        Timer.sch_fun(100, self.restore_attack_ability, ())
+        Timer.sch_fun(self.ATTACK_COOLDOWN, self.restore_attack_ability, ())
 
     def _finish_attack(self):
         self._is_attacking = False

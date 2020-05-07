@@ -9,6 +9,8 @@ import src.Server.Network_communication.server_message_constants as sermess
 
 from src.utils.BaseMessage import BaseMessage
 
+from src.utils.general_constants import SCREEN_HEIGHT, GREEN, WHITE, RED
+
 
 class PicFile(Enum):
     ORANGE = "img/orange_test_image.png"
@@ -16,10 +18,6 @@ class PicFile(Enum):
 
 
 class Player(pg.sprite.Sprite):
-    SCREEN_HEIGHT = 600  # TODO use general constant
-    GREEN = (0, 255, 0)
-    RED = (255, 0, 0)
-    WHITE = (255, 255, 255)
 
     def __init__(self, player_id, pic_file):
         super(Player, self).__init__()
@@ -55,7 +53,7 @@ class Player(pg.sprite.Sprite):
         messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER+str(self._id))
         for mess in messages:
             if mess.type == sermess.MessageType.PLAYER_POS_HP:
-                self.rect.center = (mess.x, self.SCREEN_HEIGHT - mess.y)  # graphical y axis is weird
+                self.rect.center = (mess.x, SCREEN_HEIGHT - mess.y)  # graphical y axis is weird
                 self.dir = mess.dir
 
                 if self.hp != mess.hp:  # update HP if it's changed
@@ -63,10 +61,10 @@ class Player(pg.sprite.Sprite):
 
                     # Show HP bar:
                     # draw a white rect which is 1-1 pixel thicker in every direction to form border
-                    pg.draw.rect(self.surf, self.WHITE, (14, 0, 32, 7))
+                    pg.draw.rect(self.surf, WHITE, (14, 0, 32, 7))
                     # draw green/red health bar for own/enemy player respectively
                     pg.draw.rect(
                         self.surf,
-                        self.GREEN if Client.get_instance().id == self._id else self.RED,
+                        GREEN if Client.get_instance().id == self._id else RED,
                         (15, 1, 30 * mess.hp / 100, 5)
                     )

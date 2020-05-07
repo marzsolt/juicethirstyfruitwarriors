@@ -40,7 +40,7 @@ class OrangeLogic(PlayerLogic):
         """ Orange related attack managing. """
         super()._attack()
         self._add_ground_directed_force(self._attack_strength, self.my_dir())
-        mes = BaseMessage(sermess.MessageType.ORANGE_ROLL, sermess.Target.ORANGE_PLAYER + str(self._id))
+        mes = BaseMessage(sermess.MessageType.ORANGE_ROLL, sermess.Target.ORANGE_PLAYER + str(self.id))
         Server.get_instance().send_all(mes)
         Timer.sch_fun(self._attack_length, self._finish_attack, ())
 

@@ -2,6 +2,7 @@ import pygame as pg
 
 from src.Client.Screen.Screen import Screen
 from src.utils.awesome_logging import setup_logger
+from src.utils.general_constants import FPS
 
 
 def main():
@@ -21,7 +22,7 @@ def main():
     while running:  # main loop
         # update screen & pass all the events in the queue for handling
         running = screen.update(pg.event.get(), pg.key.get_pressed())  
-        clock.tick(40)  # Ensure program maintains a rate of 40 frames per second
+        clock.tick(FPS)  # Ensure program maintains a rate of 40 frames per second
 
     pg.quit()  # all done
 

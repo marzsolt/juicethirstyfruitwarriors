@@ -7,7 +7,7 @@ from src.Server.PlayerAI.PlayerAILogic import PlayerAILogic
 class AppleAI(PlayerAILogic, AppleLogic):
     def __init__(self, player_id, terrain, game):
         super(AppleAI, self).__init__(player_id, terrain, game)
-        self._attack_range = 150  # TODO compute it normally
+        self._attack_range = 150
 
     def _attack(self):
         cp = self._get_closest_enemy()
