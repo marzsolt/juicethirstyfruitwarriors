@@ -1,5 +1,5 @@
-import time
 import logging
+import random
 
 from src.Server.Network_communication.Server import Server
 from src.Server.Player.PlayerLogic import PlayerLogic
@@ -77,20 +77,20 @@ class Game:
         # Check for deaths:
         for pl in self.__player_logics:
             if pl.hp == 0:
-                self.logger.info(f"ID: {pl._id} Player has just died.")
+                self.logger.info(f"ID: {pl.id} Player has just died.")
                 mess = BaseMessage(sermess.MessageType.DIED, sermess.Target.SCREEN)
-                mess.player_id = pl._id
+                mess.player_id = pl.id
                 Server.get_instance().send_all(mess)
-                self.logger.info(f"ID: {pl._id} All clients has been notified about the recent tragic death.")
+                self.logger.info(f"ID: {pl.id} All clients has been notified about the recent tragic death.")
                 self.__player_logics = \
-                    [player_logic for player_logic in self.__player_logics if player_logic._id != pl._id]
-                self.logger.info(f"ID: {pl._id} Player logic killed.")
+                    [player_logic for player_logic in self.__player_logics if player_logic.id != pl.id]
+                self.logger.info(f"ID: {pl.id} Player logic killed.")
 
     def __check_and_handle_winner(self):
         # Check if there's a winner (last alive)
         if len(self.__player_logics) == 1:
             mess = BaseMessage(sermess.MessageType.WON, sermess.Target.SCREEN)
-            mess.player_id = self.__player_logics[0]._id
+            mess.player_id = self.__player_logics[0].id
             Server.get_instance().send_all(mess)
             Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
@@ -122,7 +122,7 @@ class Game:
         orange_ai_ids = []
         apple_ai_ids = []
         for player_id in human_ids:  # create server side players for humans
-            if player_id % 2 != 0:  # TODO this distribution is only for testing!
+            if random.random() < 0.5:
                 new_player_logic = AppleLogic(player_id, self.__terrain, self)
                 apple_human_ids.append(player_id)
             else:
@@ -132,7 +132,7 @@ class Game:
         for i in range(self.__AI_number):  # create server side players for AIs
             player_id = Server.get_instance().get_new_id()
 
-            if player_id % 2 == 0:  # TODO this distribution is only for testing!
+            if random.random() < 0.5:
                 new_player_logic = AppleAI(player_id, self.__terrain, self)
                 apple_ai_ids.append(player_id)
             else:
@@ -148,12 +148,12 @@ class Game:
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
         Server.get_instance().send_all(mess)
+        Server.get_instance().stop_accepting_clients()
 
     def __read_messages(self):
         messages = Server.get_instance().get_targets_messages(climess.Target.GAME)
         for mess in messages:
             if mess.type == climess.MessageType.CHANGE_PLAYER_NUMBER and mess.from_id == self.__first_player_id:
-                # TODO do not allow less than currently connected if we have time...
                 self.__human_player_number = mess.new_number
                 self.logger.info(f"Changed player number, new is: {mess.new_number}.")
             elif mess.type == climess.MessageType.START_GAME_MANUALLY and mess.from_id == self.__first_player_id:
@@ -161,6 +161,6 @@ class Game:
                 self.__start_game()
             elif mess.type == climess.MessageType.CONN_RELATED_DEATH:
                 for pl in self.__player_logics:
-                    if pl._id == mess.player_id:
+                    if pl.id == mess.player_id:
                         self.logger.info(f"ID: {mess.player_id} Connection related death.")
                         pl.hp = 0

@@ -16,20 +16,12 @@ import src.Client.Network_communication.client_message_constants as climess
 import src.Server.Network_communication.server_message_constants as sermess
 from src.utils.BaseMessage import BaseMessage
 
+# constants
+from src.utils.general_constants import *
+
 
 class Screen:
     """ Screen - responsible for the main tasks on client side, such as drawing to display, etc. """
-    # Definition of some constants
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
-
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-    GREEN = (0, 255, 0)
-    RED = (255, 0, 0)
-
-    FPS = 40
-
     def __init__(self, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH):
         self.logger = logging.getLogger('Domi.Screen')
         self.__screen = pg.display.set_mode([screen_width, screen_height])
@@ -85,11 +77,11 @@ class Screen:
                     self.logger.info("It is our player that died!")
             elif msg.type == sermess.MessageType.NO_ALIVE_HUMAN:  # if Game announced that all human player is dead
                 self.__game_over_state = sstatecons.GameOverState.ALL_HUMAN_DIED  # set game over state of Screen
-                self.__t_to_exit = self.FPS * 10 - 1  # trigger delayed exit
+                self.__t_to_exit = FPS * 10 - 1  # trigger delayed exit
             elif msg.type == sermess.MessageType.WON:  # if Game announced that a player won
                 if msg.player_id == Client.get_instance().id:  # check if it's ours'
                     self.__game_over_state = sstatecons.GameOverState.WON  # then set it's go. state accordingly
-                self.__t_to_exit = self.FPS * 10 - 1  # trigger delayed exit for regardless
+                self.__t_to_exit = FPS * 10 - 1  # trigger delayed exit for regardless
 
     def _check_exit_criteria(self, events):
         """" Checks if an exit criteria is met or not. """
@@ -117,8 +109,8 @@ class Screen:
             pgM.font.FONT_OPEN_SANS,
             'Main Menu',
             bgfun=self._default_bgfun,
-            menu_color=self.BLACK,
-            menu_color_title=self.BLACK,
+            menu_color=BLACK,
+            menu_color_title=BLACK,
             menu_alpha=100,
             back_box=False
         )
@@ -138,8 +130,8 @@ class Screen:
             pgM.font.FONT_OPEN_SANS,
             'Play Menu',
             bgfun=self._default_bgfun,
-            menu_color=self.BLACK,
-            menu_color_title=self.BLACK,
+            menu_color=BLACK,
+            menu_color_title=BLACK,
             menu_alpha=100
         )
 
@@ -172,8 +164,8 @@ class Screen:
             pgM.font.FONT_OPEN_SANS,
             'About Menu',
             bgfun=self._default_bgfun,
-            menu_color=self.BLACK,
-            menu_color_title=self.BLACK,
+            menu_color=BLACK,
+            menu_color_title=BLACK,
             menu_alpha=100
         )
 
@@ -201,8 +193,8 @@ class Screen:
             pgM.font.FONT_OPEN_SANS,
             'Connection Menu',
             bgfun=self._connection_menu_bgfun,
-            menu_color=self.BLACK,
-            menu_color_title=self.BLACK,
+            menu_color=BLACK,
+            menu_color_title=BLACK,
             menu_alpha=100,
             back_box=False
         )
@@ -211,7 +203,7 @@ class Screen:
 
     def _default_bgfun(self):
         """" Default bg function for menus that need just a black screen. """
-        self.__screen.fill(self.BLACK)
+        self.__screen.fill(BLACK)
 
     def _onchange_play_menu_input_ip(self, val):
         """" Checks onchange of playMenu IP input field. """
@@ -249,12 +241,12 @@ class Screen:
 
             self.__connectionMenu.add_line('')
 
-            if Client.get_instance().connection_alive: # if connection got alive
+            if Client.get_instance().connection_alive:  # if connection got alive
                 self.__connectionMenu.disable()
                 self.__connectionMenu, _ = self._init_connection_menu()
                 self.__connectionMenu.enable()
                 self.__connectionMenu.add_line('Successfully connected.')
-            else: # else
+            else:  # else
                 self.__connectionMenu.add_line('Connection error, please try again!')
 
             # change state to show connection status message
@@ -319,7 +311,7 @@ class Screen:
         """" Decorator for black bg. """
         @functools.wraps(fun)
         def wrapper(self):
-            self.__screen.fill(self.BLACK)  # black bg
+            self.__screen.fill(BLACK)  # black bg
             # before fun ^^^
             fun(self)  # PyCharm - liar
 
@@ -343,7 +335,7 @@ class Screen:
 
             pg.draw.line(
                 self.__screen,
-                self.WHITE,
+                WHITE,
                 (self.__terrain_points[i - 1], self.__h - self.__terrain_points_levels[i - 1]),
                 (self.__terrain_points[i], self.__h - self.__terrain_points_levels[i])
             )
@@ -354,29 +346,28 @@ class Screen:
 
         game_over_text = None
         if self.__game_over_state == sstatecons.GameOverState.LOST:
-            game_over_text = font.render("You've LOST", True, self.RED, self.BLACK)
+            game_over_text = font.render("You've LOST", True, RED, BLACK)
         elif self.__game_over_state == sstatecons.GameOverState.WON:
-            game_over_text = font.render("You've WON", True, self.GREEN, self.BLACK)
+            game_over_text = font.render("You've WON", True, GREEN, BLACK)
         elif self.__game_over_state == sstatecons.GameOverState.ALL_HUMAN_DIED:
-            game_over_text = font.render("All human players've died and you've LOST", True, self.RED, self.BLACK)
+            game_over_text = font.render("All human players've died and you've LOST", True, RED, BLACK)
 
         game_over_text_rect = game_over_text.get_rect()
-        game_over_text_rect.center = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2)
+        game_over_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.__screen.blit(game_over_text, game_over_text_rect)
 
     def __draw_t_to_exit_text(self):
         """" Responsible for drawing time to exit text when triggered and signaling Screen kill. """
         font = pg.font.Font('freesansbold.ttf', 32)
         t_to_exit_text = font.render(
-            "Exit in " + str(self.__t_to_exit // self.FPS + 1) + " s",
+            "Exit in " + str(self.__t_to_exit // FPS + 1) + " s",
             True,
-            self.WHITE,
-            self.BLACK
+            WHITE,
+            BLACK
         )
         t_to_exit_text_rect = t_to_exit_text.get_rect()
-        t_to_exit_text_rect.center = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 + 50)
+        t_to_exit_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
         self.__screen.blit(t_to_exit_text, t_to_exit_text_rect)
-
 
         self.__t_to_exit -= 1  # decrease every frame by 1
         if self.__t_to_exit == 0:

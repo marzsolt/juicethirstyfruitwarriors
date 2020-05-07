@@ -60,7 +60,7 @@ class PlayerAILogic(PlayerLogic):
         if len(players) == 1:  # no other player...
             return None
         min_dist_square = 10**8  # big enough to not be min
-        disted_players = [(Vector2D.dist_square(p.pos, self.pos), p) if p.get_id() != self._id else (min_dist_square, p)
+        disted_players = [(Vector2D.dist_square(p.pos, self.pos), p) if p.get_id() != self.id else (min_dist_square, p)
                           for p in players]  # distance2 - player tuple list
         closest_p = min(disted_players, key=lambda dp: dp[0])  # find min by distance2
         return closest_p[1]
