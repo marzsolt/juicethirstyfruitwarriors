@@ -92,7 +92,7 @@ class PlayerLogic(abc.ABC):
         self._is_attacking = True
         self._attack_on_cooldown = True
         self.can_get_hurt = False
-        Timer.sch_fun(100, self.restore_attack_ability, ())  # TODO use constant/var!
+        Timer.sch_fun(100, self.restore_attack_ability, ())
 
     def _finish_attack(self):
         self._is_attacking = False
