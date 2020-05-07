@@ -20,7 +20,6 @@ class OrangePlayer(Player):
         self.rotation_angle = 30  # it must be a divisor of 360 degrees for correct functioning!
         self.rotation_dir = None  # direction of rotation = direction of player when attacked
 
-
     def update(self, pressed_keys, events):
         """ The update method of orange - looks for special (orange related) key presses """
         super().update(pressed_keys, events)

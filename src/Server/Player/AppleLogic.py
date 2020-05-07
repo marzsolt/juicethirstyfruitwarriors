@@ -13,17 +13,16 @@ class AppleLogic(PlayerLogic):
 
         self._min_attack_angle = 0.55  # it is around 30 deg
         self._normal_attack_strength = 18
-        self._attack_damage = 10
+        self._attack_damage = 20
 
         self._min_attack_x, self._min_attack_y = self._attack_constants()
 
     def _process_requests(self, network_messages):  # processes if wants to attack
         super()._process_requests(network_messages)
         for mess in network_messages:
-            if mess.type == climess.MessageType.APPLE_ATTACK:
+            if mess.type == climess.MessageType.APPLE_ATTACK and self.can_attack():
                 force_of_jump = self._calculate_attack_force(mess.x, mess.y)
-
-                self._attack(force_of_jump)
+                self._attack(force=force_of_jump)
 
     def _attack_constants(self):  # when the angle of the attack is below the minimal a constant force is used
         x = -1 * self._normal_attack_strength * math.cos(self._min_attack_angle)
@@ -47,11 +46,16 @@ class AppleLogic(PlayerLogic):
 
         return Vector2D(attack_x, attack_y)
 
-    def _attack(self, force):
+    def can_attack(self):
+        """ Apples cannot attack if they are in midair. """
+        if super().can_attack():
+            return not self._is_flying
+        return False
+
+    def _attack(self, **kwargs):
         """Apple related attack managing"""
-        if self._can_attack and not self._is_flying:
-            super()._attack()
-            self._add_force(force)
+        super()._attack()
+        self._add_force(kwargs["force"])
 
     def _finish_attack(self):
         super()._finish_attack()
