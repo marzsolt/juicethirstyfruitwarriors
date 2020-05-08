@@ -150,7 +150,7 @@ class Game:
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
         mess.names = list(self.__names.items())
-        Timer.sch_fun(FPS, Server.get_instance().send_all, (mess,))
+        Server.get_instance().send_all(mess)
         Server.get_instance().stop_accepting_clients()
 
     def __read_messages(self):
