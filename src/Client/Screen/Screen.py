@@ -47,11 +47,11 @@ class Screen:
         """" Responsible for updating the screen, and returning its running state to the main function. """
         self._draw_adequate_screen(events, pressed_keys)
         if not self.__can_my_player_attack:
-            font = pg.font.Font('freesansbold.ttf', 32)
+            font = pg.font.Font('freesansbold.ttf', 24)
 
             game_over_text = font.render("You need some rest", True, RED, BLACK)
             game_over_text_rect = game_over_text.get_rect()
-            game_over_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+            game_over_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 8)
             self.__screen.blit(game_over_text, game_over_text_rect)
         pg.display.flip()  # flip the display
         self._check_exit_criteria(events)  # this should be the last, as closes connection on running = False
@@ -85,6 +85,7 @@ class Screen:
                 if Client.get_instance().id == msg.player_id:  # if it was our player, set screen's game over state
                     self.__game_over_state = sstatecons.GameOverState.LOST
                     self.logger.info("It is our player that died!")
+                    self.__can_my_player_attack = True
             elif msg.type == sermess.MessageType.NO_ALIVE_HUMAN:  # if Game announced that all human player is dead
                 self.__game_over_state = sstatecons.GameOverState.ALL_HUMAN_DIED  # set game over state of Screen
                 self.__t_to_exit = FPS * 10 - 1  # trigger delayed exit
