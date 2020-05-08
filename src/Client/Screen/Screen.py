@@ -151,6 +151,12 @@ class Screen:
             onchange=self._onchange_play_menu_input_ip,
             onreturn=self._onreturn_play_menu_input_ip
         )
+        play_menu.add_text_input(  # text input for name
+            title='Name: ',
+            textinput_id='playMenu_input_name',
+            maxchar=8,
+            default='Anonymus'
+        )
         play_menu.add_option('Back', pgM.events.BACK)
 
         return play_menu
@@ -246,6 +252,12 @@ class Screen:
                 self.__connectionMenu, _ = self._init_connection_menu()
                 self.__connectionMenu.enable()
                 self.__connectionMenu.add_line('Successfully connected.')
+
+                # also, send the player name
+                msg = BaseMessage(climess.MessageType.NAME, climess.Target.GAME)
+                msg.player_id = Client.get_instance().id
+                msg.name = self.__playMenu.get_widget('playMenu_input_name').get_value()
+                Client.get_instance().send_message(msg)
             else:  # else
                 self.__connectionMenu.add_line('Connection error, please try again!')
 
@@ -277,8 +289,14 @@ class Screen:
                         self.__terrain_points_levels = msg.terrain_points_levels
                         self.__screenState = sstatecons.ScreenState.GAME
                         self.__connectionMenu.disable()
-                        PlayerManager.get_instance().create_players(msg.apple_human_ids, msg.orange_human_ids,
-                                                                    msg.apple_ai_ids, msg.orange_ai_ids)
+                        print(msg.names)
+                        PlayerManager.get_instance().create_players(
+                            msg.apple_human_ids,
+                            msg.orange_human_ids,
+                            msg.apple_ai_ids,
+                            msg.orange_ai_ids,
+                            dict(msg.names)
+                        )
 
             else:  # if conn msg was shown and connection isn't alive, go back to playMenu (sub menu of mainMenu)
                 self.__screenState = sstatecons.ScreenState.MAIN_MENU

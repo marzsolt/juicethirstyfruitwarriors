@@ -10,8 +10,8 @@ from src.utils.general_constants import SCREEN_HEIGHT
 
 
 class ApplePlayer(Player):
-    def __init__(self, player_id):
-        super(ApplePlayer, self).__init__(player_id, PicFile.APPLE)
+    def __init__(self, player_id, name):
+        super(ApplePlayer, self).__init__(player_id, name, PicFile.APPLE)
 
     def update(self, pressed_keys, events):
         super().update(pressed_keys, events)

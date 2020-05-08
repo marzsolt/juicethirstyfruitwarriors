@@ -6,6 +6,7 @@ class MessageType(str, Enum):
     CONN = "connection"  # connection related
     CONN_CLOSED = "connection closed"
     CONN_RELATED_DEATH = "connection closed, death requested on player"
+    NAME = "player name"
     CHANGE_PLAYER_NUMBER = "change player number"
     START_GAME_MANUALLY = "start game manually"
     PLAYER_MOVEMENT = "movement of player"
