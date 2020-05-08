@@ -52,6 +52,8 @@ class Client:
             self.__communicator.close()
 
     def receive_message(self, message):
+        if message.type == sermess.MessageType.DIED:
+            self.logger.debug(f"Player {message.player_id} died message received.")
         if message.target == sermess.Target.CLIENT:
             if message.type == sermess.MessageType.YOUR_ID:
                 self.logger.info(f"I got my id: {message.id}")

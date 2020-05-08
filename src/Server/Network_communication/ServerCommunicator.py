@@ -4,6 +4,7 @@ import socket
 import logging
 
 from src.utils.domi_utils import dict_to_object, separate_jsons
+import src.Server.Network_communication.server_message_constants as sermess
 
 # This class is responsible for the communication on the server side.
 # It receives and sends messages from/to the client.
@@ -18,6 +19,8 @@ class ServerCommunicator(threading.Thread):
         self.logger = logging.getLogger('Domi.ServerCommunicator')
 
     def send_message(self, message):
+        if message.type == sermess.MessageType.DIED:
+            self.logger.debug(f"Player {message.player_id} died message sent to {self.ID} client.")
         serialized = json.dumps(message, default=lambda o: getattr(o, '__dict__', str(o)))  # recursive
         serialized = str.encode(serialized)
 
