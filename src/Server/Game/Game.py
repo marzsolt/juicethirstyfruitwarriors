@@ -10,7 +10,6 @@ from src.Server.PlayerAI.AppleAI import AppleAI
 from src.Server.PlayerAI.PlayerAILogic import PlayerAILogic
 from src.Server.Game.Terrain import Terrain
 from src.utils.Timer import Timer
-from src.utils.general_constants import FPS
 import src.Server.Network_communication.server_message_constants as sermess
 
 import src.Client.Network_communication.client_message_constants as climess
@@ -111,7 +110,9 @@ class Game:
             mess = BaseMessage(sermess.MessageType.FIRST_PLAYER, sermess.Target.SCREEN)
             Server.get_instance().send_message(mess, self.__first_player_id)
         if len(connected_players) == self.__human_player_number:
-            self.__start_game()
+            Timer.sch_fun(10, self.__start_game, ())
+            while not self.__game_started:
+                pass
 
     def __start_game(self):
         """" Function responsible for managing game start related tasks. """
