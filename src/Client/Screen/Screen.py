@@ -254,6 +254,8 @@ class Screen:
                 self.__connectionMenu.add_line('Successfully connected.')
 
                 # also, send the player name
+                while Client.get_instance().id is None:
+                    pass
                 msg = BaseMessage(climess.MessageType.NAME, climess.Target.GAME)
                 msg.player_id = Client.get_instance().id
                 msg.name = self.__playMenu.get_widget('playMenu_input_name').get_value()
