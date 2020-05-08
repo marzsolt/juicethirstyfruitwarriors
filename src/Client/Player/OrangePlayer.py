@@ -12,8 +12,8 @@ from src.utils.BaseMessage import BaseMessage
 
 class OrangePlayer(Player):
     """ Client side specialized Player (orange) """
-    def __init__(self, player_id):
-        super(OrangePlayer, self).__init__(player_id, PicFile.ORANGE)
+    def __init__(self, player_id, name):
+        super(OrangePlayer, self).__init__(player_id, name, PicFile.ORANGE)
 
         self.surf_angle = 0  # current angle in degrees of the player's surface, standard is 0
         self.surf_base = None  # standard surface (at angle 0) so that rotation caused deviations can be corrected
