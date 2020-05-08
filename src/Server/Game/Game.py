@@ -25,6 +25,7 @@ class Game:
         self.__AI_number = 5
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
+        self.__names = {}
         self.__player_logics = []
         self.__terrain = Terrain()
         self.running = True
@@ -147,6 +148,7 @@ class Game:
         mess.orange_ai_ids = orange_ai_ids
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
+        mess.names = list(self.__names.items())
         Server.get_instance().send_all(mess)
         Server.get_instance().stop_accepting_clients()
 
@@ -164,3 +166,5 @@ class Game:
                     if pl.id == mess.player_id:
                         self.logger.info(f"ID: {mess.player_id} Connection related death.")
                         pl.hp = 0
+            elif mess.type == climess.MessageType.NAME:
+                self.__names[mess.player_id] = mess.name
