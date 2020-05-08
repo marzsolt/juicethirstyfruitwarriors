@@ -41,9 +41,18 @@ class Screen:
         self.__game_over_state = None  # trace game over status
         self.__t_to_exit = None  # on game over, trace time before automated exiting
 
+        self.__can_my_player_attack = True
+
     def update(self, events, pressed_keys):
         """" Responsible for updating the screen, and returning its running state to the main function. """
         self._draw_adequate_screen(events, pressed_keys)
+        if not self.__can_my_player_attack:
+            font = pg.font.Font('freesansbold.ttf', 32)
+
+            game_over_text = font.render("You need some rest", True, RED, BLACK)
+            game_over_text_rect = game_over_text.get_rect()
+            game_over_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+            self.__screen.blit(game_over_text, game_over_text_rect)
         pg.display.flip()  # flip the display
         self._check_exit_criteria(events)  # this should be the last, as closes connection on running = False
         return self.__running
@@ -67,6 +76,7 @@ class Screen:
     def _check_game_over(self):
         """" Checks if 'game over' related activity happened or not. """
         msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
+        self.__draw_if_cannot_attack_text(msgs)
         for msg in msgs:
             if msg.type == sermess.MessageType.DIED:  # a player's dead was announced by the Game (server side)
                 self.logger.info(f"ID: {msg.player_id} Death of player acknowledged.")
@@ -372,3 +382,12 @@ class Screen:
         self.__t_to_exit -= 1  # decrease every frame by 1
         if self.__t_to_exit == 0:
             self.__running = False
+
+    def __draw_if_cannot_attack_text(self, msgs):
+        # msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
+        for msg in msgs:
+            if msg.type == sermess.MessageType.ATTACK_ABILITY:
+                if not msg.value:
+                    self.__can_my_player_attack = False
+                elif msg.value:
+                    self.__can_my_player_attack = True
