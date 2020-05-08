@@ -10,6 +10,7 @@ from src.Server.PlayerAI.AppleAI import AppleAI
 from src.Server.PlayerAI.PlayerAILogic import PlayerAILogic
 from src.Server.Game.Terrain import Terrain
 from src.utils.Timer import Timer
+from src.utils.general_constants import FPS
 import src.Server.Network_communication.server_message_constants as sermess
 
 import src.Client.Network_communication.client_message_constants as climess
@@ -149,7 +150,7 @@ class Game:
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
         mess.names = list(self.__names.items())
-        Server.get_instance().send_all(mess)
+        Timer.sch_fun(FPS, Server.get_instance().send_all, (mess,))
         Server.get_instance().stop_accepting_clients()
 
     def __read_messages(self):
@@ -168,3 +169,4 @@ class Game:
                         pl.hp = 0
             elif mess.type == climess.MessageType.NAME:
                 self.__names[mess.player_id] = mess.name
+                self.logger.info(f"ID: {mess.player_id}'s name is {mess.name}")

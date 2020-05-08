@@ -262,6 +262,7 @@ class Screen:
                 msg.player_id = Client.get_instance().id
                 msg.name = self.__playMenu.get_widget('playMenu_input_name').get_value()
                 Client.get_instance().send_message(msg)
+                self.logger.info(f"Sent name: {msg.name}")
             else:  # else
                 self.__connectionMenu.add_line('Connection error, please try again!')
 
