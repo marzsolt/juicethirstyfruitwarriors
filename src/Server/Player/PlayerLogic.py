@@ -92,10 +92,7 @@ class PlayerLogic(abc.ABC):
         self._attack_on_cooldown = True
         self.can_get_hurt = False
         Timer.sch_fun(self.ATTACK_COOLDOWN, self.restore_attack_ability, ())
-        if self.id in Server.get_instance().get_client_ids():
-            msg = BaseMessage(mess_type=sermess.MessageType.ATTACK_ABILITY, target=sermess.Target.SCREEN)
-            msg.value = False
-            Server.get_instance().send_message(msg, self.id)
+        self._send_screen_changed_attack_ability(can_attack=False)
 
     def _finish_attack(self):
         self._is_attacking = False
@@ -104,9 +101,12 @@ class PlayerLogic(abc.ABC):
 
     def restore_attack_ability(self):
         self._attack_on_cooldown = False
+        self._send_screen_changed_attack_ability(can_attack=True)
+
+    def _send_screen_changed_attack_ability(self, can_attack):
         if self.id in Server.get_instance().get_client_ids():
             msg = BaseMessage(mess_type=sermess.MessageType.ATTACK_ABILITY, target=sermess.Target.SCREEN)
-            msg.value = True
+            msg.value = can_attack
             Server.get_instance().send_message(msg, self.id)
 
     def _add_force(self, force2d):

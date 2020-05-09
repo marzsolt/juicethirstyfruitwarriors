@@ -1,13 +1,11 @@
-2020-05-09 16:22:42,528 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
-2020-05-09 16:22:42,531 - Imigyen szóla Domi.Client: - INFO - I got my id: 1
-2020-05-09 16:22:42,557 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
-2020-05-09 16:22:52,388 - Imigyen szóla Domi.Screen: - INFO - ID: 6 Death of player acknowledged.
-2020-05-09 16:22:52,389 - Imigyen szóla Domi.Screen: - INFO - ID: 6 Player removed from player manager.
-2020-05-09 16:22:55,914 - Imigyen szóla Domi.Screen: - INFO - ID: 5 Death of player acknowledged.
-2020-05-09 16:22:55,914 - Imigyen szóla Domi.Screen: - INFO - ID: 5 Player removed from player manager.
-2020-05-09 16:23:06,425 - Imigyen szóla Domi.Screen: - INFO - ID: 0 Death of player acknowledged.
-2020-05-09 16:23:06,425 - Imigyen szóla Domi.Screen: - INFO - ID: 0 Player removed from player manager.
-2020-05-09 16:23:09,575 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Death of player acknowledged.
-2020-05-09 16:23:09,576 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Player removed from player manager.
-2020-05-09 16:23:09,577 - Imigyen szóla Domi.Screen: - INFO - It is our player that died!
-2020-05-09 16:23:09,810 - Imigyen szóla Domi.ClientCommunicator: - INFO - Client socket closed.
+2020-05-09 17:14:10,223 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
+2020-05-09 17:14:10,226 - Imigyen szóla Domi.Client: - INFO - I got my id: 1
+2020-05-09 17:14:10,252 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
+2020-05-09 17:14:29,524 - Imigyen szóla Domi.Screen: - INFO - ID: 0 Death of p2020-05-09 17:14:29,530 - Imigyen szóla Domi.Screen: - INFO - ID: 0 Death of player acknowledged.
+2020-05-09 17:14:29,531 - I2020-05-09 17:14:39,660 - Imigyen szóla Domi.Screen: - INFO - ID: 2 Death of player acknowledged.
+2020-05-09 17:14:39,661 - Imigyen szóla Domi.Screen: - INFO - ID: 2 Pl2020-05-09 17:14:39,673 - Imigyen s2020-05-09 17:14:42,921 - Imigyen szóla Domi.Screen: - INFO - ID: 3 Death of player acknowledged.
+2020-05-09 17:14:42,921 - Imigyen szóla Domi.Screen: - INFO - ID: 3 Pl2020-05-09 17:14:42,928 - Imigyen s2020-05-09 17:14:53,378 - Imigyen szóla Domi.Screen: - INFO - ID: 4 Death of player acknowledged.
+2020-05-09 17:14:53,378 - Imigyen szóla Domi.Screen: - INFO - ID: 4 Pl2020-05-09 17:14:53,402 - Imigyen s2020-05-09 17:15:02,465 - Imigyen szóla Domi.Screen: - INFO - ID: 6 Death of player acknowledged.
+2020-05-09 17:15:02,465 - Imigyen szóla Domi.Screen: - INFO - ID: 6 Pl2020-05-09 17:15:02,472 - Imigyen s2020-05-09 17:16:00,189 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Death of player acknowledged.
+2020-05-09 17:16:00,189 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Pl2020-05-09 17:16:00,196 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Death of player acknowledged.
+2020-05-09 17:16:00,196 - I2020-05-09 17:16:02,180 - Imigyen szóla Domi.ClientCommunicator: - INFO - Clie2020-05-09 17:16:04,731 - Imigyen szóla Domi.ClientCommunicator: - INFO - Client socket closed.
