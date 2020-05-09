@@ -326,7 +326,7 @@ class Screen:
     def _connection_menu_start_pressed():
         """" Manages press of start on connectionMenu (forcibly trigger game without meeting count). """
         msg = BaseMessage(mess_type=climess.MessageType.START_GAME_MANUALLY, target=climess.Target.GAME)
-        Client.get_instance().send_message(msg)
+        Client.get_instance().send_important_message(msg)
 
     def bck_bg_decorator(fun):
         """" Decorator for black bg. """
