@@ -2,6 +2,7 @@ import threading
 import json
 import socket
 import logging
+import copy
 
 from src.utils.domi_utils import dict_to_object, separate_jsons, id_generator
 from src.utils.Timer import Timer
@@ -22,6 +23,7 @@ class ServerCommunicator(threading.Thread):
         self._important_message_id = 0
         self._acknowledged_important = {}
         self.mes_id = id_generator()
+        self._next_mes_id = 0
 
     def send_message(self, message):
         if message.type == sermess.MessageType.DIED:
@@ -34,19 +36,28 @@ class ServerCommunicator(threading.Thread):
         except OSError:  # if the socket was closed interrupting this
             pass
 
-    def send_important_message(self, message):
+    def send_important_message(self, ref_message):
+        message = copy.deepcopy(ref_message)
         message.mes_id = next(self.mes_id)
+
         self._acknowledged_important[message.mes_id] = False
+        self.logger.debug(f"{self._acknowledged_important}, {self.ID} adding new ")
+        self.logger.debug(f"{message.mes_id}, {self.ID} this key added")
         self.send_message(message)
 
         Timer.sch_fun(1, self.delayed_resend, (message,))
 
     def delayed_resend(self, message):
+        self.logger.debug(f"{self._acknowledged_important}, {self.ID} after this keyerror")
+        self.logger.debug(f"{message.mes_id}, {self.ID}, message id")
+        self.logger.debug(f"{message.type}, {message.target}, message, {self.ID}, id")
         if not self._acknowledged_important[message.mes_id]:
             self.send_message(message)
             Timer.sch_fun(1, self.delayed_resend, (message,))
         else:
             del self._acknowledged_important[message.mes_id]
+            self.logger.debug(f"{self._acknowledged_important}, {self.ID} deleting")
+            self.logger.debug(f"{message.mes_id}, {self.ID} this would be deleted")
 
     def close(self):
         """" Responsible for closing down communicator with client on request. """
@@ -71,5 +82,7 @@ class ServerCommunicator(threading.Thread):
 
                 if deserialized.type == climess.MessageType.ACK:
                     self._acknowledged_important[deserialized.mes_id] = True
+                    self.logger.debug(f"{self._acknowledged_important}, {self.ID} there can one become true ")
+                    self.logger.debug(f"{deserialized.mes_id}, {self.ID} this key changes")
                 else:
                     self.server.receive_message(deserialized, self.ID)
