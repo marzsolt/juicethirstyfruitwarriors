@@ -1,14 +1,13 @@
-2020-05-09 09:13:34,602 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
-2020-05-09 09:13:34,605 - Imigyen szóla Domi.Client: - INFO - I got my id: 0
-2020-05-09 09:13:34,630 - Imigyen szóla Domi.Screen: - INFO - I am the host.
-2020-05-09 09:13:36,297 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
-2020-05-09 09:13:53,511 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Death of player acknowledged.
-2020-05-09 09:13:53,511 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Player removed from player manager.
-2020-05-09 09:13:53,513 - Imigyen szóla Domi.Screen: - INFO - ID: 3 Death of player acknowledged.
-2020-05-09 09:13:53,513 - Imigyen szóla Domi.Screen: - INFO - ID: 3 Player removed from player manager.
-2020-05-09 09:14:05,770 - Imigyen szóla Domi.Screen: - INFO - ID: 5 Death of player acknowledged.
-2020-05-09 09:14:05,770 - Imigyen szóla Domi.Screen: - INFO - ID: 5 Player removed from player manager.
-2020-05-09 09:14:13,195 - Imigyen szóla Domi.Screen: - INFO - ID: 0 Death of player acknowledged.
-2020-05-09 09:14:13,195 - Imigyen szóla Domi.Screen: - INFO - ID: 0 Player removed from player manager.
-2020-05-09 09:14:13,196 - Imigyen szóla Domi.Screen: - INFO - It is our player that died!
-2020-05-09 09:14:15,454 - Imigyen szóla Domi.ClientCommunicator: - INFO - Client socket closed.
+2020-05-09 16:22:42,528 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
+2020-05-09 16:22:42,531 - Imigyen szóla Domi.Client: - INFO - I got my id: 1
+2020-05-09 16:22:42,557 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
+2020-05-09 16:22:52,388 - Imigyen szóla Domi.Screen: - INFO - ID: 6 Death of player acknowledged.
+2020-05-09 16:22:52,389 - Imigyen szóla Domi.Screen: - INFO - ID: 6 Player removed from player manager.
+2020-05-09 16:22:55,914 - Imigyen szóla Domi.Screen: - INFO - ID: 5 Death of player acknowledged.
+2020-05-09 16:22:55,914 - Imigyen szóla Domi.Screen: - INFO - ID: 5 Player removed from player manager.
+2020-05-09 16:23:06,425 - Imigyen szóla Domi.Screen: - INFO - ID: 0 Death of player acknowledged.
+2020-05-09 16:23:06,425 - Imigyen szóla Domi.Screen: - INFO - ID: 0 Player removed from player manager.
+2020-05-09 16:23:09,575 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Death of player acknowledged.
+2020-05-09 16:23:09,576 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Player removed from player manager.
+2020-05-09 16:23:09,577 - Imigyen szóla Domi.Screen: - INFO - It is our player that died!
+2020-05-09 16:23:09,810 - Imigyen szóla Domi.ClientCommunicator: - INFO - Client socket closed.

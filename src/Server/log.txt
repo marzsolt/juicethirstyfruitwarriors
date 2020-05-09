@@ -1,20 +1,21 @@
-2020-05-09 09:13:07,603 - Imigyen szóla Domi.Server: - INFO - Server IP address: 192.168.56.1.
-2020-05-09 09:13:36,293 - Imigyen szóla Domi.Game: - INFO - Received manual game start signal.
-2020-05-09 09:13:36,294 - Imigyen szóla Domi.Game: - INFO - Game started, terrain sent to everyone
-2020-05-09 09:13:53,508 - Imigyen szóla Domi.Game: - INFO - ID: 1 Player has just died.
-2020-05-09 09:13:53,509 - Imigyen szóla Domi.Game: - INFO - ID: 1 All clients has been notified about the recent tragic death.
-2020-05-09 09:13:53,509 - Imigyen szóla Domi.Game: - INFO - ID: 1 Player logic killed.
-2020-05-09 09:13:53,510 - Imigyen szóla Domi.Game: - INFO - ID: 3 Player has just died.
-2020-05-09 09:13:53,510 - Imigyen szóla Domi.Game: - INFO - ID: 3 All clients has been notified about the recent tragic death.
-2020-05-09 09:13:53,511 - Imigyen szóla Domi.Game: - INFO - ID: 3 Player logic killed.
-2020-05-09 09:14:05,767 - Imigyen szóla Domi.Game: - INFO - ID: 5 Player has just died.
-2020-05-09 09:14:05,767 - Imigyen szóla Domi.Game: - INFO - ID: 5 All clients has been notified about the recent tragic death.
-2020-05-09 09:14:05,768 - Imigyen szóla Domi.Game: - INFO - ID: 5 Player logic killed.
-2020-05-09 09:14:13,183 - Imigyen szóla Domi.Game: - INFO - ID: 0 Player has just died.
-2020-05-09 09:14:13,184 - Imigyen szóla Domi.Game: - INFO - ID: 0 All clients has been notified about the recent tragic death.
-2020-05-09 09:14:13,185 - Imigyen szóla Domi.Game: - INFO - ID: 0 Player logic killed.
-2020-05-09 09:14:13,212 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
-2020-05-09 09:14:13,239 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
-2020-05-09 09:14:13,267 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
-2020-05-09 09:14:15,454 - Imigyen szóla Domi.ServerCommunicator: - INFO - ID: 0 Player socket closed.
-2020-05-09 09:14:15,455 - Imigyen szóla Domi.Server: - INFO - Server socket closed.
+2020-05-09 16:22:11,367 - Imigyen szóla Domi.Server: - INFO - Server IP address: 192.168.56.1.
+2020-05-09 16:22:42,533 - Imigyen szóla Domi.Game: - INFO - Game started, terrain sent to everyone
+2020-05-09 16:22:52,362 - Imigyen szóla Domi.Game: - INFO - ID: 6 Player has just died.
+2020-05-09 16:22:52,363 - Imigyen szóla Domi.Game: - INFO - ID: 6 All clients has been notified about the recent tragic death.
+2020-05-09 16:22:52,364 - Imigyen szóla Domi.Game: - INFO - ID: 6 Player logic killed.
+2020-05-09 16:22:55,890 - Imigyen szóla Domi.Game: - INFO - ID: 5 Player has just died.
+2020-05-09 16:22:55,892 - Imigyen szóla Domi.Game: - INFO - ID: 5 All clients has been notified about the recent tragic death.
+2020-05-09 16:22:55,892 - Imigyen szóla Domi.Game: - INFO - ID: 5 Player logic killed.
+2020-05-09 16:23:06,386 - Imigyen szóla Domi.ServerCommunicator: - INFO - ID: 0 Player socket closed.
+2020-05-09 16:23:06,401 - Imigyen szóla Domi.Game: - INFO - ID: 0 Connection related death.
+2020-05-09 16:23:06,404 - Imigyen szóla Domi.Game: - INFO - ID: 0 Player has just died.
+2020-05-09 16:23:06,405 - Imigyen szóla Domi.Game: - INFO - ID: 0 All clients has been notified about the recent tragic death.
+2020-05-09 16:23:06,406 - Imigyen szóla Domi.Game: - INFO - ID: 0 Player logic killed.
+2020-05-09 16:23:09,566 - Imigyen szóla Domi.Game: - INFO - ID: 1 Player has just died.
+2020-05-09 16:23:09,567 - Imigyen szóla Domi.Game: - INFO - ID: 1 All clients has been notified about the recent tragic death.
+2020-05-09 16:23:09,567 - Imigyen szóla Domi.Game: - INFO - ID: 1 Player logic killed.
+2020-05-09 16:23:09,594 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
+2020-05-09 16:23:09,622 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
+2020-05-09 16:23:09,649 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
+2020-05-09 16:23:09,811 - Imigyen szóla Domi.ServerCommunicator: - INFO - ID: 1 Player socket closed.
+2020-05-09 16:23:09,812 - Imigyen szóla Domi.Server: - INFO - Server socket closed.
