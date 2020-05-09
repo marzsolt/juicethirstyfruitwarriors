@@ -37,8 +37,8 @@ class ServerCommunicator(threading.Thread):
         message.mes_id = self._important_message_id
         self._acknowledged_important[message.mes_id] = False
         self.send_message(message)
-        if not self._acknowledged_important[message.mes_id]:
-            Timer.sch_fun(1, self.delayed_resend, (message,))
+
+        Timer.sch_fun(1, self.delayed_resend, (message,))
 
         self._important_message_id += 1
 
@@ -46,6 +46,8 @@ class ServerCommunicator(threading.Thread):
         if not self._acknowledged_important[message.mes_id]:
             self.send_message(message)
             Timer.sch_fun(1, self.delayed_resend, (message,))
+        else:
+            del self._acknowledged_important[message.mes_id]
 
     def close(self):
         """" Responsible for closing down communicator with client on request. """

@@ -5,6 +5,7 @@ from src.Client.Network_communication.ClientCommunicator import ClientCommunicat
 import src.Server.Network_communication.server_message_constants as sermess
 import src.Client.Network_communication.client_message_constants as climess
 from src.utils.BaseMessage import BaseMessage
+from src.utils.Timer import Timer
 
 
 class Client:
@@ -26,7 +27,7 @@ class Client:
             self.client_message_dictionary = defaultdict(list)
             self.__communicator = None
             self.id = None
-            self.__processed_important_message_ids = []
+            self.__processed_important_message_ids = {}
 
             # connection related information
             self.connection_alive = None
@@ -56,12 +57,23 @@ class Client:
         if message.important:
             if message.mes_id not in self.__processed_important_message_ids:
                 self._process_message(message)
-                self.__processed_important_message_ids.append(message.mes_id)
-            msg = BaseMessage(mess_type=climess.MessageType.ACK, target=climess.Target.SERVER)
+                self.__processed_important_message_ids[message.mes_id] = False
+            else:
+                self.__processed_important_message_ids[message.mes_id] = True
+            msg = BaseMessage(mess_type=climess.MessageType.ACK, target=climess.Target.SERVER_COMMUNICATOR)
             msg.mes_id = message.mes_id
             self.send_message(msg)
+            Timer.sch_fun(3, self._del_from_message_ids, (message,))
         else:
             self._process_message(message)
+
+    def _del_from_message_ids(self, message):
+        if not self.__processed_important_message_ids[message.mes_id]:
+            del self.__processed_important_message_ids[message.mes_id]
+        else:
+            self.__processed_important_message_ids[message.mes_id] = True
+            Timer.sch_fun(3, self._del_from_message_ids, (message, ))
+
 
     def _process_message(self, message):
         if message.type == sermess.MessageType.DIED:

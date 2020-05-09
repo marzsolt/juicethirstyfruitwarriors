@@ -1,35 +1,28 @@
-2020-05-09 12:50:36,640 - Imigyen szóla Domi.Server: - INFO - Server IP address: 192.168.56.1.
-2020-05-09 12:50:54,180 - Imigyen szóla Domi.Game: - INFO - ID: 0's name is Anonymus
-2020-05-09 12:51:05,013 - Imigyen szóla Domi.Game: - INFO - ID: 1's name is Anonyna
-2020-05-09 12:51:05,425 - Imigyen szóla Domi.Game: - INFO - Game started, terrain sent to everyone
-2020-05-09 12:51:18,693 - Imigyen szóla Domi.Game: - INFO - ID: 1 Player has just died.
-2020-05-09 12:51:18,694 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 1 died message sent to 0 client.
-2020-05-09 12:51:18,695 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 1 died message sent to 1 client.
-2020-05-09 12:51:18,695 - Imigyen szóla Domi.Game: - INFO - ID: 1 All clients has been notified about the recent tragic death.
-2020-05-09 12:51:18,696 - Imigyen szóla Domi.Game: - INFO - ID: 1 Player logic killed.
-2020-05-09 12:51:18,697 - Imigyen szóla Domi.Game: - INFO - ID: 4 Player has just died.
-2020-05-09 12:51:18,698 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 4 died message sent to 0 client.
-2020-05-09 12:51:18,699 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 4 died message sent to 1 client.
-2020-05-09 12:51:18,699 - Imigyen szóla Domi.Game: - INFO - ID: 4 All clients has been notified about the recent tragic death.
-2020-05-09 12:51:18,700 - Imigyen szóla Domi.Game: - INFO - ID: 4 Player logic killed.
-2020-05-09 12:51:18,700 - Imigyen szóla Domi.Game: - INFO - ID: 5 Player has just died.
-2020-05-09 12:51:18,702 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 5 died message sent to 0 client.
-2020-05-09 12:51:18,705 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 5 died message sent to 1 client.
-2020-05-09 12:51:18,706 - Imigyen szóla Domi.Game: - INFO - ID: 5 All clients has been notified about the recent tragic death.
-2020-05-09 12:51:18,707 - Imigyen szóla Domi.Game: - INFO - ID: 5 Player logic killed.
-2020-05-09 12:51:34,204 - Imigyen szóla Domi.Game: - INFO - ID: 6 Player has just died.
-2020-05-09 12:51:34,206 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 6 died message sent to 0 client.
-2020-05-09 12:51:34,209 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 6 died message sent to 1 client.
-2020-05-09 12:51:34,210 - Imigyen szóla Domi.Game: - INFO - ID: 6 All clients has been notified about the recent tragic death.
-2020-05-09 12:51:34,212 - Imigyen szóla Domi.Game: - INFO - ID: 6 Player logic killed.
-2020-05-09 12:51:55,132 - Imigyen szóla Domi.Game: - INFO - ID: 0 Player has just died.
-2020-05-09 12:51:55,132 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 0 died message sent to 0 client.
-2020-05-09 12:51:55,133 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 0 died message sent to 1 client.
-2020-05-09 12:51:55,134 - Imigyen szóla Domi.Game: - INFO - ID: 0 All clients has been notified about the recent tragic death.
-2020-05-09 12:51:55,135 - Imigyen szóla Domi.Game: - INFO - ID: 0 Player logic killed.
-2020-05-09 12:51:55,164 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
-2020-05-09 12:51:55,194 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
-2020-05-09 12:51:55,223 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
-2020-05-09 12:52:09,711 - Imigyen szóla Domi.ServerCommunicator: - INFO - ID: 0 Player socket closed.
-2020-05-09 12:52:09,721 - Imigyen szóla Domi.ServerCommunicator: - INFO - ID: 1 Player socket closed.
-2020-05-09 12:52:09,722 - Imigyen szóla Domi.Server: - INFO - Server socket closed.
+2020-05-09 16:14:18,681 - Imigyen szóla Domi.Server: - INFO - Server IP address: 192.168.56.1.
+2020-05-09 16:14:41,565 - Imigyen szóla Domi.Game: - INFO - ID: 0's name is Anonymus
+2020-05-09 16:14:44,081 - Imigyen szóla Domi.Game: - INFO - Received manual game start signal.
+2020-05-09 16:14:44,082 - Imigyen szóla Domi.Game: - INFO - Game started, terrain sent to everyone
+2020-05-09 16:14:54,855 - Imigyen szóla Domi.Game: - INFO - ID: 5 Player has just died.
+2020-05-09 16:14:54,856 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 5 died message sent to 0 client.
+2020-05-09 16:14:54,857 - Imigyen szóla Domi.Game: - INFO - ID: 5 All clients has been notified about the recent tragic death.
+2020-05-09 16:14:54,857 - Imigyen szóla Domi.Game: - INFO - ID: 5 Player logic killed.
+2020-05-09 16:14:57,839 - Imigyen szóla Domi.Game: - INFO - ID: 4 Player has just died.
+2020-05-09 16:14:57,840 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 4 died message sent to 0 client.
+2020-05-09 16:14:57,840 - Imigyen szóla Domi.Game: - INFO - ID: 4 All clients has been notified about the recent tragic death.
+2020-05-09 16:14:57,840 - Imigyen szóla Domi.Game: - INFO - ID: 4 Player logic killed.
+2020-05-09 16:15:03,684 - Imigyen szóla Domi.Game: - INFO - ID: 3 Player has just died.
+2020-05-09 16:15:03,684 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 3 died message sent to 0 client.
+2020-05-09 16:15:03,685 - Imigyen szóla Domi.Game: - INFO - ID: 3 All clients has been notified about the recent tragic death.
+2020-05-09 16:15:03,686 - Imigyen szóla Domi.Game: - INFO - ID: 3 Player logic killed.
+2020-05-09 16:15:27,926 - Imigyen szóla Domi.Game: - INFO - ID: 1 Player has just died.
+2020-05-09 16:15:27,927 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 1 died message sent to 0 client.
+2020-05-09 16:15:27,928 - Imigyen szóla Domi.Game: - INFO - ID: 1 All clients has been notified about the recent tragic death.
+2020-05-09 16:15:27,929 - Imigyen szóla Domi.Game: - INFO - ID: 1 Player logic killed.
+2020-05-09 16:15:57,163 - Imigyen szóla Domi.Game: - INFO - ID: 0 Player has just died.
+2020-05-09 16:15:57,166 - Imigyen szóla Domi.ServerCommunicator: - DEBUG - Player 0 died message sent to 0 client.
+2020-05-09 16:15:57,166 - Imigyen szóla Domi.Game: - INFO - ID: 0 All clients has been notified about the recent tragic death.
+2020-05-09 16:15:57,167 - Imigyen szóla Domi.Game: - INFO - ID: 0 Player logic killed.
+2020-05-09 16:15:57,193 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
+2020-05-09 16:15:57,221 - Imigyen szóla Domi.Game: - INFO - Game killed as no human players left.
+2020-05-09 16:15:59,577 - Imigyen szóla Domi.ServerCommunicator: - INFO - ID: 0 Player socket closed.
+2020-05-09 16:15:59,577 - Imigyen szóla Domi.Server: - INFO - Server socket closed.
