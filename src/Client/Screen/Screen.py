@@ -46,13 +46,6 @@ class Screen:
     def update(self, events, pressed_keys):
         """" Responsible for updating the screen, and returning its running state to the main function. """
         self._draw_adequate_screen(events, pressed_keys)
-        if not self.__can_my_player_attack:
-            font = pg.font.Font('freesansbold.ttf', 24)
-
-            game_over_text = font.render("You need some rest", True, RED, BLACK)
-            game_over_text_rect = game_over_text.get_rect()
-            game_over_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 8)
-            self.__screen.blit(game_over_text, game_over_text_rect)
         pg.display.flip()  # flip the display
         self._check_exit_criteria(events)  # this should be the last, as closes connection on running = False
         return self.__running
@@ -68,15 +61,15 @@ class Screen:
 
     def _game_screen(self, pressed_keys, events):
         """ Responsible for showing the game screen. """
-        self._check_game_over()  # check if same so called 'game over' related activity happend or not
+        msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
+        self._check_game_over(msgs)  # check if same so called 'game over' related activity happend or not
         self._draw_background_and_terrain()
+        self.__check_draw_if_cannot_attack_text(msgs)
         PlayerManager.get_instance().update(pressed_keys, events)  # update player manager
         PlayerManager.get_instance().draw_players(screen=self.__screen)  # draw players by player manager
 
-    def _check_game_over(self):
+    def _check_game_over(self, msgs):
         """" Checks if 'game over' related activity happened or not. """
-        msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
-        self.__draw_if_cannot_attack_text(msgs)
         for msg in msgs:
             if msg.type == sermess.MessageType.DIED:  # a player's dead was announced by the Game (server side)
                 self.logger.info(f"ID: {msg.player_id} Death of player acknowledged.")
@@ -384,7 +377,7 @@ class Screen:
         if self.__t_to_exit == 0:
             self.__running = False
 
-    def __draw_if_cannot_attack_text(self, msgs):
+    def __check_draw_if_cannot_attack_text(self, msgs):
         # msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
         for msg in msgs:
             if msg.type == sermess.MessageType.ATTACK_ABILITY:
@@ -392,3 +385,10 @@ class Screen:
                     self.__can_my_player_attack = False
                 elif msg.value:
                     self.__can_my_player_attack = True
+        if not self.__can_my_player_attack:
+            font = pg.font.Font('freesansbold.ttf', 24)
+
+            game_over_text = font.render("You need some rest", True, RED, BLACK)
+            game_over_text_rect = game_over_text.get_rect()
+            game_over_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 8)
+            self.__screen.blit(game_over_text, game_over_text_rect)
