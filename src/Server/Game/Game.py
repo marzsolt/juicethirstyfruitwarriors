@@ -34,9 +34,11 @@ class Game:
     def update(self):
         self.__read_messages()
 
+        # game can't be started until starting signaled, yet collection shall stop after signal
         if not self.__game_start_signaled:
             self.__collect_players()
-        elif not self.__game_started and self.__game_start_signaled and \
+        # handle game start when all player name has arrived & start signalled
+        elif self.__game_start_signaled and not self.__game_started and \
                 len(self.__names) == len(Server.get_instance().get_client_ids()):
             self.__start_game()
         elif self.__game_started:
