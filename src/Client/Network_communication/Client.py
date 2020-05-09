@@ -30,10 +30,8 @@ class Client:
             # connection related information
             self.connection_alive = None
 
-    def setup_connection(self, ip):
-        host = ip
-        port = 12145  # Random port number
-        self.__communicator = ClientCommunicator(self, host, port)
+    def setup_connection(self, ip, port):
+        self.__communicator = ClientCommunicator(self, ip, port)
         self.__communicator.start()
 
     def close_connection(self):
