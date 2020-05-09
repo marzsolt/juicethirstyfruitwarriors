@@ -1,22 +1,4 @@
-2020-05-09 16:14:41,521 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
-2020-05-09 16:14:41,525 - Imigyen szóla Domi.Client: - INFO - I got my id: 0
-2020-05-09 16:14:41,543 - Imigyen szóla Domi.Screen: - INFO - Sent name: Anonymus
-2020-05-09 16:14:41,550 - Imigyen szóla Domi.Screen: - INFO - I am the host.
-2020-05-09 16:14:44,089 - Imigyen szóla Domi.Screen: - INFO - Game started, terrain loaded
-2020-05-09 16:14:54,861 - Imigyen szóla Domi.Client: - DEBUG - Player 5 died message received.
-2020-05-09 16:14:54,882 - Imigyen szóla Domi.Screen: - INFO - ID: 5 Death of player acknowledged.
-2020-05-09 16:14:54,882 - Imigyen szóla Domi.Screen: - INFO - ID: 5 Player removed from player manager.
-2020-05-09 16:14:57,840 - Imigyen szóla Domi.Client: - DEBUG - Player 4 died message received.
-2020-05-09 16:14:57,844 - Imigyen szóla Domi.Screen: - INFO - ID: 4 Death of player acknowledged.
-2020-05-09 16:14:57,844 - Imigyen szóla Domi.Screen: - INFO - ID: 4 Player removed from player manager.
-2020-05-09 16:15:03,685 - Imigyen szóla Domi.Client: - DEBUG - Player 3 died message received.
-2020-05-09 16:15:03,697 - Imigyen szóla Domi.Screen: - INFO - ID: 3 Death of player acknowledged.
-2020-05-09 16:15:03,698 - Imigyen szóla Domi.Screen: - INFO - ID: 3 Player removed from player manager.
-2020-05-09 16:15:27,928 - Imigyen szóla Domi.Client: - DEBUG - Player 1 died message received.
-2020-05-09 16:15:27,942 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Death of player acknowledged.
-2020-05-09 16:15:27,943 - Imigyen szóla Domi.Screen: - INFO - ID: 1 Player removed from player manager.
-2020-05-09 16:15:57,169 - Imigyen szóla Domi.Client: - DEBUG - Player 0 died message received.
-2020-05-09 16:15:57,191 - Imigyen szóla Domi.Screen: - INFO - ID: 0 Death of player acknowledged.
-2020-05-09 16:15:57,191 - Imigyen szóla Domi.Screen: - INFO - ID: 0 Player removed from player manager.
-2020-05-09 16:15:57,191 - Imigyen szóla Domi.Screen: - INFO - It is our player that died!
-2020-05-09 16:15:59,576 - Imigyen szóla Domi.ClientCommunicator: - INFO - Client socket closed.
+2020-05-09 19:18:47,818 - Imigyen szóla Domi.ClientCommunicator: - INFO - Successful connection!
+2020-05-09 19:18:47,835 - Imigyen szóla Domi.Client: - INFO - I got my id: 1
+2020-05-09 19:18:47,851 - Imigyen szóla Domi.Screen: - INFO - Sent name: Anonymus
+2020-05-09 19:18:48,290 - Imigyen szóla Domi.Screen: - INFO - Game started, te2020-05-09 19:2020-05-09 19:18:50,372 - Imigyen szóla Domi.ClientCommunicator: - INFO - Clie2020-05-09 19:18:51,346 - Imigyen szóla Domi.ClientCommunicator: - INFO - Client socket closed.

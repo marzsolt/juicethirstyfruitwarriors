@@ -4,6 +4,8 @@ import json
 import logging
 
 from src.utils.domi_utils import dict_to_object, separate_jsons, id_generator
+from src.utils.Timer import Timer
+import src.Server.Network_communication.server_message_constants as sermess
 
 
 # This class is responsible for the  communication of the client as it sends and receives message through sockets.
@@ -18,6 +20,8 @@ class ClientCommunicator(threading.Thread):
         self.port = _port
         self.logger = logging.getLogger('Domi.ClientCommunicator')
         self.fidg = id_generator()
+        self._acknowledged_important = {}
+        self.mes_id = id_generator()
 
     def log_mess_to_file(self, mess):
         """
@@ -40,6 +44,20 @@ class ClientCommunicator(threading.Thread):
         serialized = json.dumps(message, default=lambda o: getattr(o, '__dict__', str(o)))  # recursive
         serialized = str.encode(serialized)
         self.client_socket.send(serialized)
+
+    def send_important_message(self, message):
+        message.mes_id = next(self.mes_id)
+        self._acknowledged_important[message.mes_id] = False
+        self.send_message(message)
+
+        Timer.sch_fun(1, self.delayed_resend, (message,))
+
+    def delayed_resend(self, message):
+        if not self._acknowledged_important[message.mes_id]:
+            self.send_message(message)
+            Timer.sch_fun(1, self.delayed_resend, (message,))
+        else:
+            del self._acknowledged_important[message.mes_id]
 
     def close(self):
         """ Closing down client socket. """
@@ -70,4 +88,7 @@ class ClientCommunicator(threading.Thread):
             for m in mes_separated:
                 deserialized = json.loads(m)
                 deserialized = dict_to_object(deserialized)
-                self.client.receive_message(deserialized)
+                if deserialized.type == sermess.MessageType.ACK:
+                    self._acknowledged_important[deserialized.mes_id] = True
+                else:
+                    self.client.receive_message(deserialized)

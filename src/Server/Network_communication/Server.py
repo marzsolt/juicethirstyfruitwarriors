@@ -9,7 +9,7 @@ import src.Server.Network_communication.server_message_constants as sermess
 import src.Client.Network_communication.client_message_constants as climess
 
 from src.utils.BaseMessage import BaseMessage
-
+from src.utils.Timer import Timer
 from src.utils.domi_utils import id_generator
 
 
@@ -39,9 +39,31 @@ class Server(threading.Thread):
             self.__id_gen = id_generator()
             self.__serverCommunicatorsList = []
             self.server_message_dictionary = defaultdict(list)  # stores the received messages grouped by the target
+            self.__processed_important_message_ids = {}
             self.running = True
 
     def receive_message(self, message, ID):
+        if message.important:
+            if message.mes_id not in self.__processed_important_message_ids:
+                self._process_message(message, ID)
+                self.__processed_important_message_ids[message.mes_id] = False
+            else:
+                self.__processed_important_message_ids[message.mes_id] = True
+            msg = BaseMessage(mess_type=sermess.MessageType.ACK, target=sermess.Target.CLIENT_COMMUNICATOR)
+            msg.mes_id = message.mes_id
+            self.send_message(msg, ID)
+            Timer.sch_fun(3, self._del_from_message_ids, (message,))
+        else:
+            self._process_message(message, ID)
+
+    def _del_from_message_ids(self, message):
+        if not self.__processed_important_message_ids[message.mes_id]:
+            del self.__processed_important_message_ids[message.mes_id]
+        else:
+            self.__processed_important_message_ids[message.mes_id] = True
+            Timer.sch_fun(3, self._del_from_message_ids, (message,))
+
+    def _process_message(self, message, ID):
         if message.target == climess.Target.SERVER:  # processes own messages
             if message.type == climess.MessageType.CONN_CLOSED:
                 self.close_connection_by_id(ID)

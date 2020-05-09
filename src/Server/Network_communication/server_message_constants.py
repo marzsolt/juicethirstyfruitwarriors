@@ -21,3 +21,4 @@ class Target(str, Enum):
     ORANGE_PLAYER = "orange player" # for rolling purposes, iinf of ACK of valid attack
     CLIENT = "client"  # e.g. for network connection setup, closure
     PLAYER_MANAGER = "player manager"
+    CLIENT_COMMUNICATOR = "client communicator"

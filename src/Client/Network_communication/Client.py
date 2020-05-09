@@ -74,7 +74,6 @@ class Client:
             self.__processed_important_message_ids[message.mes_id] = True
             Timer.sch_fun(3, self._del_from_message_ids, (message, ))
 
-
     def _process_message(self, message):
         if message.type == sermess.MessageType.DIED:
             self.logger.debug(f"Player {message.player_id} died message received.")
@@ -93,5 +92,10 @@ class Client:
         return messages
 
     def send_message(self, message):
+        message.important = False
         self.__communicator.send_message(message)
+
+    def send_important_message(self, message):
+        message.important = True
+        self.__communicator.send_important_message(message)
 

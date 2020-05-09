@@ -3,7 +3,7 @@ import json
 import socket
 import logging
 
-from src.utils.domi_utils import dict_to_object, separate_jsons
+from src.utils.domi_utils import dict_to_object, separate_jsons, id_generator
 from src.utils.Timer import Timer
 import src.Server.Network_communication.server_message_constants as sermess
 import src.Client.Network_communication.client_message_constants as climess
@@ -21,6 +21,7 @@ class ServerCommunicator(threading.Thread):
         self.logger = logging.getLogger('Domi.ServerCommunicator')
         self._important_message_id = 0
         self._acknowledged_important = {}
+        self.mes_id = id_generator()
 
     def send_message(self, message):
         if message.type == sermess.MessageType.DIED:
@@ -34,13 +35,11 @@ class ServerCommunicator(threading.Thread):
             pass
 
     def send_important_message(self, message):
-        message.mes_id = self._important_message_id
+        message.mes_id = next(self.mes_id)
         self._acknowledged_important[message.mes_id] = False
         self.send_message(message)
 
         Timer.sch_fun(1, self.delayed_resend, (message,))
-
-        self._important_message_id += 1
 
     def delayed_resend(self, message):
         if not self._acknowledged_important[message.mes_id]:
