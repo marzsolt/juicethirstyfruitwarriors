@@ -350,11 +350,11 @@ class Screen:
 
         game_over_text = None
         if self.__game_over_state == sstatecons.GameOverState.LOST:
-            game_over_text = font.render("You've LOST", True, RED, BLACK)
+            game_over_text = font.render("You've been squeezed!", True, RED, BLACK)
         elif self.__game_over_state == sstatecons.GameOverState.WON:
-            game_over_text = font.render("You've WON", True, GREEN, BLACK)
+            game_over_text = font.render("You've sliced everyone!", True, GREEN, BLACK)
         elif self.__game_over_state == sstatecons.GameOverState.ALL_HUMAN_DIED:
-            game_over_text = font.render("All human players've died and you've LOST", True, RED, BLACK)
+            game_over_text = font.render("All humanoid fruits've been squeezed!", True, RED, BLACK)
 
         game_over_text_rect = game_over_text.get_rect()
         game_over_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
