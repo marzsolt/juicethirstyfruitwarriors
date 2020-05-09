@@ -34,8 +34,11 @@ class Game:
     def update(self):
         self.__read_messages()
 
-        if not self.__game_started and not self.__game_start_signaled:
+        if not self.__game_start_signaled:
             self.__collect_players()
+        elif not self.__game_started and self.__game_start_signaled and \
+                len(self.__names) == len(Server.get_instance().get_client_ids()):
+            self.__start_game()
         elif self.__game_started:
             is_there_human = self.__check_for_human()
             if not is_there_human:
@@ -68,11 +71,10 @@ class Game:
             if player != pl_j:
                 if (abs(player.pos.x - pl_j.pos.x) ** 2 + abs(player.pos.y - pl_j.pos.y) ** 2) \
                         <= (PlayerLogic.RADIUS + radius) ** 2 and pl_j.can_get_hurt:
-
                     pl_j.hp -= damage
                     pl_j.hp = max(pl_j.hp, 0)
 
-                    player.hp += damage/2
+                    player.hp += damage / 2
                     player.hp = min(player.hp, 100)
 
     def __check_and_handle_deaths(self):
@@ -111,7 +113,6 @@ class Game:
             mess = BaseMessage(sermess.MessageType.FIRST_PLAYER, sermess.Target.SCREEN)
             Server.get_instance().send_message(mess, self.__first_player_id)
         if len(connected_players) == self.__human_player_number:
-            Timer.sch_fun(15, self.__start_game, ())
             self.__game_start_signaled = True
 
     def __start_game(self):
@@ -162,7 +163,7 @@ class Game:
                 self.logger.info(f"Changed player number, new is: {mess.new_number}.")
             elif mess.type == climess.MessageType.START_GAME_MANUALLY and mess.from_id == self.__first_player_id:
                 self.logger.info("Received manual game start signal.")
-                self.__start_game()
+                self.__game_start_signaled = True
             elif mess.type == climess.MessageType.CONN_RELATED_DEATH:
                 for pl in self.__player_logics:
                     if pl.id == mess.player_id:

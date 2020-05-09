@@ -292,7 +292,6 @@ class Screen:
                         self.__terrain_points_levels = msg.terrain_points_levels
                         self.__screenState = sstatecons.ScreenState.GAME
                         self.__connectionMenu.disable()
-                        print(msg.names)
                         PlayerManager.get_instance().create_players(
                             msg.apple_human_ids,
                             msg.orange_human_ids,
