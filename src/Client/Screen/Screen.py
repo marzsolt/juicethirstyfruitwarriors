@@ -41,6 +41,8 @@ class Screen:
         self.__game_over_state = None  # trace game over status
         self.__t_to_exit = None  # on game over, trace time before automated exiting
 
+        self.__show_cannot_attack_text = False
+
     def update(self, events, pressed_keys):
         """" Responsible for updating the screen, and returning its running state to the main function. """
         self._draw_adequate_screen(events, pressed_keys)
@@ -59,14 +61,15 @@ class Screen:
 
     def _game_screen(self, pressed_keys, events):
         """ Responsible for showing the game screen. """
-        self._check_game_over()  # check if same so called 'game over' related activity happend or not
+        msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
+        self._check_game_over(msgs)  # check if same so called 'game over' related activity happend or not
         self._draw_background_and_terrain()
+        self.__check_draw_if_cannot_attack_text(msgs)  # check if its player can not attack --> show text
         PlayerManager.get_instance().update(pressed_keys, events)  # update player manager
         PlayerManager.get_instance().draw_players(screen=self.__screen)  # draw players by player manager
 
-    def _check_game_over(self):
+    def _check_game_over(self, msgs):
         """" Checks if 'game over' related activity happened or not. """
-        msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
         for msg in msgs:
             if msg.type == sermess.MessageType.DIED:  # a player's dead was announced by the Game (server side)
                 self.logger.info(f"ID: {msg.player_id} Death of player acknowledged.")
@@ -75,6 +78,7 @@ class Screen:
                 if Client.get_instance().id == msg.player_id:  # if it was our player, set screen's game over state
                     self.__game_over_state = sstatecons.GameOverState.LOST
                     self.logger.info("It is our player that died!")
+                    self.__show_cannot_attack_text = False
             elif msg.type == sermess.MessageType.NO_ALIVE_HUMAN:  # if Game announced that all human player is dead
                 self.__game_over_state = sstatecons.GameOverState.ALL_HUMAN_DIED  # set game over state of Screen
                 self.__t_to_exit = FPS * 10 - 1  # trigger delayed exit
@@ -372,3 +376,19 @@ class Screen:
         self.__t_to_exit -= 1  # decrease every frame by 1
         if self.__t_to_exit == 0:
             self.__running = False
+
+    def __check_draw_if_cannot_attack_text(self, msgs):
+        # msgs = Client.get_instance().get_targets_messages(sermess.Target.SCREEN)
+        for msg in msgs:
+            if msg.type == sermess.MessageType.ATTACK_ABILITY:
+                if not msg.value:
+                    self.__show_cannot_attack_text = True
+                elif msg.value:
+                    self.__show_cannot_attack_text = False
+        if self.__show_cannot_attack_text:
+            font = pg.font.Font('freesansbold.ttf', 24)
+
+            game_over_text = font.render("You need some rest", True, RED, BLACK)
+            game_over_text_rect = game_over_text.get_rect()
+            game_over_text_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 8)
+            self.__screen.blit(game_over_text, game_over_text_rect)
