@@ -82,7 +82,7 @@ class Game:
                 self.logger.info(f"ID: {pl.id} Player has just died.")
                 mess = BaseMessage(sermess.MessageType.DIED, sermess.Target.SCREEN)
                 mess.player_id = pl.id
-                Server.get_instance().send_all(mess)
+                Server.get_instance().send_important_mes_all(mess)
                 self.logger.info(f"ID: {pl.id} All clients has been notified about the recent tragic death.")
                 self.__player_logics = \
                     [player_logic for player_logic in self.__player_logics if player_logic.id != pl.id]

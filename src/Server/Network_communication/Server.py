@@ -67,11 +67,23 @@ class Server(threading.Thread):
 
     def send_message(self, message, ID):
         communicator = self.__get_communicator_from_id(ID)
+        message.important = False
         communicator.send_message(message)
 
     def send_all(self, message):
+        message.important = False
         for communicators in self.__serverCommunicatorsList:
             communicators.send_message(message)
+
+    def send_important_message(self, message, ID):
+        message.important = True
+        communicator = self.__get_communicator_from_id(ID)
+        communicator.send_important_message(message)
+
+    def send_important_mes_all(self, message):
+        message.important = True
+        for communicators in self.__serverCommunicatorsList:
+            communicators.send_important_message(message)
 
     def get_new_id(self):
         return next(self.__id_gen)

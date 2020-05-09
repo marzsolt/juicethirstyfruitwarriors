@@ -4,7 +4,9 @@ import socket
 import logging
 
 from src.utils.domi_utils import dict_to_object, separate_jsons
+from src.utils.Timer import Timer
 import src.Server.Network_communication.server_message_constants as sermess
+import src.Client.Network_communication.client_message_constants as climess
 
 # This class is responsible for the communication on the server side.
 # It receives and sends messages from/to the client.
@@ -17,6 +19,8 @@ class ServerCommunicator(threading.Thread):
         self.socket = _client
         self.ID = ID
         self.logger = logging.getLogger('Domi.ServerCommunicator')
+        self._important_message_id = 0
+        self._acknowledged_important = {}
 
     def send_message(self, message):
         if message.type == sermess.MessageType.DIED:
@@ -28,6 +32,15 @@ class ServerCommunicator(threading.Thread):
             self.socket.send(serialized)
         except OSError:  # if the socket was closed interrupting this
             pass
+
+    def send_important_message(self, message):
+        message.mes_id = self._important_message_id
+        self._acknowledged_important[self._important_message_id] = False
+        self.send_message(message)
+        while not self._acknowledged_important[self._important_message_id]:
+            Timer.sch_fun(2, self.send_message, (message, ))
+
+        self._important_message_id += 1
 
     def close(self):
         """" Responsible for closing down communicator with client on request. """
@@ -49,4 +62,8 @@ class ServerCommunicator(threading.Thread):
             for m in mes_separated:
                 deserialized = json.loads(m)
                 deserialized = dict_to_object(deserialized)
-                self.server.receive_message(deserialized, self.ID)
+
+                if deserialized.type == climess.MessageType.ACK:
+                    self._acknowledged_important[deserialized.mes_id] = True
+                else:
+                    self.server.receive_message(deserialized, self.ID)

@@ -26,6 +26,7 @@ class Client:
             self.client_message_dictionary = defaultdict(list)
             self.__communicator = None
             self.id = None
+            self.__processed_important_message_ids = []
 
             # connection related information
             self.connection_alive = None
@@ -52,6 +53,17 @@ class Client:
             self.__communicator.close()
 
     def receive_message(self, message):
+        if message.important:
+            if message.mes_id not in self.__processed_important_message_ids:
+                self._process_message(message)
+                self.__processed_important_message_ids.append(message.mes_id)
+            msg = BaseMessage(mess_type=climess.MessageType.ACK, target=climess.Target.SERVER)
+            msg.mes_id = message.mes_id
+            self.send_message(msg)
+        else:
+            self._process_message(message)
+
+    def _process_message(self, message):
         if message.type == sermess.MessageType.DIED:
             self.logger.debug(f"Player {message.player_id} died message received.")
         if message.target == sermess.Target.CLIENT:
