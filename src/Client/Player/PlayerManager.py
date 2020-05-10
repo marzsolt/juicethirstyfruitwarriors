@@ -35,7 +35,7 @@ class PlayerManager:
     def update(self, pressed_keys, events):
         """ Call every player's update. Delegate events to own player."""
         for player in self.players:
-            if player._id == Client.get_instance().id:
+            if player.id == Client.get_instance().id:
                 player_keys = pressed_keys
                 player_events = events
             else:
@@ -49,7 +49,7 @@ class PlayerManager:
 
     def remove_player(self, player_id):
         """" Removes player if it has dead. """
-        self.players = [player for player in self.players if player._id != player_id]
+        self.players = [player for player in self.players if player.id != player_id]
 
 
 

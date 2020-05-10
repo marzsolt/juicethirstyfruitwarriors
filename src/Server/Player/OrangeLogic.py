@@ -15,7 +15,7 @@ class OrangeLogic(PlayerLogic):
         super(OrangeLogic, self).__init__(player_id, terrain, game)
 
         self._attack_strength = 10
-        self._attack_damage = 1
+        self._attack_damage = 2
         self._attack_length = 12  # number of frames, same as length of rolling which is 360/30
 
     def update(self):

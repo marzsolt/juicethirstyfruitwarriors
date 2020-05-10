@@ -41,7 +41,7 @@ class Player(pg.sprite.Sprite):
             self.logger.exception("Cannot load image!")
             self.logger.critical("Atya ég!")
         self.rect = self.surf.get_rect()
-        self._id = player_id
+        self.id = player_id
         self.hp = None
         self.dir = 1
 
@@ -55,14 +55,14 @@ class Player(pg.sprite.Sprite):
             if pressed_keys[pg.K_RIGHT]:
                 network_messages.append(climess.ActionRequest.MOVE_RIGHT)
         if network_messages:
-            mes = BaseMessage(climess.MessageType.PLAYER_MOVEMENT, climess.Target.PLAYER_LOGIC + str(self._id))
+            mes = BaseMessage(climess.MessageType.PLAYER_MOVEMENT, climess.Target.PLAYER_LOGIC + str(self.id))
             mes.movement_list = network_messages
             Client.get_instance().send_message(mes)
 
         self.pos_hp_update()
 
     def pos_hp_update(self):
-        messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER+str(self._id))
+        messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER + str(self.id))
         for mess in messages:
             if mess.type == sermess.MessageType.PLAYER_POS_HP:
                 self.rect.center = (mess.x, SCREEN_HEIGHT - mess.y)  # graphical y axis is weird
@@ -77,6 +77,6 @@ class Player(pg.sprite.Sprite):
                     # draw green/red health bar for own/enemy player respectively
                     pg.draw.rect(
                         self.surf,
-                        GREEN if Client.get_instance().id == self._id else RED,
+                        GREEN if Client.get_instance().id == self.id else RED,
                         (15, 11, 30 * mess.hp / 100, 5)
                     )
