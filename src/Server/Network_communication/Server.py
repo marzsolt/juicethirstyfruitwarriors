@@ -17,20 +17,20 @@ class Server(threading.Thread):
     __instance = None
 
     @staticmethod
-    def get_instance():
+    def get_instance(port=None):
         """ Static access method. """
         if Server.__instance is None:
-            Server.__instance = Server()
+            Server.__instance = Server(port)
         return Server.__instance
 
-    def __init__(self):
+    def __init__(self, port):
         """ Virtually private constructor. """
         if Server.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
             threading.Thread.__init__(self)
             self.logger = logging.getLogger('Domi.Server')
-            self.__port_number = 12145
+            self.__port_number = port
             self.__host = socket.gethostbyname(socket.gethostname())
             self.logger.info(f"Server IP address: {self.__host}.")
             self.__serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

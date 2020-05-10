@@ -1,0 +1,4 @@
+pygame
+pygame-menu
+bresenham
+parameterized

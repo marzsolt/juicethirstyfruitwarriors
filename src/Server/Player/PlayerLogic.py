@@ -6,9 +6,7 @@ import abc
 from src.Server.Network_communication.Server import Server
 from src.utils.Vector2D import Vector2D
 import src.Server.Network_communication.server_message_constants as sermess
-
 import src.Client.Network_communication.client_message_constants as climess
-
 from src.utils.BaseMessage import BaseMessage
 from src.utils.Timer import Timer
 from src.utils.general_constants import SCREEN_WIDTH
@@ -94,6 +92,7 @@ class PlayerLogic(abc.ABC):
         self._attack_on_cooldown = True
         self.can_get_hurt = False
         Timer.sch_fun(self.ATTACK_COOLDOWN, self.restore_attack_ability, ())
+        self._send_screen_changed_attack_ability(can_attack=False)
 
     def _finish_attack(self):
         self._is_attacking = False
@@ -102,6 +101,13 @@ class PlayerLogic(abc.ABC):
 
     def restore_attack_ability(self):
         self._attack_on_cooldown = False
+        self._send_screen_changed_attack_ability(can_attack=True)
+
+    def _send_screen_changed_attack_ability(self, can_attack):
+        if self.id in Server.get_instance().get_client_ids():
+            msg = BaseMessage(mess_type=sermess.MessageType.ATTACK_ABILITY, target=sermess.Target.SCREEN)
+            msg.value = can_attack
+            Server.get_instance().send_message(msg, self.id)
 
     def _add_force(self, force2d):
         """ Base of physics. By adding a force, you accelerate the player a little bit. """

@@ -12,6 +12,7 @@ class MessageType(str, Enum):
     DIED = "that's it... the END for someone"
     WON = "there's a winner"
     NO_ALIVE_HUMAN = "unfortunately no human player is alive"
+    ATTACK_ABILITY = "attack ability of player changed"
 
 
 class Target(str, Enum):

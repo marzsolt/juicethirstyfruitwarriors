@@ -151,6 +151,7 @@ class Game:
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
         mess.names = list(self.__names.items())
+
         Server.get_instance().send_important_mes_all(mess)
         Server.get_instance().stop_accepting_clients()
 
