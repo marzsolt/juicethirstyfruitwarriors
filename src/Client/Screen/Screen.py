@@ -8,8 +8,6 @@ import src.Client.Screen.screen_state_constants as sstatecons
 # networking
 from src.Client.Network_communication.Client import Client
 
-import socket  # to be able to set default IP on connection screen to OUR IP
-
 # messaging
 from src.Client.Player.PlayerManager import PlayerManager
 import src.Client.Network_communication.client_message_constants as climess
@@ -22,10 +20,16 @@ from src.utils.general_constants import *
 
 class Screen:
     """ Screen - responsible for the main tasks on client side, such as drawing to display, etc. """
-    def __init__(self, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH):
+    def __init__(self, screen_height=SCREEN_HEIGHT, screen_width=SCREEN_WIDTH, port=None, \
+                 ip=None, name=None):
         self.logger = logging.getLogger('Domi.Screen')
         self.__screen = pg.display.set_mode([screen_width, screen_height])
         self.__h, self.__w = [pg.display.Info().current_h, pg.display.Info().current_w]  # get screen h and w
+
+        # argparsed args
+        self.__port = port  # get port number for server setup
+        self.__def_ip = ip  # ip number for (default) ip setup
+        self.__def_name = name  # name for (default) name setup
 
         self.__screenState = sstatecons.ScreenState.MAIN_MENU
 
@@ -151,9 +155,15 @@ class Screen:
             title='IP: ',
             textinput_id='playMenu_input_IP',
             maxchar=4 * 3 + 3,
-            default=socket.gethostbyname(socket.gethostname()),
+            default=self.__def_ip,
             onchange=self._onchange_play_menu_input_ip,
             onreturn=self._onreturn_play_menu_input_ip
+        )
+        play_menu.add_text_input(  # text input for name
+            title='Name: ',
+            textinput_id='playMenu_input_name',
+            maxchar=8,
+            default=self.__def_name
         )
         play_menu.add_option('Back', pgM.events.BACK)
 
@@ -232,7 +242,7 @@ class Screen:
             self.__playMenu.get_widget('playMenu_input_IP').set_value('')
         else:  # if IP entry valid, trigger connectionMenu and attempt to connect via Client
             self.__connectionMenu.add_line('Connecting to ' + val + ', please wait.')
-            Client.get_instance().setup_connection(val)
+            Client.get_instance().setup_connection(val, self.__port)
             self.__screenState = sstatecons.ScreenState.CONNECTION_MENU
             self.__mainMenu.disable()
             self.__connectionMenu.enable()
@@ -250,6 +260,15 @@ class Screen:
                 self.__connectionMenu, _ = self._init_connection_menu()
                 self.__connectionMenu.enable()
                 self.__connectionMenu.add_line('Successfully connected.')
+
+                # also, send the player name
+                while Client.get_instance().id is None:
+                    pass
+                msg = BaseMessage(climess.MessageType.NAME, climess.Target.GAME)
+                msg.player_id = Client.get_instance().id
+                msg.name = self.__playMenu.get_widget('playMenu_input_name').get_value()
+                Client.get_instance().send_message(msg)
+                self.logger.info(f"Sent name: {msg.name}")
             else:  # else
                 self.__connectionMenu.add_line('Connection error, please try again!')
 
@@ -281,8 +300,13 @@ class Screen:
                         self.__terrain_points_levels = msg.terrain_points_levels
                         self.__screenState = sstatecons.ScreenState.GAME
                         self.__connectionMenu.disable()
-                        PlayerManager.get_instance().create_players(msg.apple_human_ids, msg.orange_human_ids,
-                                                                    msg.apple_ai_ids, msg.orange_ai_ids)
+                        PlayerManager.get_instance().create_players(
+                            msg.apple_human_ids,
+                            msg.orange_human_ids,
+                            msg.apple_ai_ids,
+                            msg.orange_ai_ids,
+                            dict(msg.names)
+                        )
 
             else:  # if conn msg was shown and connection isn't alive, go back to playMenu (sub menu of mainMenu)
                 self.__screenState = sstatecons.ScreenState.MAIN_MENU

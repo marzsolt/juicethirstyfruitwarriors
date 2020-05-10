@@ -21,10 +21,12 @@ class Game:
     def __init__(self):
         self.logger = logging.getLogger('Domi.Game')
         self.__game_started = False
+        self.__game_start_signaled = False
         self.__chose_host = False
         self.__AI_number = 5
         self.__human_player_number = 2  # remember to adjust this default with screen's first player's selector's
         self.__first_player_id = None
+        self.__names = {}
         self.__player_logics = []
         self.__terrain = Terrain()
         self.running = True
@@ -32,9 +34,9 @@ class Game:
     def update(self):
         self.__read_messages()
 
-        if not self.__game_started:
+        if not self.__game_started and not self.__game_start_signaled:
             self.__collect_players()
-        else:
+        elif self.__game_started:
             is_there_human = self.__check_for_human()
             if not is_there_human:
                 self.__handle_no_human()
@@ -109,7 +111,8 @@ class Game:
             mess = BaseMessage(sermess.MessageType.FIRST_PLAYER, sermess.Target.SCREEN)
             Server.get_instance().send_message(mess, self.__first_player_id)
         if len(connected_players) == self.__human_player_number:
-            self.__start_game()
+            Timer.sch_fun(15, self.__start_game, ())
+            self.__game_start_signaled = True
 
     def __start_game(self):
         """" Function responsible for managing game start related tasks. """
@@ -147,6 +150,7 @@ class Game:
         mess.orange_ai_ids = orange_ai_ids
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
+        mess.names = list(self.__names.items())
         Server.get_instance().send_all(mess)
         Server.get_instance().stop_accepting_clients()
 
@@ -164,3 +168,6 @@ class Game:
                     if pl.id == mess.player_id:
                         self.logger.info(f"ID: {mess.player_id} Connection related death.")
                         pl.hp = 0
+            elif mess.type == climess.MessageType.NAME:
+                self.__names[mess.player_id] = mess.name
+                self.logger.info(f"ID: {mess.player_id}'s name is {mess.name}")
