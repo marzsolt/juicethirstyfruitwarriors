@@ -41,6 +41,6 @@ class OrangeLogic(PlayerLogic):
         super()._attack()
         self._add_ground_directed_force(self._attack_strength, self.my_dir())
         mes = BaseMessage(sermess.MessageType.ORANGE_ROLL, sermess.Target.ORANGE_PLAYER + str(self.id))
-        Server.get_instance().send_all(mes)
+        Server.get_instance().send_important_mes_all(mes)
         Timer.sch_fun(self._attack_length, self._finish_attack, ())
 

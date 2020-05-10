@@ -23,4 +23,4 @@ class ApplePlayer(Player):
                 mes = BaseMessage(climess.MessageType.APPLE_ATTACK, climess.Target.PLAYER_LOGIC + str(self._id))
                 mes.x = x
                 mes.y = SCREEN_HEIGHT - y
-                Client.get_instance().send_message(mes)
+                Client.get_instance().send_important_message(mes)

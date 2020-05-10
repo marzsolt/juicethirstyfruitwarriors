@@ -27,7 +27,7 @@ class OrangePlayer(Player):
         # Orange special attack if 'a' is pressed (and a rolling caused by an earlier attack isn't in place).
         if pressed_keys and pressed_keys[pg.K_a] and self.surf_angle == 0:
             mes = BaseMessage(climess.MessageType.ORANGE_ATTACK, climess.Target.PLAYER_LOGIC + str(self._id))
-            Client.get_instance().send_message(mes)
+            Client.get_instance().send_important_message(mes)
 
         # update the rolling of attack
         self.orange_rolling()

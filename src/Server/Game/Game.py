@@ -59,7 +59,7 @@ class Game:
 
     def __handle_no_human(self):
         mess = BaseMessage(sermess.MessageType.NO_ALIVE_HUMAN, sermess.Target.SCREEN)
-        Server.get_instance().send_all(mess)
+        Server.get_instance().send_important_mes_all(mess)
         self.logger.info("Game killed as no human players left.")
         Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
@@ -82,7 +82,7 @@ class Game:
                 self.logger.info(f"ID: {pl.id} Player has just died.")
                 mess = BaseMessage(sermess.MessageType.DIED, sermess.Target.SCREEN)
                 mess.player_id = pl.id
-                Server.get_instance().send_all(mess)
+                Server.get_instance().send_important_mes_all(mess)
                 self.logger.info(f"ID: {pl.id} All clients has been notified about the recent tragic death.")
                 self.__player_logics = \
                     [player_logic for player_logic in self.__player_logics if player_logic.id != pl.id]
@@ -93,7 +93,7 @@ class Game:
         if len(self.__player_logics) == 1:
             mess = BaseMessage(sermess.MessageType.WON, sermess.Target.SCREEN)
             mess.player_id = self.__player_logics[0].id
-            Server.get_instance().send_all(mess)
+            Server.get_instance().send_important_mes_all(mess)
             Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
     def stop_running(self):
@@ -109,7 +109,7 @@ class Game:
             self.__chose_host = True
             self.__first_player_id = connected_players[0]
             mess = BaseMessage(sermess.MessageType.FIRST_PLAYER, sermess.Target.SCREEN)
-            Server.get_instance().send_message(mess, self.__first_player_id)
+            Server.get_instance().send_important_message(mess, self.__first_player_id)
         if len(connected_players) == self.__human_player_number:
             Timer.sch_fun(15, self.__start_game, ())
             self.__game_start_signaled = True
@@ -151,7 +151,8 @@ class Game:
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
         mess.names = list(self.__names.items())
-        Server.get_instance().send_all(mess)
+
+        Server.get_instance().send_important_mes_all(mess)
         Server.get_instance().stop_accepting_clients()
 
     def __read_messages(self):
