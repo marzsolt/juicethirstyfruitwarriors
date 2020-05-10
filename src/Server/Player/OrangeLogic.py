@@ -11,11 +11,11 @@ from src.utils.Timer import Timer
 
 class OrangeLogic(PlayerLogic):
     """" Class that defines special PlayerLogic (that of orange). """
-    def __init__(self, player_id, terrain, game):
-        super(OrangeLogic, self).__init__(player_id, terrain, game)
+    def __init__(self, player_id, terrain, game, x_start):
+        super(OrangeLogic, self).__init__(player_id, terrain, game, x_start)
 
         self._attack_strength = 10
-        self._attack_damage = 1
+        self._attack_damage = 2
         self._attack_length = 12  # number of frames, same as length of rolling which is 360/30
 
     def update(self):
@@ -41,6 +41,6 @@ class OrangeLogic(PlayerLogic):
         super()._attack()
         self._add_ground_directed_force(self._attack_strength, self.my_dir())
         mes = BaseMessage(sermess.MessageType.ORANGE_ROLL, sermess.Target.ORANGE_PLAYER + str(self.id))
-        Server.get_instance().send_all(mes)
+        Server.get_instance().send_important_mes_all(mes)
         Timer.sch_fun(self._attack_length, self._finish_attack, ())
 

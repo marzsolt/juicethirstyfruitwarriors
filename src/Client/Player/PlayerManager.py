@@ -21,21 +21,21 @@ class PlayerManager:
         else:
             self.players = []
 
-    def create_players(self, apple_human_ids, orange_human_ids, apple_ai_ids, orange_ai_ids, names):
+    def create_players(self, apple_human_ids, orange_human_ids, apple_ai_ids, orange_ai_ids):
         """ Create players when game starts. """
-        for player_id in apple_human_ids:
-            self.players.append(ApplePlayer(player_id, names[player_id]))
-        for player_id in orange_human_ids:
-            self.players.append(OrangePlayer(player_id, names[player_id]))
-        for player_id in apple_ai_ids:
-            self.players.append(ApplePlayer(player_id, "A AI " + str(player_id)))
-        for player_id in orange_ai_ids:
-            self.players.append(OrangePlayer(player_id, "O AI" + str(player_id)))
+        for player in apple_human_ids:
+            self.players.append(ApplePlayer(player.id, player.name))
+        for player in orange_human_ids:
+            self.players.append(OrangePlayer(player.id, player.name))
+        for player in apple_ai_ids:
+            self.players.append(ApplePlayer(player.id, player.name))
+        for player in orange_ai_ids:
+            self.players.append(OrangePlayer(player.id, player.name))
 
     def update(self, pressed_keys, events):
         """ Call every player's update. Delegate events to own player."""
         for player in self.players:
-            if player._id == Client.get_instance().id:
+            if player.id == Client.get_instance().id:
                 player_keys = pressed_keys
                 player_events = events
             else:
@@ -49,7 +49,4 @@ class PlayerManager:
 
     def remove_player(self, player_id):
         """" Removes player if it has dead. """
-        self.players = [player for player in self.players if player._id != player_id]
-
-
-
+        self.players = [player for player in self.players if player.id != player_id]

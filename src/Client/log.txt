@@ -1,11 +1,11 @@
-2020-05-09 17:14:10,223 - Imigyen sz髄a Domi.ClientCommunicator: - INFO - Successful connection!
-2020-05-09 17:14:10,226 - Imigyen sz髄a Domi.Client: - INFO - I got my id: 1
-2020-05-09 17:14:10,252 - Imigyen sz髄a Domi.Screen: - INFO - Game started, terrain loaded
-2020-05-09 17:14:29,524 - Imigyen sz髄a Domi.Screen: - INFO - ID: 0 Death of p2020-05-09 17:14:29,530 - Imigyen sz髄a Domi.Screen: - INFO - ID: 0 Death of player acknowledged.
-2020-05-09 17:14:29,531 - I2020-05-09 17:14:39,660 - Imigyen sz髄a Domi.Screen: - INFO - ID: 2 Death of player acknowledged.
-2020-05-09 17:14:39,661 - Imigyen sz髄a Domi.Screen: - INFO - ID: 2 Pl2020-05-09 17:14:39,673 - Imigyen s2020-05-09 17:14:42,921 - Imigyen sz髄a Domi.Screen: - INFO - ID: 3 Death of player acknowledged.
-2020-05-09 17:14:42,921 - Imigyen sz髄a Domi.Screen: - INFO - ID: 3 Pl2020-05-09 17:14:42,928 - Imigyen s2020-05-09 17:14:53,378 - Imigyen sz髄a Domi.Screen: - INFO - ID: 4 Death of player acknowledged.
-2020-05-09 17:14:53,378 - Imigyen sz髄a Domi.Screen: - INFO - ID: 4 Pl2020-05-09 17:14:53,402 - Imigyen s2020-05-09 17:15:02,465 - Imigyen sz髄a Domi.Screen: - INFO - ID: 6 Death of player acknowledged.
-2020-05-09 17:15:02,465 - Imigyen sz髄a Domi.Screen: - INFO - ID: 6 Pl2020-05-09 17:15:02,472 - Imigyen s2020-05-09 17:16:00,189 - Imigyen sz髄a Domi.Screen: - INFO - ID: 1 Death of player acknowledged.
-2020-05-09 17:16:00,189 - Imigyen sz髄a Domi.Screen: - INFO - ID: 1 Pl2020-05-09 17:16:00,196 - Imigyen sz髄a Domi.Screen: - INFO - ID: 1 Death of player acknowledged.
-2020-05-09 17:16:00,196 - I2020-05-09 17:16:02,180 - Imigyen sz髄a Domi.ClientCommunicator: - INFO - Clie2020-05-09 17:16:04,731 - Imigyen sz髄a Domi.ClientCommunicator: - INFO - Client socket closed.
+2020-05-09 17:14:10,223 - Imigyen sz贸la Domi.ClientCommunicator: - INFO - Successful connection!
+2020-05-09 17:14:10,226 - Imigyen sz贸la Domi.Client: - INFO - I got my id: 1
+2020-05-09 17:14:10,252 - Imigyen sz贸la Domi.Screen: - INFO - Game started, terrain loaded
+2020-05-09 17:14:29,524 - Imigyen sz贸la Domi.Screen: - INFO - ID: 0 Death of p2020-05-09 17:14:29,530 - Imigyen sz贸la Domi.Screen: - INFO - ID: 0 Death of player acknowledged.
+2020-05-09 17:14:29,531 - I2020-05-09 17:14:39,660 - Imigyen sz贸la Domi.Screen: - INFO - ID: 2 Death of player acknowledged.
+2020-05-09 17:14:39,661 - Imigyen sz贸la Domi.Screen: - INFO - ID: 2 Pl2020-05-09 17:14:39,673 - Imigyen s2020-05-09 17:14:42,921 - Imigyen sz贸la Domi.Screen: - INFO - ID: 3 Death of player acknowledged.
+2020-05-09 17:14:42,921 - Imigyen sz贸la Domi.Screen: - INFO - ID: 3 Pl2020-05-09 17:14:42,928 - Imigyen s2020-05-09 17:14:53,378 - Imigyen sz贸la Domi.Screen: - INFO - ID: 4 Death of player acknowledged.
+2020-05-09 17:14:53,378 - Imigyen sz贸la Domi.Screen: - INFO - ID: 4 Pl2020-05-09 17:14:53,402 - Imigyen s2020-05-09 17:15:02,465 - Imigyen sz贸la Domi.Screen: - INFO - ID: 6 Death of player acknowledged.
+2020-05-09 17:15:02,465 - Imigyen sz贸la Domi.Screen: - INFO - ID: 6 Pl2020-05-09 17:15:02,472 - Imigyen s2020-05-09 17:16:00,189 - Imigyen sz贸la Domi.Screen: - INFO - ID: 1 Death of player acknowledged.
+2020-05-09 17:16:00,189 - Imigyen sz贸la Domi.Screen: - INFO - ID: 1 Pl2020-05-09 17:16:00,196 - Imigyen sz贸la Domi.Screen: - INFO - ID: 1 Death of player acknowledged.
+2020-05-09 17:16:00,196 - I2020-05-09 17:16:02,180 - Imigyen sz贸la Domi.ClientCommunicator: - INFO - Clie2020-05-09 17:16:04,731 - Imigyen sz贸la Domi.ClientCommunicator: - INFO - Client socket closed.

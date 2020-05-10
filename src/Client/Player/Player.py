@@ -9,7 +9,7 @@ import src.Server.Network_communication.server_message_constants as sermess
 
 from src.utils.BaseMessage import BaseMessage
 
-from src.utils.general_constants import SCREEN_HEIGHT, GREEN, WHITE, RED
+from src.utils.general_constants import SCREEN_HEIGHT, GREEN, WHITE, RED, PIC_BG_COLOUR
 
 
 class PicFile(Enum):
@@ -24,23 +24,24 @@ class Player(pg.sprite.Sprite):
         self.logger = logging.getLogger('Domi.Player')
         try:
             img_surf = pg.image.load(pic_file.value).convert()  # may have to change the path
-            self.surf = pg.Surface((60, 60))
-            self.surf.fill((255, 253, 201))
-            self.surf.blit(img_surf, (0, 10))
-            self.surf.set_colorkey((255, 253, 201),
+            self.surf = pg.Surface((60, 60))  # surface for player
+            self.surf.fill(PIC_BG_COLOUR)
+            self.surf.blit(img_surf, (0, 10))  # blit image that is 60 x 50 - upper 10px for name
+            self.surf.set_colorkey(PIC_BG_COLOUR,
                 pg.RLEACCEL)  # background color of the picture -> that color not shown
 
             # showing player name
-            font = pg.font.SysFont('freesansbold', 17)
-            name_surf = font.render(name, False, WHITE)
+            font = pg.font.SysFont('freesansbold', 17)  # font
+            name_surf = font.render(name, False, WHITE)  # rendering name on a surface
             name_surf_rect = name_surf.get_rect()
+            # center name vertically
             name_surf_rect.center = (self.surf.get_width() // 2, name_surf_rect.centery)
-            self.surf.blit(name_surf, name_surf_rect)
+            self.surf.blit(name_surf, name_surf_rect)  # finally, blit name surf. on player surf.
         except pg.error:  # PyCharm you are a liar, it's perfectly OK
             self.logger.exception("Cannot load image!")
             self.logger.critical("Atya ég!")
         self.rect = self.surf.get_rect()
-        self._id = player_id
+        self.id = player_id
         self.hp = None
         self.dir = 1
 
@@ -54,14 +55,14 @@ class Player(pg.sprite.Sprite):
             if pressed_keys[pg.K_RIGHT]:
                 network_messages.append(climess.ActionRequest.MOVE_RIGHT)
         if network_messages:
-            mes = BaseMessage(climess.MessageType.PLAYER_MOVEMENT, climess.Target.PLAYER_LOGIC + str(self._id))
+            mes = BaseMessage(climess.MessageType.PLAYER_MOVEMENT, climess.Target.PLAYER_LOGIC + str(self.id))
             mes.movement_list = network_messages
             Client.get_instance().send_message(mes)
 
         self.pos_hp_update()
 
     def pos_hp_update(self):
-        messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER+str(self._id))
+        messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER + str(self.id))
         for mess in messages:
             if mess.type == sermess.MessageType.PLAYER_POS_HP:
                 self.rect.center = (mess.x, SCREEN_HEIGHT - mess.y)  # graphical y axis is weird
@@ -76,6 +77,6 @@ class Player(pg.sprite.Sprite):
                     # draw green/red health bar for own/enemy player respectively
                     pg.draw.rect(
                         self.surf,
-                        GREEN if Client.get_instance().id == self._id else RED,
+                        GREEN if Client.get_instance().id == self.id else RED,
                         (15, 11, 30 * mess.hp / 100, 5)
                     )

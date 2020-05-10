@@ -267,7 +267,7 @@ class Screen:
                 msg = BaseMessage(climess.MessageType.NAME, climess.Target.GAME)
                 msg.player_id = Client.get_instance().id
                 msg.name = self.__playMenu.get_widget('playMenu_input_name').get_value()
-                Client.get_instance().send_message(msg)
+                Client.get_instance().send_important_message(msg)
                 self.logger.info(f"Sent name: {msg.name}")
             else:  # else
                 self.__connectionMenu.add_line('Connection error, please try again!')
@@ -304,8 +304,7 @@ class Screen:
                             msg.apple_human_ids,
                             msg.orange_human_ids,
                             msg.apple_ai_ids,
-                            msg.orange_ai_ids,
-                            dict(msg.names)
+                            msg.orange_ai_ids
                         )
 
             else:  # if conn msg was shown and connection isn't alive, go back to playMenu (sub menu of mainMenu)
@@ -333,7 +332,7 @@ class Screen:
     def _connection_menu_start_pressed():
         """" Manages press of start on connectionMenu (forcibly trigger game without meeting count). """
         msg = BaseMessage(mess_type=climess.MessageType.START_GAME_MANUALLY, target=climess.Target.GAME)
-        Client.get_instance().send_message(msg)
+        Client.get_instance().send_important_message(msg)
 
     def bck_bg_decorator(fun):
         """" Decorator for black bg. """

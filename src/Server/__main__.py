@@ -31,7 +31,6 @@ def main():
 
     # Setup regular update "loop"
     s = sched.scheduler(time.time, time.sleep)
-    fps = 40.0
     s.enter(1.0/FPS, 1, update, ())
     s.run()
 

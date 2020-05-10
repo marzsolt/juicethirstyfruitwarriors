@@ -18,6 +18,7 @@ class Target(str, Enum):
     """Who is the target of the message."""
     GAME = "game"  # the Game-related stuff on the server side
     SERVER = "server"  # e.g. for network connection setup, closure
+    SERVER_COMMUNICATOR = "server_communicator"
     PLAYER_LOGIC = "playerlogic"
 
 

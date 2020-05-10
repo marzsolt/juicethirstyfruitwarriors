@@ -11,6 +11,7 @@ from src.Server.PlayerAI.PlayerAILogic import PlayerAILogic
 from src.Server.Game.Terrain import Terrain
 from src.utils.Timer import Timer
 import src.Server.Network_communication.server_message_constants as sermess
+from src.utils.general_constants import SCREEN_WIDTH
 
 import src.Client.Network_communication.client_message_constants as climess
 
@@ -34,8 +35,13 @@ class Game:
     def update(self):
         self.__read_messages()
 
-        if not self.__game_started and not self.__game_start_signaled:
+        # game can't be started until starting signaled, yet collection shall stop after signal
+        if not self.__game_start_signaled:
             self.__collect_players()
+        # handle game start when all player name has arrived & start signalled
+        elif self.__game_start_signaled and not self.__game_started and \
+                len(self.__names) == len(Server.get_instance().get_client_ids()):
+            self.__start_game()
         elif self.__game_started:
             is_there_human = self.__check_for_human()
             if not is_there_human:
@@ -59,7 +65,7 @@ class Game:
 
     def __handle_no_human(self):
         mess = BaseMessage(sermess.MessageType.NO_ALIVE_HUMAN, sermess.Target.SCREEN)
-        Server.get_instance().send_all(mess)
+        Server.get_instance().send_important_mes_all(mess)
         self.logger.info("Game killed as no human players left.")
         Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
@@ -68,11 +74,10 @@ class Game:
             if player != pl_j:
                 if (abs(player.pos.x - pl_j.pos.x) ** 2 + abs(player.pos.y - pl_j.pos.y) ** 2) \
                         <= (PlayerLogic.RADIUS + radius) ** 2 and pl_j.can_get_hurt:
-
                     pl_j.hp -= damage
                     pl_j.hp = max(pl_j.hp, 0)
 
-                    player.hp += damage/2
+                    player.hp += damage / 2
                     player.hp = min(player.hp, 100)
 
     def __check_and_handle_deaths(self):
@@ -82,7 +87,7 @@ class Game:
                 self.logger.info(f"ID: {pl.id} Player has just died.")
                 mess = BaseMessage(sermess.MessageType.DIED, sermess.Target.SCREEN)
                 mess.player_id = pl.id
-                Server.get_instance().send_all(mess)
+                Server.get_instance().send_important_mes_all(mess)
                 self.logger.info(f"ID: {pl.id} All clients has been notified about the recent tragic death.")
                 self.__player_logics = \
                     [player_logic for player_logic in self.__player_logics if player_logic.id != pl.id]
@@ -93,7 +98,7 @@ class Game:
         if len(self.__player_logics) == 1:
             mess = BaseMessage(sermess.MessageType.WON, sermess.Target.SCREEN)
             mess.player_id = self.__player_logics[0].id
-            Server.get_instance().send_all(mess)
+            Server.get_instance().send_important_mes_all(mess)
             Timer.sch_fun(1, self.stop_running, ())  # so that clients get the message
 
     def stop_running(self):
@@ -109,9 +114,8 @@ class Game:
             self.__chose_host = True
             self.__first_player_id = connected_players[0]
             mess = BaseMessage(sermess.MessageType.FIRST_PLAYER, sermess.Target.SCREEN)
-            Server.get_instance().send_message(mess, self.__first_player_id)
+            Server.get_instance().send_important_message(mess, self.__first_player_id)
         if len(connected_players) == self.__human_player_number:
-            Timer.sch_fun(15, self.__start_game, ())
             self.__game_start_signaled = True
 
     def __start_game(self):
@@ -124,24 +128,40 @@ class Game:
         apple_human_ids = []
         orange_ai_ids = []
         apple_ai_ids = []
+
+        class Player:
+            """DTO"""
+            def __init__(self, _id, name):
+                self.id = _id
+                self.name = name
+
+        # generate random equidistant initial position
+        number_of_players = len(Server.get_instance().get_client_ids()) + self.__AI_number
+        dx = SCREEN_WIDTH / number_of_players
+        start_xs = [dx*(i+0.5) for i in range(number_of_players)]
+        random.shuffle(start_xs)
+
+        ind = 0
         for player_id in human_ids:  # create server side players for humans
             if random.random() < 0.5:
-                new_player_logic = AppleLogic(player_id, self.__terrain, self)
-                apple_human_ids.append(player_id)
+                new_player_logic = AppleLogic(player_id, self.__terrain, self, start_xs[ind])
+                apple_human_ids.append(Player(player_id, self.__names[player_id]))
             else:
-                new_player_logic = OrangeLogic(player_id, self.__terrain, self)
-                orange_human_ids.append(player_id)
+                new_player_logic = OrangeLogic(player_id, self.__terrain, self, start_xs[ind])
+                orange_human_ids.append(Player(player_id, self.__names[player_id]))
             self.__player_logics.append(new_player_logic)
+            ind = ind+1
         for i in range(self.__AI_number):  # create server side players for AIs
             player_id = Server.get_instance().get_new_id()
 
             if random.random() < 0.5:
-                new_player_logic = AppleAI(player_id, self.__terrain, self)
-                apple_ai_ids.append(player_id)
+                new_player_logic = AppleAI(player_id, self.__terrain, self, start_xs[ind])
+                apple_ai_ids.append(Player(player_id, "A AI " + str(player_id)))
             else:
-                new_player_logic = OrangeAI(player_id, self.__terrain, self)
-                orange_ai_ids.append(player_id)
+                new_player_logic = OrangeAI(player_id, self.__terrain, self, start_xs[ind])
+                orange_ai_ids.append(Player(player_id, "O AI " + str(player_id)))
             self.__player_logics.append(new_player_logic)
+            ind = ind + 1
 
         mess = BaseMessage(sermess.MessageType.INITIAL_DATA, sermess.Target.SCREEN)
         mess.apple_human_ids = apple_human_ids
@@ -150,8 +170,8 @@ class Game:
         mess.orange_ai_ids = orange_ai_ids
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
-        mess.names = list(self.__names.items())
-        Server.get_instance().send_all(mess)
+
+        Server.get_instance().send_important_mes_all(mess)
         Server.get_instance().stop_accepting_clients()
 
     def __read_messages(self):
@@ -162,7 +182,7 @@ class Game:
                 self.logger.info(f"Changed player number, new is: {mess.new_number}.")
             elif mess.type == climess.MessageType.START_GAME_MANUALLY and mess.from_id == self.__first_player_id:
                 self.logger.info("Received manual game start signal.")
-                self.__start_game()
+                self.__game_start_signaled = True
             elif mess.type == climess.MessageType.CONN_RELATED_DEATH:
                 for pl in self.__player_logics:
                     if pl.id == mess.player_id:
