@@ -43,12 +43,16 @@ class Server(threading.Thread):
             self.running = True
 
     def receive_message(self, message, ID):
+        """When message is received, first the message importance is checked, then the message gets processed"""
         if message.important:
             if message.mes_id not in self.__processed_important_message_ids:
                 self._process_message(message, ID)
                 self.__processed_important_message_ids[message.mes_id] = False
             else:
+                # it is possible to get the same message twice if the ack gets lost
+                # but in this case the client already processed it
                 self.__processed_important_message_ids[message.mes_id] = True
+            # client sends back the acknowledgement to the client
             msg = BaseMessage(mess_type=sermess.MessageType.ACK, target=sermess.Target.CLIENT_COMMUNICATOR)
             msg.mes_id = message.mes_id
             self.send_message(msg, ID)
@@ -57,6 +61,8 @@ class Server(threading.Thread):
             self._process_message(message, ID)
 
     def _del_from_message_ids(self, message):
+        # the important message ids are stored in a list, but there is no need for all of them
+        # if a message was not send again in certain time, the ack arrived to the client and the message can be deleted
         if not self.__processed_important_message_ids[message.mes_id]:
             del self.__processed_important_message_ids[message.mes_id]
         else:
@@ -64,6 +70,7 @@ class Server(threading.Thread):
             Timer.sch_fun(3, self._del_from_message_ids, (message,))
 
     def _process_message(self, message, ID):
+        """Groups the messages according to their purposes"""
         if message.target == climess.Target.SERVER:  # processes own messages
             if message.type == climess.MessageType.CONN_CLOSED:
                 self.close_connection_by_id(ID)
@@ -89,7 +96,7 @@ class Server(threading.Thread):
 
     def send_message(self, message, ID):
         communicator = self.__get_communicator_from_id(ID)
-        message.important = False
+        message.important = False  # the less important messages are sent in nearly every frame e.g. player position
         communicator.send_message(message)
 
     def send_all(self, message):
@@ -98,6 +105,8 @@ class Server(threading.Thread):
             communicators.send_message(message)
 
     def send_important_message(self, message, ID):
+        """Some messages are particularly important not to get lost
+        so when the communicator send them, it uses acknowledgement protocol"""
         message.important = True
         communicator = self.__get_communicator_from_id(ID)
         communicator.send_important_message(message)

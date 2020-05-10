@@ -46,16 +46,20 @@ class ClientCommunicator(threading.Thread):
         self.client_socket.send(serialized)
 
     def send_important_message(self, message):
+        """Sends the message and calls a delayed function to check acknowledgement"""
         message.mes_id = next(self.mes_id)
+        # the dict contains the message ids and whether they get acknowledged
         self._acknowledged_important[message.mes_id] = False
         self.send_message(message)
 
         Timer.sch_fun(1, self.delayed_resend, (message,))
 
     def delayed_resend(self, message):
+        # if the acknowledgement did not arrive from the server in a tick, the message is resent
         if not self._acknowledged_important[message.mes_id]:
             self.send_message(message)
             Timer.sch_fun(1, self.delayed_resend, (message,))
+        # if the acknowledgement arrived there is no need to store this message id
         else:
             del self._acknowledged_important[message.mes_id]
 
@@ -88,6 +92,7 @@ class ClientCommunicator(threading.Thread):
             for m in mes_separated:
                 deserialized = json.loads(m)
                 deserialized = dict_to_object(deserialized)
+                # if a message is for acknowledgement purposes it does not need to be received by the client
                 if deserialized.type == sermess.MessageType.ACK:
                     self._acknowledged_important[deserialized.mes_id] = True
                 else:
