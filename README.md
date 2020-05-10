@@ -3,6 +3,20 @@
 # Short description
 My team created a real-time platformer arena game (with multiplayer and AI players options). There are different player-types, with different attacking abilities (one can become a deadly ball for a short time; another can throw himself, causing damage at impact). Who survives the others, wins.
 
+# Usage
+First - obviously - this repo has to be cloned.
+
+Then, the dependencies shall be installed. This can be done by:
+
+``pip install -r requirements.txt``
+
+Then, the server and the client can be run as follows:
+
+``python -m src.Server  [-h] [-p PORT]``
+
+``python -m src.Client [-h] [-p PORT] [-i IP] [-n NAME]``
+
+
 # Architecture sketch
 There are two main components: server and client side. Only one server should run to which all clients connect. There is also a utils and a tests (unittests) modul. 
 

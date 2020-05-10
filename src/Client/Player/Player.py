@@ -13,8 +13,8 @@ from src.utils.general_constants import SCREEN_HEIGHT, GREEN, WHITE, RED, PIC_BG
 
 
 class PicFile(Enum):
-    ORANGE = "img/orange_test_image.png"
-    APPLE = "img/apple_test_image.png"
+    ORANGE = "src/Client/img/orange_test_image.png"
+    APPLE = "src/Client/img/apple_test_image.png"
 
 
 class Player(pg.sprite.Sprite):
