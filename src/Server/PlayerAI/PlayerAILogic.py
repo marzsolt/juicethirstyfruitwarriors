@@ -13,8 +13,8 @@ class Movement(Enum):
 
 
 class PlayerAILogic(PlayerLogic, abc.ABC):
-    def __init__(self, player_id, __terrain, game):
-        super(PlayerAILogic, self).__init__(player_id, __terrain, game)
+    def __init__(self, player_id, __terrain, game, x_start):
+        super(PlayerAILogic, self).__init__(player_id, __terrain, game, x_start)
         self._dir = Movement.RIGHT
         self._fear_level = random.random()
         self._go_towards_enemy = True

@@ -5,8 +5,8 @@ from src.Server.PlayerAI.PlayerAILogic import PlayerAILogic
 
 
 class OrangeAI(PlayerAILogic, OrangeLogic):
-    def __init__(self, player_id, terrain, game):
-        super(OrangeAI, self).__init__(player_id, terrain, game)
+    def __init__(self, player_id, terrain, game, x_start):
+        super(OrangeAI, self).__init__(player_id, terrain, game, x_start)
         self._attack_range = 100
         self._aggression_bias = 0.5
 

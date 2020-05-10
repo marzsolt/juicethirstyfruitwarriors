@@ -26,7 +26,7 @@ class PlayerLogic(abc.ABC):
     C_AIR = 0.3
     ATTACK_COOLDOWN = 100  # in ticks
 
-    def __init__(self, player_id, terrain, game):
+    def __init__(self, player_id, terrain, game, x_start):
         self.logger = logging.getLogger('Domi.PlayerLogic')
         self.id = player_id
         self._terrain = terrain
@@ -34,7 +34,7 @@ class PlayerLogic(abc.ABC):
         self._mobility = 0.3  # acceleration force, for max velocity check can_accelerate function
         self.mu = 0.1  # friction constant
         self._mass = 1  # effects how fast player can accelerate/decelerate (shouldn't be much different than 1)
-        self.pos = Vector2D(50+player_id*100, 500)
+        self.pos = Vector2D(x_start, 500)
         self._vel = Vector2D.zero()
         self._forces = []
         self._is_flying = True

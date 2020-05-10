@@ -8,8 +8,8 @@ from src.utils.Timer import Timer
 
 
 class AppleLogic(PlayerLogic):
-    def __init__(self, player_id, terrain, game):
-        super(AppleLogic, self).__init__(player_id, terrain, game)
+    def __init__(self, player_id, terrain, game, x_start):
+        super(AppleLogic, self).__init__(player_id, terrain, game, x_start)
 
         self._min_attack_angle = 0.55  # it is around 30 deg
         self._normal_attack_strength = 18

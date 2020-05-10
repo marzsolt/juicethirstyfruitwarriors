@@ -304,8 +304,7 @@ class Screen:
                             msg.apple_human_ids,
                             msg.orange_human_ids,
                             msg.apple_ai_ids,
-                            msg.orange_ai_ids,
-                            dict(msg.names)
+                            msg.orange_ai_ids
                         )
 
             else:  # if conn msg was shown and connection isn't alive, go back to playMenu (sub menu of mainMenu)

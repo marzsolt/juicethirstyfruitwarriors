@@ -11,6 +11,7 @@ from src.Server.PlayerAI.PlayerAILogic import PlayerAILogic
 from src.Server.Game.Terrain import Terrain
 from src.utils.Timer import Timer
 import src.Server.Network_communication.server_message_constants as sermess
+from src.utils.general_constants import SCREEN_WIDTH
 
 import src.Client.Network_communication.client_message_constants as climess
 
@@ -127,24 +128,40 @@ class Game:
         apple_human_ids = []
         orange_ai_ids = []
         apple_ai_ids = []
+
+        class Player:
+            """DTO"""
+            def __init__(self, _id, name):
+                self.id = _id
+                self.name = name
+
+        # generate random equidistant initial position
+        number_of_players = len(Server.get_instance().get_client_ids()) + self.__AI_number
+        dx = SCREEN_WIDTH / number_of_players
+        start_xs = [dx*(i+0.5) for i in range(number_of_players)]
+        random.shuffle(start_xs)
+
+        ind = 0
         for player_id in human_ids:  # create server side players for humans
             if random.random() < 0.5:
-                new_player_logic = AppleLogic(player_id, self.__terrain, self)
-                apple_human_ids.append(player_id)
+                new_player_logic = AppleLogic(player_id, self.__terrain, self, start_xs[ind])
+                apple_human_ids.append(Player(player_id, self.__names[player_id]))
             else:
-                new_player_logic = OrangeLogic(player_id, self.__terrain, self)
-                orange_human_ids.append(player_id)
+                new_player_logic = OrangeLogic(player_id, self.__terrain, self, start_xs[ind])
+                orange_human_ids.append(Player(player_id, self.__names[player_id]))
             self.__player_logics.append(new_player_logic)
+            ind = ind+1
         for i in range(self.__AI_number):  # create server side players for AIs
             player_id = Server.get_instance().get_new_id()
 
             if random.random() < 0.5:
-                new_player_logic = AppleAI(player_id, self.__terrain, self)
-                apple_ai_ids.append(player_id)
+                new_player_logic = AppleAI(player_id, self.__terrain, self, start_xs[ind])
+                apple_ai_ids.append(Player(player_id, "A AI " + str(player_id)))
             else:
-                new_player_logic = OrangeAI(player_id, self.__terrain, self)
-                orange_ai_ids.append(player_id)
+                new_player_logic = OrangeAI(player_id, self.__terrain, self, start_xs[ind])
+                orange_ai_ids.append(Player(player_id, "O AI " + str(player_id)))
             self.__player_logics.append(new_player_logic)
+            ind = ind + 1
 
         mess = BaseMessage(sermess.MessageType.INITIAL_DATA, sermess.Target.SCREEN)
         mess.apple_human_ids = apple_human_ids
@@ -153,7 +170,6 @@ class Game:
         mess.orange_ai_ids = orange_ai_ids
         mess.terrain_points = self.__terrain.get_terrain_points()
         mess.terrain_points_levels = [self.__terrain.get_level(point) for point in self.__terrain.get_terrain_points()]
-        mess.names = list(self.__names.items())
 
         Server.get_instance().send_important_mes_all(mess)
         Server.get_instance().stop_accepting_clients()

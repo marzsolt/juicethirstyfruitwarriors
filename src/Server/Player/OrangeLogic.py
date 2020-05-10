@@ -11,8 +11,8 @@ from src.utils.Timer import Timer
 
 class OrangeLogic(PlayerLogic):
     """" Class that defines special PlayerLogic (that of orange). """
-    def __init__(self, player_id, terrain, game):
-        super(OrangeLogic, self).__init__(player_id, terrain, game)
+    def __init__(self, player_id, terrain, game, x_start):
+        super(OrangeLogic, self).__init__(player_id, terrain, game, x_start)
 
         self._attack_strength = 10
         self._attack_damage = 2
