@@ -50,6 +50,3 @@ class PlayerManager:
     def remove_player(self, player_id):
         """" Removes player if it has dead. """
         self.players = [player for player in self.players if player.id != player_id]
-
-
-

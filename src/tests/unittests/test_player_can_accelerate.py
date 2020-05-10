@@ -21,7 +21,7 @@ class TestCanAccelerate(unittest.TestCase):
         terrain = Mock()
         game = Mock()
         terrain.get_angle_rad.side_effect = [-math.pi / 6, 0, math.pi / 6]
-        self.player = PlayerLogic(0, terrain, game)
+        self.player = PlayerLogic(0, terrain, game, 100)
 
     def test_can_accelerate_normal(self):
         self.player._vel = Vector2D.mag_ang_init(3.1, 0)  # over BASE_MAX_VEL, but downwards
