@@ -9,6 +9,8 @@ import src.Server.Network_communication.server_message_constants as sermess
 
 from src.utils.BaseMessage import BaseMessage
 
+from src.utils.general_constants import SCREEN_HEIGHT, GREEN, WHITE, RED
+
 
 class PicFile(Enum):
     ORANGE = "img/orange_test_image.png"
@@ -16,20 +18,27 @@ class PicFile(Enum):
 
 
 class Player(pg.sprite.Sprite):
-    SCREEN_HEIGHT = 600  # TODO use general constant
-    GREEN = (0, 255, 0)
-    RED = (255, 0, 0)
-    WHITE = (255, 255, 255)
 
-    def __init__(self, player_id, pic_file):
+    def __init__(self, player_id, name, pic_file):
         super(Player, self).__init__()
         self.logger = logging.getLogger('Domi.Player')
         try:
-            self.surf = pg.image.load(pic_file.value).convert()  # may have to change the path
+            img_surf = pg.image.load(pic_file.value).convert()  # may have to change the path
+            self.surf = pg.Surface((60, 60))
+            self.surf.fill((255, 253, 201))
+            self.surf.blit(img_surf, (0, 10))
+            self.surf.set_colorkey((255, 253, 201),
+                pg.RLEACCEL)  # background color of the picture -> that color not shown
+
+            # showing player name
+            font = pg.font.SysFont('freesansbold', 17)
+            name_surf = font.render(name, False, WHITE)
+            name_surf_rect = name_surf.get_rect()
+            name_surf_rect.center = (self.surf.get_width() // 2, name_surf_rect.centery)
+            self.surf.blit(name_surf, name_surf_rect)
         except pg.error:  # PyCharm you are a liar, it's perfectly OK
             self.logger.exception("Cannot load image!")
             self.logger.critical("Atya ég!")
-        self.surf.set_colorkey((255, 253, 201), pg.RLEACCEL)  # background color of the picture -> that color not shown
         self.rect = self.surf.get_rect()
         self._id = player_id
         self.hp = None
@@ -55,7 +64,7 @@ class Player(pg.sprite.Sprite):
         messages = Client.get_instance().get_targets_messages(sermess.Target.PLAYER+str(self._id))
         for mess in messages:
             if mess.type == sermess.MessageType.PLAYER_POS_HP:
-                self.rect.center = (mess.x, self.SCREEN_HEIGHT - mess.y)  # graphical y axis is weird
+                self.rect.center = (mess.x, SCREEN_HEIGHT - mess.y)  # graphical y axis is weird
                 self.dir = mess.dir
 
                 if self.hp != mess.hp:  # update HP if it's changed
@@ -63,10 +72,10 @@ class Player(pg.sprite.Sprite):
 
                     # Show HP bar:
                     # draw a white rect which is 1-1 pixel thicker in every direction to form border
-                    pg.draw.rect(self.surf, self.WHITE, (14, 0, 32, 7))
+                    pg.draw.rect(self.surf, WHITE, (14, 10, 32, 7))
                     # draw green/red health bar for own/enemy player respectively
                     pg.draw.rect(
                         self.surf,
-                        self.GREEN if Client.get_instance().id == self._id else self.RED,
-                        (15, 1, 30 * mess.hp / 100, 5)
+                        GREEN if Client.get_instance().id == self._id else RED,
+                        (15, 11, 30 * mess.hp / 100, 5)
                     )

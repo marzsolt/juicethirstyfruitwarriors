@@ -3,12 +3,11 @@ import math as mat
 import bresenham as br
 
 from src.utils.Vector2D import Vector2D
+from src.utils.general_constants import SCREEN_WIDTH
 
 
 class Terrain:
     """" Class for building terrain for the game. """
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
 
     BASE_LEVEL = 120
     MIN_LEVEL = 50
@@ -18,7 +17,7 @@ class Terrain:
 
     def __init__(self):
         ra.seed()  # initializing the pseudo-random generator
-        self.__points = [0, self.SCREEN_WIDTH - 1]
+        self.__points = [0, SCREEN_WIDTH - 1]
         self.__angles = []
         self.__levels = [self.BASE_LEVEL, ]
 
@@ -27,7 +26,7 @@ class Terrain:
     def generate_terrain(self):
         """" Function responsible for generating the terrain. """
         # generating the points for the piecewise linear terrain
-        for _ in range(int(self.SCREEN_WIDTH/100)):  # how many middle points shall be generated
+        for _ in range(int(SCREEN_WIDTH/100)):  # how many middle points shall be generated
             # always insert a random point into the longest interval
             [a, b] = self.__get_longest_interval_of_points()
             # self.__points.append(ra.randint(a+1, b-1))  # - previously done randomly

@@ -1,6 +1,6 @@
 import unittest
 import math
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from src.Server.Player.PlayerLogic import PlayerLogic
 from src.utils.Vector2D import Vector2D
 
@@ -16,10 +16,12 @@ def get_holidays():
 
 
 class TestCanAccelerate(unittest.TestCase):
+    @patch.multiple(PlayerLogic, __abstractmethods__=set())  # so that we can instantiate our abstract class
     def setUp(self):
         terrain = Mock()
+        game = Mock()
         terrain.get_angle_rad.side_effect = [-math.pi / 6, 0, math.pi / 6]
-        self.player = PlayerLogic(0, terrain)
+        self.player = PlayerLogic(0, terrain, game)
 
     def test_can_accelerate_normal(self):
         self.player._vel = Vector2D.mag_ang_init(3.1, 0)  # over BASE_MAX_VEL, but downwards

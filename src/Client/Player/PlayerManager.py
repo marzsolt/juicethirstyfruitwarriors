@@ -1,6 +1,4 @@
 from src.Client.Network_communication.Client import Client
-from src.Client.Player.Player import Player, PicFile
-from src.Client.Player.PlayerAI import PlayerAI
 from src.Client.Player.ApplePlayer import ApplePlayer
 from src.Client.Player.OrangePlayer import OrangePlayer
 
@@ -23,16 +21,16 @@ class PlayerManager:
         else:
             self.players = []
 
-    def create_players(self, apple_human_ids, orange_human_ids, apple_ai_ids, orange_ai_ids):
+    def create_players(self, apple_human_ids, orange_human_ids, apple_ai_ids, orange_ai_ids, names):
         """ Create players when game starts. """
         for player_id in apple_human_ids:
-            self.players.append(ApplePlayer(player_id))
+            self.players.append(ApplePlayer(player_id, names[player_id]))
         for player_id in orange_human_ids:
-            self.players.append(OrangePlayer(player_id))
+            self.players.append(OrangePlayer(player_id, names[player_id]))
         for player_id in apple_ai_ids:
-            self.players.append(PlayerAI(player_id, PicFile.APPLE))
+            self.players.append(ApplePlayer(player_id, "A AI " + str(player_id)))
         for player_id in orange_ai_ids:
-            self.players.append(PlayerAI(player_id, PicFile.ORANGE))
+            self.players.append(OrangePlayer(player_id, "O AI" + str(player_id)))
 
     def update(self, pressed_keys, events):
         """ Call every player's update. Delegate events to own player."""

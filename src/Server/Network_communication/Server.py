@@ -17,20 +17,20 @@ class Server(threading.Thread):
     __instance = None
 
     @staticmethod
-    def get_instance():
+    def get_instance(port=None):
         """ Static access method. """
         if Server.__instance is None:
-            Server.__instance = Server()
+            Server.__instance = Server(port)
         return Server.__instance
 
-    def __init__(self):
+    def __init__(self, port):
         """ Virtually private constructor. """
         if Server.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
             threading.Thread.__init__(self)
             self.logger = logging.getLogger('Domi.Server')
-            self.__port_number = 12145
+            self.__port_number = port
             self.__host = socket.gethostbyname(socket.gethostname())
             self.logger.info(f"Server IP address: {self.__host}.")
             self.__serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -44,7 +44,7 @@ class Server(threading.Thread):
     def receive_message(self, message, ID):
         if message.target == climess.Target.SERVER:  # processes own messages
             if message.type == climess.MessageType.CONN_CLOSED:
-                self.close_connection_by_ID(ID)
+                self.close_connection_by_id(ID)
         else:
             message.from_id = ID
             self.server_message_dictionary[message.target].append(message)  # stores messages for the other targets
@@ -95,7 +95,7 @@ class Server(threading.Thread):
         else:
             self.__new_client(new_client)
 
-    def close_connection_by_ID(self, ID):
+    def close_connection_by_id(self, ID):
         """" Responsible for closing connection by client ID. """
         self.__get_communicator_from_id(ID).close()
         self.__serverCommunicatorsList = [comm for comm in self.__serverCommunicatorsList if comm.ID != ID]
@@ -104,6 +104,9 @@ class Server(threading.Thread):
             self.__serverSocket.close()
             self.logger.info("Server socket closed.")
 
+    def stop_accepting_clients(self):
+        self.running = False
+
     def run(self):
         while self.running:
-            self.__accept_clients()  # TODO: maybe after game start it shouldn't wayt any longer for clients :D ?
+            self.__accept_clients()
