@@ -9,7 +9,7 @@ import src.Server.Network_communication.server_message_constants as sermess
 
 from src.utils.BaseMessage import BaseMessage
 
-from src.utils.general_constants import SCREEN_HEIGHT, GREEN, WHITE, RED
+from src.utils.general_constants import SCREEN_HEIGHT, GREEN, WHITE, RED, PIC_BG_COLOUR
 
 
 class PicFile(Enum):
@@ -24,18 +24,19 @@ class Player(pg.sprite.Sprite):
         self.logger = logging.getLogger('Domi.Player')
         try:
             img_surf = pg.image.load(pic_file.value).convert()  # may have to change the path
-            self.surf = pg.Surface((60, 60))
-            self.surf.fill((255, 253, 201))
-            self.surf.blit(img_surf, (0, 10))
-            self.surf.set_colorkey((255, 253, 201),
+            self.surf = pg.Surface((60, 60))  # surface for player
+            self.surf.fill(PIC_BG_COLOUR)
+            self.surf.blit(img_surf, (0, 10))  # blit image that is 60 x 50 - upper 10px for name
+            self.surf.set_colorkey(PIC_BG_COLOUR,
                 pg.RLEACCEL)  # background color of the picture -> that color not shown
 
             # showing player name
-            font = pg.font.SysFont('freesansbold', 17)
-            name_surf = font.render(name, False, WHITE)
+            font = pg.font.SysFont('freesansbold', 17)  # font
+            name_surf = font.render(name, False, WHITE)  # rendering name on a surface
             name_surf_rect = name_surf.get_rect()
+            # center name vertically
             name_surf_rect.center = (self.surf.get_width() // 2, name_surf_rect.centery)
-            self.surf.blit(name_surf, name_surf_rect)
+            self.surf.blit(name_surf, name_surf_rect)  # finally, blit name surf. on player surf.
         except pg.error:  # PyCharm you are a liar, it's perfectly OK
             self.logger.exception("Cannot load image!")
             self.logger.critical("Atya ég!")
